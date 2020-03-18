@@ -1,0 +1,21 @@
+{
+  "name": "together",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "node server.js",
+    "build": "next build",
+    "start": "NODE_ENV=production node server.js"
+  },
+  "dependencies": {
+    "event-emitter": "^0.3.5",
+    "express": "^4.17.1",
+    "naampje": "^1.0.1",
+    "next": "9.3.1",
+    "react": "16.13.0",
+    "react-dom": "16.13.0",
+    "shortid": "^2.2.15",
+    "simple-peer": "^9.6.2",
+    "socket.io": "^2.3.0"
+  }
+}

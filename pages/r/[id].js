@@ -1,7 +1,9 @@
 import React from 'react';
-import shortid from 'shortid';
-import PeerMesh from '../../lib/peerMesh';
+import SwarmCommander from '../../lib/swarmCommander';
+import Chat from '../../components/chat/chat';
+import Roster from '../../components/roster/roster';
 import naampje from 'naampje';
+import Videos from '../../components/videos/videos';
 
 export default class RoomPage extends React.Component {
   static async getInitialProps({ query, req }) {
@@ -13,54 +15,39 @@ export default class RoomPage extends React.Component {
   constructor(props) {
     super(props);
 
-    this.name = naampje.name();
-
-    this.peerMesh = new PeerMesh(this.props.id);
-
-    this.peerMesh.on('message', this.receiveMessage.bind(this));
-
-    this.chatInput = React.createRef();
-    this.onSubmit = this.onSubmit.bind(this);
+    this.id = this.props.id;
 
     this.state = {
-      messages: []
+      swarmInitialized: false,
+      name: naampje.name()
     };
   }
 
-  receiveMessage(message) {
-    this.setState(state => ({
-      messages: [...state.messages, message]
-    }));
+  componentDidMount() {
+    this.initSwarm();
   }
 
-  onSubmit(e) {
-    e.preventDefault();
-    
-    const message = { id: shortid.generate(), name: this.name, body: this.chatInput.current.value }
+  initSwarm() {
+    this.swarm = new SwarmCommander(this.id);
 
-    this.peerMesh.fire('message', message);
-    this.receiveMessage(message);
-
-    this.chatInput.current.value = '';
+    this.setState({ swarmInitialized: true });
   }
 
   render() {
-    return (
-      <div className="roomPage">
-        <h3>WebRTC Mesh Chat</h3>
+    if (this.state.swarmInitialized) {
+      return (
+        <div className="roomPage">
+          <h3>BipBop</h3>
 
-        <div className="messages">
-          {this.state.messages.map(message => (
-            <div className="message" key={message.id}>
-              {message.name}: {message.body}
-            </div>
-          ))}
+          <Roster swarm={this.swarm} name={this.state.name} />
+          <Chat swarm={this.swarm} name={this.state.name} />
+          <Videos swarm={this.swarm} />
         </div>
-
-        <form onSubmit={this.onSubmit}>
-          <input ref={this.chatInput}/>
-        </form>
-      </div>
-    );
+      );
+    } else {
+      return (
+        <div>I'm offline</div>
+      );
+    }
   }
 }

@@ -8,11 +8,13 @@
     "start": "next start"
   },
   "dependencies": {
+    "localforage": "^1.7.3",
     "lodash": "^4.17.15",
     "naampje": "^1.0.1",
     "next": "9.3.1",
     "react": "16.13.0",
     "react-dom": "16.13.0",
+    "sass": "^1.26.3",
     "shortid": "^2.2.15",
     "signalhub": "^4.9.0",
     "webrtc-swarm": "https://github.com/nchapman/webrtc-swarm"

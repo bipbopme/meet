@@ -1,0 +1,122 @@
+@import 'reset';
+@import 'fonts';
+
+.roomPage {
+  position: absolute;
+  top: 0; left: 0;
+  display: grid;
+  height: 100%;
+  width: 100%;
+  grid-template-columns: auto 300px;
+  grid-template-rows: auto;
+
+  .videoChat, .textChat {
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: 70px auto 70px;
+    overflow: auto; // this hack makes children scrollable
+
+    > header {
+      border-bottom: 1px solid #ddd;
+    }
+
+    > section {
+      overflow-y: auto;
+    }
+
+    > footer {
+      border-top: 1px solid #ddd;
+    }
+  }
+
+  .videoChat {
+    > * {
+      border-right: 1px solid #ddd;
+    }
+  }
+}
+
+.roster {
+  display: none;
+}
+
+.textChat {
+  .messages {
+    background: #f3f3f3;
+    padding: 10px;
+
+    .message {
+      background: #fff;
+      border-radius: 10px;
+      font-size: 14px;
+      line-height: 1.2em;
+      margin-bottom: 10px;
+      margin-left: 40px;
+      padding: 10px;
+      position: relative;
+
+      .avatar {
+        height: 32px;
+        width: 32px;
+
+        position: absolute;
+        left: -40px;
+        bottom: 5px;
+      }
+
+      .name {
+        color: #555;
+        font-size: 12px;
+        font-weight: bold;
+      }
+    }
+  }
+
+  .chatBox {
+    background: #fff;
+
+    input {
+      height: 100%;
+    }
+  }
+}
+
+.videoChat {
+  header {
+    h1 {
+      font-size: 22px;
+      margin-top: 22px;
+      margin-left: 15px;
+    }
+  }
+
+  .videos {
+    align-content: center;
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-right: 15px;
+
+    .video {
+      flex-shrink: 0;
+      //height: #{37vw * (3 / 4)};
+      min-width: 200px;
+      padding: 15px 0 0 15px;
+      //width: 37vw;
+      width: 50%;
+
+      video {
+        border-radius: 15px;
+        height: 100%;
+        width: 100%;
+      }
+    }
+
+    &.videos-count-1 .video {
+      width: 75%;
+    }
+  }
+
+}
+

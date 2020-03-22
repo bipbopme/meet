@@ -25,12 +25,12 @@ export default class ChatBox extends React.Component {
 
   render() {
     return (
-      <div className="chatBox">
+      <footer className="chatBox">
         <form onSubmit={this.onSubmit}>
           <input ref={this.inputRef}/>
           <button type="submit">Send</button>
         </form>
-      </div>
+      </footer>
     );
   }
 }

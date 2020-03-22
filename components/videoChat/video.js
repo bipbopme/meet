@@ -16,7 +16,7 @@ export default class Video extends React.Component {
   render() {
     return (
       <div className="video">
-        <video ref={this.videoRef} autoPlay playsInline muted={this.props.local} />
+        <video ref={this.videoRef} autoPlay playsInline muted={this.props.local} width="500" height="500" />
       </div>
     );
   }

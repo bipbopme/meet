@@ -1,7 +1,9 @@
 import React from 'react';
 import Video from './video';
 
-export default class Videos extends React.Component {
+export default class VideoChat extends React.Component {
+  static audioVideoConfig = { video: { aspectRatio: 4/3, resizeMode: 'crop-and-scale' }, audio: { echoCancellation: true, autoGainControl: true } };
+
   constructor(props) {
     super(props);
 
@@ -16,12 +18,10 @@ export default class Videos extends React.Component {
       localStream: null
     }
 
-    navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(this.onGetUserMedia.bind(this));
+    navigator.mediaDevices.getUserMedia(VideoChat.audioVideoConfig).then(this.onGetUserMedia.bind(this));
   }
 
   onGetUserMedia(stream) {
-    console.log('we have a stream');
-
     this.setState({ localStream: stream });
 
     // For anyone connected before we had a stream
@@ -49,12 +49,21 @@ export default class Videos extends React.Component {
 
   render() {
     return (
-      <div className="videos">
-        {this.state.nodes.map(node => (
-          <Video key={node.id} node={node} stream={node.meta.stream} />
-        ))}
-        <Video key='myVideo' local={true} stream={this.state.localStream} />
+      <div className="videoChat">
+        <header>
+          <h1>bipbop</h1>
+        </header>
+        <section className={`videos videos-count-${this.state.nodes.length + 1}`}>
+          {this.state.nodes.map(node => (
+            <Video key={node.id} node={node} stream={node.meta.stream} />
+          ))}
+          <Video key='myVideo' local={true} stream={this.state.localStream} />
+        </section>
+        <footer>
+          Controls go here.
+        </footer>
       </div>
+
     );
   }
 }

@@ -1,9 +1,10 @@
 import React from 'react';
 import SwarmCommander from '../../lib/swarmCommander';
-import Chat from '../../components/chat/chat';
+import TextChat from '../../components/textChat/textChat';
 import Roster from '../../components/roster/roster';
 import naampje from 'naampje';
-import Videos from '../../components/videos/videos';
+import VideoChat from '../../components/videoChat/videoChat';
+import Welcome from '../../components/welcome/welcome';
 
 export default class RoomPage extends React.Component {
   static async getInitialProps({ query, req }) {
@@ -16,37 +17,31 @@ export default class RoomPage extends React.Component {
     super(props);
 
     this.id = this.props.id;
+    this.onJoin = this.onJoin.bind(this);
 
     this.state = {
-      swarmInitialized: false,
-      name: naampje.name()
+      name: '',
+      joined: false
     };
   }
-
-  componentDidMount() {
-    this.initSwarm();
-  }
-
-  initSwarm() {
+  onJoin(name, localStream) {
     this.swarm = new SwarmCommander(this.id);
 
-    this.setState({ swarmInitialized: true });
+    this.setState({ joined: true, name: name });
   }
 
   render() {
-    if (this.state.swarmInitialized) {
+    if (this.state.joined) {
       return (
         <div className="roomPage">
-          <h3>BipBop</h3>
-
           <Roster swarm={this.swarm} name={this.state.name} />
-          <Chat swarm={this.swarm} name={this.state.name} />
-          <Videos swarm={this.swarm} />
+          <VideoChat swarm={this.swarm} />
+          <TextChat swarm={this.swarm} name={this.state.name} />
         </div>
       );
     } else {
       return (
-        <div>I'm offline</div>
+        <Welcome onJoin={this.onJoin} />
       );
     }
   }

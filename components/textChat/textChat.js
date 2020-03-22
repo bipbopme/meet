@@ -1,7 +1,8 @@
 import React from 'react';
 import ChatBox from './chatBox';
+import Message from './message';
 
-export default class Chat extends React.Component {
+export default class TextChat extends React.Component {
   constructor(props) {
     super(props);
 
@@ -21,15 +22,15 @@ export default class Chat extends React.Component {
 
   render() {
     return (
-      <div className="chat">
-        <h4>Messages</h4>
-        <div className="messages">
+      <div className="textChat">
+        <header>
+          Text Chat Header
+        </header>
+        <section className="messages">
           {this.state.messages.map(message => (
-            <div className="message" key={message.id}>
-              {message.name}: {message.body}
-            </div>
+            <Message key={message.id} message={message} />
           ))}
-        </div>
+        </section>
         <ChatBox swarm={this.swarm} name={this.props.name} onReceiveMessage={this.receiveMessage.bind(this)} />
       </div>
     );

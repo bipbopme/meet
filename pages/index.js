@@ -11,12 +11,13 @@ export default class HomePage extends React.Component {
 
   render() {
     return (
-      <div className="container">
+      <div className="homePage">
         <Head>
-          <title>BipBop.</title>
+          <title>bipbop.</title>
         </Head>
 
-        <h1>BipBop</h1>
+        <h1>bipbop</h1>
+        <h2>private 👏 simple 👏 free 👏 video 👏 chat</h2>
 
         <button onClick={this.onClick}>Start</button>
       </div>

@@ -2,9 +2,9 @@ import React from 'react';
 import SwarmCommander from '../../lib/swarmCommander';
 import TextChat from '../../components/textChat/textChat';
 import Roster from '../../components/roster/roster';
-import naampje from 'naampje';
 import VideoChat from '../../components/videoChat/videoChat';
 import Welcome from '../../components/welcome/welcome';
+import Head from 'next/head';
 
 export default class RoomPage extends React.Component {
   static async getInitialProps({ query, req }) {
@@ -34,6 +34,9 @@ export default class RoomPage extends React.Component {
     if (this.state.joined) {
       return (
         <div className="roomPage">
+          <Head>
+            <title>Video Chat | bipbop</title>
+          </Head>
           <Roster swarm={this.swarm} name={this.state.name} />
           <VideoChat swarm={this.swarm} />
           <TextChat swarm={this.swarm} name={this.state.name} />
@@ -43,6 +46,9 @@ export default class RoomPage extends React.Component {
       return (
         <div className="roomPage">
           <Welcome onJoin={this.onJoin} />
+          <Head>
+            <title>Welcome | bipbop</title>
+          </Head>
           <div class="videoChat">
             <header><h1>bipbop</h1></header>
             <section class="videos"></section>

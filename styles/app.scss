@@ -40,6 +40,60 @@
   display: none;
 }
 
+.welcome {
+  background: rgba(0,0,0,0.3);
+  position: absolute;
+  height: 100%;
+  width: 100%;
+
+  .inner {
+    background: #fff;
+    box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.2);
+    border-radius: 15px;
+    padding: 20px;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    width: 640px;
+    height: 670px;
+
+    h2 {
+      font-size: 24px;
+      margin-bottom: 15px;
+    }
+
+    .video {
+      video {
+        border-radius: 15px;
+        // TODO: this is dumb and hacky -- revisit after grid video is solved
+        height: #{598 * 3/4}px;
+        width: 598px;
+      }
+    }
+
+    h3 {
+      font-size: 20px;
+      margin: 15px 0;
+    }
+
+    input {
+      border: 0;
+      border-bottom: 1px solid #eee;
+      font-size: 20px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 10px;
+      margin-top: 15px;
+
+      font-size: 20px;
+      padding: 10px 20px;
+    }
+  }
+}
+
 .textChat {
   .messages {
     background: #f7f7f7;

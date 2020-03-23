@@ -40,21 +40,21 @@ export default class Welcome extends React.Component {
     this.setState({ name });
   }
 
-
   render() {
     return (
       <div className="welcome">
-        <h1>BipBop</h1>
-        <h2>Hi there, let's make sure your video is working.</h2>
-        <div className="videoPreview">
-          <Video key="localStream" local={true} stream={this.state.localStream} />
-        </div>
-        <h2>What's your name?</h2>
-        <div className="name">
-          <input placeholder="Name" value={this.state.name} onChange={this.updateName} />
-        </div>
-        <div className="footer">
-          <button onClick={this.onClickJoin}>Join</button>
+        <div className="inner">
+          <div className="videoPreview">
+            <h2>Ready to join?</h2>
+            <Video key="localStream" local={true} stream={this.state.localStream} />
+          </div>
+          <h3>What's your name?</h3>
+          <div className="name">
+            <input placeholder="Name" value={this.state.name} onChange={this.updateName} />
+          </div>
+          <div className="footer">
+            <button onClick={this.onClickJoin}>Join</button>
+          </div>
         </div>
       </div>
     );

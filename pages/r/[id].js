@@ -41,7 +41,19 @@ export default class RoomPage extends React.Component {
       );
     } else {
       return (
-        <Welcome onJoin={this.onJoin} />
+        <div className="roomPage">
+          <Welcome onJoin={this.onJoin} />
+          <div class="videoChat">
+            <header><h1>bipbop</h1></header>
+            <section class="videos"></section>
+            <footer class="controls"></footer>
+          </div>
+          <div class="textChat">
+            <header></header>
+            <section class="messages"></section>
+            <footer class="chatBox"></footer>
+          </div>
+        </div>
       );
     }
   }

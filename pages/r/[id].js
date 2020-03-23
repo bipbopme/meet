@@ -49,15 +49,15 @@ export default class RoomPage extends React.Component {
           <Head>
             <title>Welcome | bipbop</title>
           </Head>
-          <div class="videoChat">
+          <div className="videoChat">
             <header><h1>bipbop</h1></header>
-            <section class="videos"></section>
-            <footer class="controls"></footer>
+            <section className="videos"></section>
+            <footer className="controls"></footer>
           </div>
-          <div class="textChat">
+          <div className="textChat">
             <header></header>
-            <section class="messages"></section>
-            <footer class="chatBox"></footer>
+            <section className="messages"></section>
+            <footer className="chatBox"></footer>
           </div>
         </div>
       );

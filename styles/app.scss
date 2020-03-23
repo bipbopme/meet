@@ -42,7 +42,8 @@
       border-bottom: 1px solid #eee;
     }
 
-    > section {
+    // TODO: Cleant this up. section tag plan broken by ScrollToBottom component.
+    > section, .messages {
       overflow-y: auto;
     }
 
@@ -119,31 +120,42 @@
 .textChat {
   .messages {
     background: #f7f7f7;
-    padding: 10px;
+
+    // This is extra div is from ScrollToBottom
+    > div {
+      padding: 10px;
+    }
 
     .message {
-      background: #fff;
-      border-radius: 10px;
-      font-size: 14px;
-      line-height: 1.2em;
       margin-bottom: 10px;
       margin-left: 40px;
-      padding: 10px;
       position: relative;
 
       .avatar {
-        height: 32px;
-        width: 32px;
+        border-radius: 50%;
+        height: 35px;
+        width: 35px;
 
         position: absolute;
         left: -40px;
-        bottom: 5px;
+        bottom: 0;
       }
 
       .name {
+        // TODO: bring these back with message collapsing.
+        display: none;
         color: #555;
         font-size: 12px;
-        font-weight: bold;
+        margin-bottom: 2px;
+        margin-left: 10px;
+      }
+
+      .body {
+        background: #fff;
+        border-radius: 18px;
+        font-size: 13px;
+        line-height: 1.2em;
+        padding: 10px;
       }
     }
   }

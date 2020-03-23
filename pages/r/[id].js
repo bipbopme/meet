@@ -24,6 +24,7 @@ export default class RoomPage extends React.Component {
       joined: false
     };
   }
+
   onJoin(name, localStream) {
     this.swarm = new SwarmCommander(this.id);
 

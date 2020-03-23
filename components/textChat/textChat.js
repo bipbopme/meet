@@ -1,6 +1,7 @@
 import React from 'react';
 import ChatBox from './chatBox';
 import Message from './message';
+import ScrollToBottom from 'react-scroll-to-bottom';
 
 export default class TextChat extends React.Component {
   constructor(props) {
@@ -24,11 +25,11 @@ export default class TextChat extends React.Component {
     return (
       <div className="textChat">
         <header></header>
-        <section className="messages">
+        <ScrollToBottom className="messages" checkInterval="50">
           {this.state.messages.map(message => (
             <Message key={message.id} message={message} />
           ))}
-        </section>
+        </ScrollToBottom>
         <ChatBox swarm={this.swarm} name={this.props.name} onReceiveMessage={this.receiveMessage.bind(this)} />
       </div>
     );

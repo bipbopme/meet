@@ -22,7 +22,7 @@ export default class Welcome extends React.Component {
 
     this.setState({ name: name });
 
-    //navigator.mediaDevices.getUserMedia(VideoChat.audioVideoConfig).then(this.onGetUserMedia);
+    navigator.mediaDevices.getUserMedia(VideoChat.audioVideoConfig).then(this.onGetUserMedia);
   }
 
   onGetUserMedia(stream) {

@@ -13,11 +13,11 @@
   .videoChat, .textChat {
     display: grid;
     grid-template-columns: auto;
-    grid-template-rows: 70px auto 70px;
+    grid-template-rows: 60px auto 60px;
     overflow: auto; // this hack makes children scrollable
 
     > header {
-      border-bottom: 1px solid #ddd;
+      border-bottom: 1px solid #eee;
     }
 
     > section {
@@ -25,13 +25,13 @@
     }
 
     > footer {
-      border-top: 1px solid #ddd;
+      border-top: 1px solid #eee;
     }
   }
 
   .videoChat {
     > * {
-      border-right: 1px solid #ddd;
+      border-right: 1px solid #eee;
     }
   }
 }
@@ -42,7 +42,7 @@
 
 .textChat {
   .messages {
-    background: #f3f3f3;
+    background: #f7f7f7;
     padding: 10px;
 
     .message {
@@ -73,19 +73,43 @@
   }
 
   .chatBox {
-    background: #fff;
+    align-items: center;
+    display: flex;
+    overflow: hidden;
 
     input {
-      height: 100%;
+      border: 0;
+      flex-grow: 1;
+      height: 60px;
+      outline: 0;
+      padding: 10px;
+      // TODO: make this flex
+      width: 240px;
+    }
+
+    button {
+      background: #bbb;
+      border: 0;
+      border-radius: 50%;
+      flex-basis: auto;
+      height: 42px;
+      outline: 0;
+      width: 42px;
+
+      svg {
+        color: #fff;
+      }
     }
   }
 }
 
 .videoChat {
   header {
+    align-items: center;
+    display: flex;
+
     h1 {
       font-size: 22px;
-      margin-top: 22px;
       margin-left: 15px;
     }
   }
@@ -115,6 +139,35 @@
 
     &.videos-count-1 .video {
       width: 75%;
+    }
+  }
+
+  .controls {
+    display: flex;
+
+    .button {
+      align-items: center;
+      border-right: 1px solid #eee;
+      color: #222;
+      cursor: default;
+      display: flex;
+      font-size: 14px;
+      height: 100%;
+      justify-content: center;
+      width: 100px;
+
+      &:hover {
+        background: #f6f6f6;
+      }
+
+      &:active {
+        background: #eee;
+      }
+
+      svg {
+        color: #999;
+        margin-right: 8px;
+      }
     }
   }
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import Video from './video';
+import VideoChatControls from './controls/videoChatControls';
 
 export default class VideoChat extends React.Component {
   static audioVideoConfig = { video: { aspectRatio: 4/3, resizeMode: 'crop-and-scale' }, audio: { echoCancellation: true, autoGainControl: true } };
@@ -59,9 +60,7 @@ export default class VideoChat extends React.Component {
           ))}
           <Video key='myVideo' local={true} stream={this.state.localStream} />
         </section>
-        <footer>
-          Controls go here.
-        </footer>
+        <VideoChatControls localStream={this.state.localStream} />
       </div>
 
     );

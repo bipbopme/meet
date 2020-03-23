@@ -23,9 +23,7 @@ export default class TextChat extends React.Component {
   render() {
     return (
       <div className="textChat">
-        <header>
-          Text Chat Header
-        </header>
+        <header></header>
         <section className="messages">
           {this.state.messages.map(message => (
             <Message key={message.id} message={message} />

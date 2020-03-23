@@ -1,0 +1,46 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faVideo } from '@fortawesome/free-solid-svg-icons';
+import { faVideoSlash } from '@fortawesome/free-solid-svg-icons';
+
+export default class VideoButton extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.onClick = this.onClick.bind(this);
+
+    this.state = {
+      muted: false
+    }
+  }
+
+  onClick() {
+    if (this.props.localStream) {
+      const videoTrack = this.props.localStream.getVideoTracks()[0];
+
+      console.log('video before', videoTrack.enabled);
+
+      const currentlyMuted = this.state.muted;
+
+      // These two are inverted so muted == disabled
+      videoTrack.enabled = currentlyMuted;
+
+      // Flip the state
+      this.setState({ muted: !currentlyMuted });
+
+      console.log('video after', videoTrack.enabled);
+    }
+  }
+
+  render() {
+    return (
+      <div className="button micButton" onClick={this.onClick}>
+        {this.state.muted &&
+          <span><FontAwesomeIcon icon={faVideoSlash} /> On</span>
+        }
+        {!this.state.muted &&
+          <span><FontAwesomeIcon icon={faVideo} /> Off</span>
+        }
+      </div>
+    );
+  }
+}

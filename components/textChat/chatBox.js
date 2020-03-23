@@ -1,5 +1,7 @@
 import React from 'react';
 import shortid from 'shortid';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 
 export default class ChatBox extends React.Component {
   constructor(props) {
@@ -27,8 +29,8 @@ export default class ChatBox extends React.Component {
     return (
       <footer className="chatBox">
         <form onSubmit={this.onSubmit}>
-          <input ref={this.inputRef}/>
-          <button type="submit">Send</button>
+          <input ref={this.inputRef} placeholder="Message" />
+          <button type="submit"><FontAwesomeIcon icon={faPaperPlane} /></button>
         </form>
       </footer>
     );

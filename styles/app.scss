@@ -108,6 +108,7 @@ $breakpoint: 'max-width: 960px';
       height: 0;
       padding-bottom: 75%;
       position: relative;
+      transform: scaleX(-1);
 
       video {
         border-radius: 15px;
@@ -125,11 +126,12 @@ $breakpoint: 'max-width: 960px';
 
     input {
       border: 0;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid #ddd;
       font-size: 20px;
     }
 
     button {
+      background: #eee;
       border: 0;
       border-radius: 10px;
       margin-top: 15px;
@@ -240,29 +242,29 @@ $breakpoint: 'max-width: 960px';
         object-fit: cover;
         width: 100%;
       }
+
+      &.local {
+        transform: scaleX(-1);
+      }
     }
 
-    &.videos-count-1 {
-      .video {
-        grid-area: 1 / 1 / 13 / 13;
+    // Grids and absolute positioning don't mix
+    &.videos-count-1, &.videos-count-2 {
+      display: block;
+
+      .video:nth-child(1) {
+        width: 100%;
+        height: 100%;
       }
     }
 
     &.videos-count-2 {
-      .video:nth-child(1) {
-        grid-area: 1 / 1 / 13 / 13;
-      }
+      display: block;
+
       .video:nth-child(2) {
         position: absolute;
-        width: 20vw;
-        height: 20vh;
-
-        min-width: 130px;
-        max-width: 250px;
-
-        min-height: 130px;
-        max-height: 250px;
-
+        height: 150px;
+        width: 150px;
         left: 20px;
         bottom: 20px;
 

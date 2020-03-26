@@ -13,10 +13,14 @@ export default class Video extends React.Component {
     }
   }
 
+  getCssClasses() {
+    return 'video' + this.props.local ? ' local' : '';
+  }
+
   render() {
     return (
-      <div className="video">
-        <video ref={this.videoRef} autoPlay playsInline muted={this.props.local} width="500" height="500" />
+      <div className={`video ${this.props.local ? 'local' : 'remote'}`}>
+        <video ref={this.videoRef} autoPlay playsInline muted={this.props.local} />
       </div>
     );
   }

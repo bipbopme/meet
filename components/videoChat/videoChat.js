@@ -62,7 +62,6 @@ export default class VideoChat extends React.Component {
         </section>
         <VideoChatControls localStream={this.state.localStream} />
       </div>
-
     );
   }
 }

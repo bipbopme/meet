@@ -18,11 +18,22 @@ export default class RoomPage extends React.Component {
 
     this.id = this.props.id;
     this.onJoin = this.onJoin.bind(this);
+    this.onBeforeUnload = this.onBeforeUnload.bind(this);
 
     this.state = {
       name: '',
       joined: false
     };
+  }
+
+  componentDidMount() {
+    window.addEventListener('beforeunload', this.onBeforeUnload);
+  }
+
+  onBeforeUnload() {
+    if (this.swarm) {
+      this.swarm.close();
+    }
   }
 
   onJoin(name, localStream) {

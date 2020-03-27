@@ -25,7 +25,7 @@ export default class TextChat extends React.Component {
     return (
       <div className="textChat">
         <header></header>
-        <ScrollToBottom className="messages" checkInterval="50">
+        <ScrollToBottom className="messages" checkInterval={50}>
           {this.state.messages.map(message => (
             <Message key={message.id} message={message} />
           ))}

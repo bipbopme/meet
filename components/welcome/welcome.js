@@ -37,7 +37,7 @@ export default class Welcome extends React.Component {
     const name = event.target.value;
 
     localforage.setItem('name', name);
-    this.setState({ name });
+    this.setState({ name: name });
   }
 
   render() {

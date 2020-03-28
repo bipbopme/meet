@@ -1,4 +1,5 @@
 import React from 'react';
+import localforage from 'localforage';
 
 export default class Video extends React.Component {
   constructor(props) {
@@ -7,9 +8,29 @@ export default class Video extends React.Component {
     this.videoRef = React.createRef();
   }
 
+  componentDidMount() {
+    this.configureVideo();
+  }
+
   componentDidUpdate() {
-    if (this.props.stream) {
+    this.configureVideo();
+  }
+
+  async configureVideo() {
+    if (this.props.stream && !this.videoRef.current.srcObject) {
       this.videoRef.current.srcObject = this.props.stream;
+    }
+
+    const selectedAudioOutputID = await localforage.getItem('selectedAudioOutputID');
+
+    if (selectedAudioOutputID && typeof this.videoRef.current.sinkId !== 'undefined') {
+      this.videoRef.current.setSinkId(selectedAudioOutputID)
+        .then(() => {
+          console.log(`Success, audio output device attached: ${selectedAudioOutputID}`);
+        })
+        .catch(error => {
+          console.error('Error setting audio output', error);
+        });
     }
   }
 

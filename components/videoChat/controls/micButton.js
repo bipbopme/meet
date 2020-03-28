@@ -16,9 +16,6 @@ export default class MicButton extends React.Component {
   onClick() {
     if (this.props.localStream) {
       const audioTrack = this.props.localStream.getAudioTracks()[0];
-
-      console.log('audio before', audioTrack.enabled);
-
       const currentlyMuted = this.state.muted;
 
       // These two are inverted so muted == disabled
@@ -26,8 +23,6 @@ export default class MicButton extends React.Component {
 
       // Flip the state
       this.setState({ muted: !currentlyMuted });
-
-      console.log('audio after', audioTrack.enabled);
     }
   }
 

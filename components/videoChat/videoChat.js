@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { useDebugValue } from 'react';
 import Video from './video';
 import VideoChatControls from './controls/videoChatControls';
+import { getMediaContraints } from '../../lib/utils';
 
 export default class VideoChat extends React.Component {
-  static audioVideoConfig = { video: { aspectRatio: 4/3, resizeMode: 'crop-and-scale' }, audio: { echoCancellation: true, autoGainControl: true } };
-
   constructor(props) {
     super(props);
 
     this.swarm = props.swarm;
+
+    // Send our stream to the swarm
+    this.swarm.streamToAll(props.localStream);
 
     this.swarm.on('connect', this.onNodeConnect.bind(this));
     this.swarm.on('disconnect', this.updateNodes.bind(this));
@@ -16,17 +18,8 @@ export default class VideoChat extends React.Component {
 
     this.state = {
       nodes: [],
-      localStream: null
+      localStream: props.localStream
     }
-
-    navigator.mediaDevices.getUserMedia(VideoChat.audioVideoConfig).then(this.onGetUserMedia.bind(this));
-  }
-
-  onGetUserMedia(stream) {
-    this.setState({ localStream: stream });
-
-    // For anyone connected before we had a stream
-    this.swarm.streamToAll(stream);
   }
 
   onNodeStream(node, stream) {

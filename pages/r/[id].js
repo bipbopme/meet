@@ -39,7 +39,7 @@ export default class RoomPage extends React.Component {
   onJoin(name, localStream) {
     this.swarm = new SwarmCommander(this.id);
 
-    this.setState({ joined: true, name: name });
+    this.setState({ joined: true, name: name, localStream: localStream });
   }
 
   render() {
@@ -50,7 +50,7 @@ export default class RoomPage extends React.Component {
             <title>Video Chat | bipbop</title>
           </Head>
           <Roster swarm={this.swarm} name={this.state.name} />
-          <VideoChat swarm={this.swarm} />
+          <VideoChat swarm={this.swarm} localStream={this.state.localStream} />
           <TextChat swarm={this.swarm} name={this.state.name} />
         </div>
       );

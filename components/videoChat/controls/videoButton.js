@@ -16,9 +16,6 @@ export default class VideoButton extends React.Component {
   onClick() {
     if (this.props.localStream) {
       const videoTrack = this.props.localStream.getVideoTracks()[0];
-
-      console.log('video before', videoTrack.enabled);
-
       const currentlyMuted = this.state.muted;
 
       // These two are inverted so muted == disabled
@@ -26,8 +23,6 @@ export default class VideoButton extends React.Component {
 
       // Flip the state
       this.setState({ muted: !currentlyMuted });
-
-      console.log('video after', videoTrack.enabled);
     }
   }
 

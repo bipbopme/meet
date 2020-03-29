@@ -6501,7 +6501,7 @@ webpack@4.42.0:
 
 "webrtc-swarm@https://github.com/nchapman/webrtc-swarm":
   version "2.9.0"
-  resolved "https://github.com/nchapman/webrtc-swarm#6eaf186815917528c22c8122d541c4491aeccaf0"
+  resolved "https://github.com/nchapman/webrtc-swarm#7e4e33f8d82d51bb2acd6db9180a49935a8f6213"
   dependencies:
     cuid "^2.1.8"
     debug "^4.1.1"

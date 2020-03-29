@@ -30,11 +30,6 @@ export default class VideoChat extends React.Component {
 
   onNodeConnect(node) {
     this.updateNodes(node);
-
-    // Send the stream if we have it
-    if (this.state.localStream) {
-      this.swarm.streamToOne(node, this.state.localStream);
-    }
   }
 
   updateNodes(node) {

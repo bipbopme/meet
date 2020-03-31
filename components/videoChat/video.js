@@ -6,6 +6,12 @@ export default class Video extends React.Component {
     super(props);
 
     this.videoRef = React.createRef();
+
+    this.onClick = this.onClick.bind(this);
+
+    this.state = {
+      cover: true
+    }
   }
 
   componentDidMount() {
@@ -38,10 +44,15 @@ export default class Video extends React.Component {
     return 'video' + this.props.local ? ' local' : '';
   }
 
+  onClick() {
+    // Toggle cover
+    this.setState({ cover: !this.state.cover });
+  }
+
   render() {
     return (
-      <div className={`video ${this.props.local ? 'local' : 'remote'}`}>
-        <video ref={this.videoRef} autoPlay playsInline muted={this.props.local} />
+      <div className={`video ${this.props.local ? 'local' : 'remote'}`} onClick={this.onClick}>
+        <video ref={this.videoRef} autoPlay playsInline muted={this.props.local} style={{objectFit: this.state.cover ? 'cover' : 'contain' }} />
       </div>
     );
   }

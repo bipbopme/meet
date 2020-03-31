@@ -2,6 +2,7 @@ import React from 'react';
 import ChatBox from './chatBox';
 import Message from './message';
 import ScrollToBottom from 'react-scroll-to-bottom';
+import { matopush } from '../../lib/matomo';
 
 export default class TextChat extends React.Component {
   constructor(props) {
@@ -19,6 +20,8 @@ export default class TextChat extends React.Component {
     this.setState(state => ({
       messages: [...state.messages, message]
     }));
+
+    matopush(['trackEvent', 'textChat', 'message', 'received']);
   }
 
   render() {

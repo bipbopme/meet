@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMicrophone } from '@fortawesome/free-solid-svg-icons';
 import { faMicrophoneSlash } from '@fortawesome/free-solid-svg-icons';
+import { matopush } from '../../../lib/matomo';
 
 export default class MicButton extends React.Component {
   constructor(props) {
@@ -23,6 +24,8 @@ export default class MicButton extends React.Component {
 
       // Flip the state
       this.setState({ muted: !currentlyMuted });
+
+      matopush(['trackEvent', 'videoChat', 'videoButton', 'toggle']);
     }
   }
 

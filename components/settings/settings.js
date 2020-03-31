@@ -1,6 +1,7 @@
 import localforage from 'localforage';
 import Video from "../videoChat/video";
 import { getMediaContraints, stopStreamTracks } from '../../lib/utils';
+import { matopush } from '../../lib/matomo';
 
 export default class Settings extends React.Component {
   constructor(props) {
@@ -92,6 +93,8 @@ export default class Settings extends React.Component {
 
     localforage.setItem('name', name);
     this.setState({ name: name });
+
+    matopush(['trackEvent', 'settings', 'name', 'update']);
   }
 
   updateAudioInput(event) {
@@ -99,6 +102,8 @@ export default class Settings extends React.Component {
 
     localforage.setItem('selectedAudioInputID', selectedAudioInputID);
     this.setState({ selectedAudioInputID });
+
+    matopush(['trackEvent', 'settings', 'audioInput', 'update']);
   }
 
   updateAudioOutput(event) {
@@ -106,6 +111,8 @@ export default class Settings extends React.Component {
 
     localforage.setItem('selectedAudioOutputID', selectedAudioOutputID);
     this.setState({ selectedAudioOutputID });
+
+    matopush(['trackEvent', 'settings', 'audioOutput', 'update']);
   }
 
   updateVideoInput(event) {
@@ -113,6 +120,8 @@ export default class Settings extends React.Component {
 
     localforage.setItem('selectedVideoInputID', selectedVideoInputID);
     this.setState({ selectedVideoInputID });
+
+    matopush(['trackEvent', 'settings', 'videoInput', 'update']);
 
     this.getUserMedia();
   }

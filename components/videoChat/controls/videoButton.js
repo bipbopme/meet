@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faVideo } from '@fortawesome/free-solid-svg-icons';
 import { faVideoSlash } from '@fortawesome/free-solid-svg-icons';
+import { matopush } from '../../../lib/matomo';
 
 export default class VideoButton extends React.Component {
   constructor(props) {
@@ -23,6 +24,8 @@ export default class VideoButton extends React.Component {
 
       // Flip the state
       this.setState({ muted: !currentlyMuted });
+
+      matopush(['trackEvent', 'videoChat', 'videoButton', 'toggle']);
     }
   }
 

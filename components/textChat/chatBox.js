@@ -2,6 +2,7 @@ import React from 'react';
 import shortid from 'shortid';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { matopush } from '../../lib/matomo';
 
 export default class ChatBox extends React.Component {
   constructor(props) {
@@ -23,6 +24,8 @@ export default class ChatBox extends React.Component {
     this.onReceiveMessage(null, message);
 
     this.inputRef.current.value = '';
+
+    matopush(['trackEvent', 'textChat', 'message', 'sent']);
   }
 
   render() {

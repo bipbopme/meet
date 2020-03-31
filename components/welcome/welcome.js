@@ -1,4 +1,5 @@
 import Settings from "../settings/settings";
+import { matopush } from '../../lib/matomo';
 
 export default class Welcome extends React.Component {
   constructor(props) {
@@ -10,6 +11,8 @@ export default class Welcome extends React.Component {
 
   // TODO: This requires it to know too much about the settings state
   async onClickJoin(settingsState) {
+    matopush(['trackEvent', 'welcome', 'join', 'click']);
+
     this.onJoin(settingsState.name, settingsState.localStream);
   }
 

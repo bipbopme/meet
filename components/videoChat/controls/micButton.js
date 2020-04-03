@@ -1,44 +1,42 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMicrophone } from '@fortawesome/free-solid-svg-icons';
-import { faMicrophoneSlash } from '@fortawesome/free-solid-svg-icons';
-import { matopush } from '../../../lib/matomo';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faMicrophone, faMicrophoneSlash } from '@fortawesome/free-solid-svg-icons'
+import { matopush } from '../../../lib/matomo'
+import React from 'react'
 
 export default class MicButton extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
 
-    this.onClick = this.onClick.bind(this);
+    this.onClick = this.onClick.bind(this)
 
     this.state = {
       muted: false
     }
   }
 
-  onClick() {
+  onClick () {
     if (this.props.localStream) {
-      const audioTrack = this.props.localStream.getAudioTracks()[0];
-      const currentlyMuted = this.state.muted;
+      const audioTrack = this.props.localStream.getAudioTracks()[0]
+      const currentlyMuted = this.state.muted
 
       // These two are inverted so muted == disabled
-      audioTrack.enabled = currentlyMuted;
+      audioTrack.enabled = currentlyMuted
 
       // Flip the state
-      this.setState({ muted: !currentlyMuted });
+      this.setState({ muted: !currentlyMuted })
 
-      matopush(['trackEvent', 'videoChat', 'videoButton', 'toggle']);
+      matopush(['trackEvent', 'videoChat', 'videoButton', 'toggle'])
     }
   }
 
-  render() {
+  render () {
     return (
-      <div className="button micButton" onClick={this.onClick}>
+      <div className='button micButton' onClick={this.onClick}>
         {this.state.muted &&
-          <span><FontAwesomeIcon icon={faMicrophoneSlash} /> Unmute</span>
-        }
+          <span><FontAwesomeIcon icon={faMicrophoneSlash} /> Unmute</span>}
         {!this.state.muted &&
-          <span><FontAwesomeIcon icon={faMicrophone} /> Mute</span>
-        }
+          <span><FontAwesomeIcon icon={faMicrophone} /> Mute</span>}
       </div>
-    );
+    )
   }
 }

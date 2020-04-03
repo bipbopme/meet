@@ -1,44 +1,42 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faVideo } from '@fortawesome/free-solid-svg-icons';
-import { faVideoSlash } from '@fortawesome/free-solid-svg-icons';
-import { matopush } from '../../../lib/matomo';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faVideo, faVideoSlash } from '@fortawesome/free-solid-svg-icons'
+import { matopush } from '../../../lib/matomo'
+import React from 'react'
 
 export default class VideoButton extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
 
-    this.onClick = this.onClick.bind(this);
+    this.onClick = this.onClick.bind(this)
 
     this.state = {
       muted: false
     }
   }
 
-  onClick() {
+  onClick () {
     if (this.props.localStream) {
-      const videoTrack = this.props.localStream.getVideoTracks()[0];
-      const currentlyMuted = this.state.muted;
+      const videoTrack = this.props.localStream.getVideoTracks()[0]
+      const currentlyMuted = this.state.muted
 
       // These two are inverted so muted == disabled
-      videoTrack.enabled = currentlyMuted;
+      videoTrack.enabled = currentlyMuted
 
       // Flip the state
-      this.setState({ muted: !currentlyMuted });
+      this.setState({ muted: !currentlyMuted })
 
-      matopush(['trackEvent', 'videoChat', 'videoButton', 'toggle']);
+      matopush(['trackEvent', 'videoChat', 'videoButton', 'toggle'])
     }
   }
 
-  render() {
+  render () {
     return (
-      <div className="button micButton" onClick={this.onClick}>
+      <div className='button micButton' onClick={this.onClick}>
         {this.state.muted &&
-          <span><FontAwesomeIcon icon={faVideoSlash} /> On</span>
-        }
+          <span><FontAwesomeIcon icon={faVideoSlash} /> On</span>}
         {!this.state.muted &&
-          <span><FontAwesomeIcon icon={faVideo} /> Off</span>
-        }
+          <span><FontAwesomeIcon icon={faVideo} /> Off</span>}
       </div>
-    );
+    )
   }
 }

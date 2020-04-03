@@ -1,17 +1,18 @@
-import Head from 'next/head';
-import Router from 'next/router';
-import shortid from 'shortid';
+import Head from 'next/head'
+import Router from 'next/router'
+import shortid from 'shortid'
+import React from 'react'
 
 export default class HomePage extends React.Component {
-  onClick() {
-    const id = shortid.generate();
+  onClick () {
+    const id = shortid.generate()
 
-    Router.push('/r/' + id);
+    Router.push('/r/' + id)
   }
 
-  render() {
+  render () {
     return (
-      <div className="homePage">
+      <div className='homePage'>
         <Head>
           <title>bipbop.</title>
         </Head>
@@ -21,6 +22,6 @@ export default class HomePage extends React.Component {
 
         <button onClick={this.onClick}>Start</button>
       </div>
-    );
+    )
   }
 }

@@ -1,41 +1,41 @@
-import React from 'react';
-import shortid from 'shortid';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
-import { matopush } from '../../lib/matomo';
+import React from 'react'
+import shortid from 'shortid'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
+import { matopush } from '../../lib/matomo'
 
 export default class ChatBox extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
 
-    this.swarm = props.swarm;
+    this.swarm = props.swarm
     this.onReceiveMessage = props.onReceiveMessage
-    this.inputRef = React.createRef();
-    this.onSubmit = this.onSubmit.bind(this);
+    this.inputRef = React.createRef()
+    this.onSubmit = this.onSubmit.bind(this)
   }
 
-  onSubmit(e) {
-    e.preventDefault();
+  onSubmit (e) {
+    e.preventDefault()
 
     // TODO: Pass down user info
     const message = { id: shortid.generate(), name: this.props.name, body: this.inputRef.current.value }
 
-    this.swarm.sendToAll('chat.message', message);
-    this.onReceiveMessage(null, message);
+    this.swarm.sendToAll('chat.message', message)
+    this.onReceiveMessage(null, message)
 
-    this.inputRef.current.value = '';
+    this.inputRef.current.value = ''
 
-    matopush(['trackEvent', 'textChat', 'message', 'sent']);
+    matopush(['trackEvent', 'textChat', 'message', 'sent'])
   }
 
-  render() {
+  render () {
     return (
-      <footer className="chatBox">
+      <footer className='chatBox'>
         <form onSubmit={this.onSubmit}>
-          <input ref={this.inputRef} placeholder="Message" />
-          <button type="submit"><FontAwesomeIcon icon={faPaperPlane} /></button>
+          <input ref={this.inputRef} placeholder='Message' />
+          <button type='submit'><FontAwesomeIcon icon={faPaperPlane} /></button>
         </form>
       </footer>
-    );
+    )
   }
 }

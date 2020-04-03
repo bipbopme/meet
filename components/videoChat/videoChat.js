@@ -1,20 +1,19 @@
-import React, { useDebugValue } from 'react';
-import Video from './video';
-import VideoChatControls from './controls/videoChatControls';
-import { getMediaContraints } from '../../lib/utils';
+import React from 'react'
+import Video from './video'
+import VideoChatControls from './controls/videoChatControls'
 
 export default class VideoChat extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
 
-    this.swarm = props.swarm;
+    this.swarm = props.swarm
 
     // Send our stream to the swarm
-    this.swarm.streamToAll(props.localStream);
+    this.swarm.streamToAll(props.localStream)
 
-    this.swarm.on('connect', this.onNodeConnect.bind(this));
-    this.swarm.on('disconnect', this.updateNodes.bind(this));
-    this.swarm.on('stream', this.onNodeStream.bind(this));
+    this.swarm.on('connect', this.onNodeConnect.bind(this))
+    this.swarm.on('disconnect', this.updateNodes.bind(this))
+    this.swarm.on('stream', this.onNodeStream.bind(this))
 
     this.state = {
       nodes: [],
@@ -22,23 +21,23 @@ export default class VideoChat extends React.Component {
     }
   }
 
-  onNodeStream(node, stream) {
-    node.meta.stream = stream;
+  onNodeStream (node, stream) {
+    node.meta.stream = stream
 
-    this.updateNodes(node);
+    this.updateNodes(node)
   }
 
-  onNodeConnect(node) {
-    this.updateNodes(node);
+  onNodeConnect (node) {
+    this.updateNodes(node)
   }
 
-  updateNodes(node) {
-    this.setState({ nodes: this.swarm.nodes });
+  updateNodes (node) {
+    this.setState({ nodes: this.swarm.nodes })
   }
 
-  render() {
+  render () {
     return (
-      <div className="videoChat">
+      <div className='videoChat'>
         <header>
           <h1>bipbop</h1>
         </header>
@@ -46,10 +45,10 @@ export default class VideoChat extends React.Component {
           {this.state.nodes.map(node => (
             <Video key={node.id} node={node} stream={node.meta.stream} />
           ))}
-          <Video key='myVideo' local={true} stream={this.state.localStream} />
+          <Video key='myVideo' local stream={this.state.localStream} />
         </section>
         <VideoChatControls localStream={this.state.localStream} />
       </div>
-    );
+    )
   }
 }

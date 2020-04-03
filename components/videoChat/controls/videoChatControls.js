@@ -1,17 +1,14 @@
-import MicButton from "./micButton";
-import VideoButton from "./videoButton";
+import MicButton from './micButton'
+import VideoButton from './videoButton'
+import React from 'react'
 
 export default class VideoChatControls extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
+  render () {
     return (
-      <footer className="controls">
-        <MicButton localStream={this.props.localStream}/>
+      <footer className='controls'>
+        <MicButton localStream={this.props.localStream} />
         <VideoButton localStream={this.props.localStream} />
       </footer>
-    );
+    )
   }
 }

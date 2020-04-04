@@ -11,10 +11,10 @@ export default class ChatBox extends React.Component {
     this.swarm = props.swarm
     this.onReceiveMessage = props.onReceiveMessage
     this.inputRef = React.createRef()
-    this.onSubmit = this.onSubmit.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
-  onSubmit (e) {
+  handleSubmit (e) {
     e.preventDefault()
 
     // TODO: Pass down user info
@@ -31,7 +31,7 @@ export default class ChatBox extends React.Component {
   render () {
     return (
       <footer className='chatBox'>
-        <form onSubmit={this.onSubmit}>
+        <form onSubmit={this.handleSubmit}>
           <input ref={this.inputRef} placeholder='Message' />
           <button type='submit'><FontAwesomeIcon icon={faPaperPlane} /></button>
         </form>

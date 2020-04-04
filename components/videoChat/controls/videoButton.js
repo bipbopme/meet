@@ -7,14 +7,14 @@ export default class VideoButton extends React.Component {
   constructor (props) {
     super(props)
 
-    this.onClick = this.onClick.bind(this)
+    this.handleClick = this.handleClick.bind(this)
 
     this.state = {
       muted: false
     }
   }
 
-  onClick () {
+  handleClick () {
     if (this.props.localStream) {
       const videoTrack = this.props.localStream.getVideoTracks()[0]
       const currentlyMuted = this.state.muted
@@ -31,7 +31,7 @@ export default class VideoButton extends React.Component {
 
   render () {
     return (
-      <div className='button micButton' onClick={this.onClick}>
+      <div className='button micButton' onClick={this.handleClick}>
         {this.state.muted &&
           <span><FontAwesomeIcon icon={faVideoSlash} /> On</span>}
         {!this.state.muted &&

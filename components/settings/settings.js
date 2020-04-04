@@ -8,14 +8,14 @@ export default class Settings extends React.Component {
   constructor (props) {
     super(props)
 
-    this.updateName = this.updateName.bind(this)
-    this.updateAudioInput = this.updateAudioInput.bind(this)
-    this.updateAudioOutput = this.updateAudioOutput.bind(this)
-    this.updateVideoInput = this.updateVideoInput.bind(this)
+    this.handleNameChange = this.handleNameChange.bind(this)
+    this.handleAudioInputChange = this.handleAudioInputChange.bind(this)
+    this.handleAudioOutputChange = this.handleAudioOutputChange.bind(this)
+    this.handleVideoInputChange = this.handleVideoInputChange.bind(this)
     this.onGetUserMedia = this.onGetUserMedia.bind(this)
     this.onEnumerateDevices = this.onEnumerateDevices.bind(this)
     this.onError = this.onError.bind(this)
-    this.onClick = this.onClick.bind(this)
+    this.handleButtonClick = this.handleButtonClick.bind(this)
 
     this.state = {
       name: '',
@@ -30,11 +30,6 @@ export default class Settings extends React.Component {
     this.getUserMedia()
   }
 
-  componentWillUnmount () {
-    // TODO: we're passing along the stream but leaving this here as an option in case there are still problems
-    // stopStreamTracks(this.state.localStream);
-  }
-
   async getUserMedia () {
     stopStreamTracks(this.state.localStream)
 
@@ -46,6 +41,8 @@ export default class Settings extends React.Component {
   }
 
   async onError (error) {
+    console.error(error)
+
     // TODO: brute force error handling. need something more nuanced.
     if (this.state.selectedAudioInputID || this.state.selectedAudioOutputID || this.state.selectedVideoInputID) {
       await localforage.removeItem('selectedAudioInputID')
@@ -89,7 +86,7 @@ export default class Settings extends React.Component {
     })
   }
 
-  updateName (event) {
+  handleNameChange (event) {
     const name = event.target.value
 
     localforage.setItem('name', name)
@@ -98,7 +95,7 @@ export default class Settings extends React.Component {
     matopush(['trackEvent', 'settings', 'name', 'update'])
   }
 
-  updateAudioInput (event) {
+  handleAudioInputChange (event) {
     const selectedAudioInputID = event.target.value
 
     localforage.setItem('selectedAudioInputID', selectedAudioInputID)
@@ -107,7 +104,7 @@ export default class Settings extends React.Component {
     matopush(['trackEvent', 'settings', 'audioInput', 'update'])
   }
 
-  updateAudioOutput (event) {
+  handleAudioOutputChange (event) {
     const selectedAudioOutputID = event.target.value
 
     localforage.setItem('selectedAudioOutputID', selectedAudioOutputID)
@@ -116,7 +113,7 @@ export default class Settings extends React.Component {
     matopush(['trackEvent', 'settings', 'audioOutput', 'update'])
   }
 
-  updateVideoInput (event) {
+  handleVideoInputChange (event) {
     const selectedVideoInputID = event.target.value
 
     localforage.setItem('selectedVideoInputID', selectedVideoInputID)
@@ -127,7 +124,7 @@ export default class Settings extends React.Component {
     this.getUserMedia()
   }
 
-  onClick () {
+  handleButtonClick () {
     if (this.props.onButtonClick) {
       this.props.onButtonClick(this.state)
     }
@@ -144,11 +141,11 @@ export default class Settings extends React.Component {
             <div className='formContainer'>
               <form>
                 <label>Name</label>
-                <input value={this.state.name} onChange={this.updateName} />
+                <input value={this.state.name} onChange={this.handleNameChange} />
 
                 <div className='row'>
                   <label>Microphone</label>
-                  <select onChange={this.updateAudioInput} value={this.state.selectedAudioInputID}>
+                  <select onChange={this.handleAudioInputChange} value={this.state.selectedAudioInputID}>
                     {this.state.audioInputs && this.state.audioInputs.map(audioInput => (
                       <option key={audioInput.deviceId} value={audioInput.deviceId}>{audioInput.label}</option>
                     ))}
@@ -158,7 +155,7 @@ export default class Settings extends React.Component {
                 {this.state.audioOutputs && this.state.audioOutputs.length > 0 &&
                   <div className='row'>
                     <label>Speaker</label>
-                    <select onChange={this.updateAudioOutput} value={this.state.selectedAudioOutputID}>
+                    <select onChange={this.handleAudioOutputChange} value={this.state.selectedAudioOutputID}>
                       {this.state.audioOutputs && this.state.audioOutputs.map(audioOutput => (
                         <option key={audioOutput.deviceId} value={audioOutput.deviceId}>{audioOutput.label}</option>
                       ))}
@@ -167,7 +164,7 @@ export default class Settings extends React.Component {
 
                 <div className='row'>
                   <label>Camera</label>
-                  <select onChange={this.updateVideoInput} value={this.state.selectedVideoInputID}>
+                  <select onChange={this.handleVideoInputChange} value={this.state.selectedVideoInputID}>
                     {this.state.videoInputs && this.state.videoInputs.map(videoInput => (
                       <option key={videoInput.deviceId} value={videoInput.deviceId}>{videoInput.label}</option>
                     ))}
@@ -177,7 +174,7 @@ export default class Settings extends React.Component {
             </div>
             {this.props.buttonText &&
               <div className='buttonContainer'>
-                <button onClick={this.onClick}>{this.props.buttonText}</button>
+                <button onClick={this.handleButtonClick}>{this.props.buttonText}</button>
               </div>}
           </>}
 

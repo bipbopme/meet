@@ -17,8 +17,8 @@ export default class RoomPage extends React.Component {
     super(props)
 
     this.id = this.props.id
-    this.onJoin = this.onJoin.bind(this)
-    this.onBeforeUnload = this.onBeforeUnload.bind(this)
+    this.handleJoin = this.handleJoin.bind(this)
+    this.handleUnload = this.handleUnload.bind(this)
 
     this.state = {
       name: '',
@@ -27,16 +27,16 @@ export default class RoomPage extends React.Component {
   }
 
   componentDidMount () {
-    window.addEventListener('beforeunload', this.onBeforeUnload)
+    window.addEventListener('beforeunload', this.handleUnload)
   }
 
-  onBeforeUnload () {
+  handleUnload () {
     if (this.swarm) {
       this.swarm.close()
     }
   }
 
-  onJoin (name, localStream) {
+  handleJoin (name, localStream) {
     this.swarm = new SwarmCommander(this.id, localStream)
 
     this.setState({ joined: true, name: name, localStream: localStream })
@@ -58,7 +58,7 @@ export default class RoomPage extends React.Component {
     } else {
       return (
         <div className='roomPage'>
-          <Welcome onJoin={this.onJoin} />
+          <Welcome onJoin={this.handleJoin} />
           <Head>
             <title>Welcome | bipbop</title>
             <meta key='viewport' name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1' />

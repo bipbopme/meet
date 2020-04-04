@@ -7,11 +7,11 @@ export default class Welcome extends React.Component {
     super(props)
 
     this.onJoin = this.props.onJoin
-    this.onClickJoin = this.onClickJoin.bind(this)
+    this.handleJoinClick = this.handleJoinClick.bind(this)
   }
 
   // TODO: This requires it to know too much about the settings state
-  async onClickJoin (settingsState) {
+  async handleJoinClick (settingsState) {
     matopush(['trackEvent', 'welcome', 'join', 'click'])
 
     this.onJoin(settingsState.name, settingsState.localStream)
@@ -22,7 +22,7 @@ export default class Welcome extends React.Component {
       <div className='welcome'>
         <div className='inner'>
           <h2>Ready to join?</h2>
-          <Settings buttonText='Join' onButtonClick={this.onClickJoin} />
+          <Settings buttonText='Join' onButtonClick={this.handleJoinClick} />
         </div>
       </div>
     )

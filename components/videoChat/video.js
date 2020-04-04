@@ -7,7 +7,7 @@ export default class Video extends React.Component {
 
     this.videoRef = React.createRef()
 
-    this.onClick = this.onClick.bind(this)
+    this.handleClick = this.handleClick.bind(this)
 
     this.state = {
       cover: true
@@ -44,14 +44,14 @@ export default class Video extends React.Component {
     return 'video' + this.props.local ? ' local' : ''
   }
 
-  onClick () {
+  handleClick () {
     // Toggle cover
     this.setState({ cover: !this.state.cover })
   }
 
   render () {
     return (
-      <div className={`video ${this.props.local ? 'local' : 'remote'}`} onClick={this.onClick}>
+      <div className={`video ${this.props.local ? 'local' : 'remote'}`} onClick={this.handleClick}>
         <video ref={this.videoRef} autoPlay playsInline muted={this.props.local} style={{ objectFit: this.state.cover ? 'cover' : 'contain' }} />
       </div>
     )

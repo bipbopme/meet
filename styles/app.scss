@@ -46,7 +46,7 @@ $breakpoint: 'max-width: 960px';
       border-bottom: 1px solid #eee;
     }
 
-    // TODO: Cleant this up. section tag plan broken by ScrollToBottom component.
+    // TODO: Clean this up. section tag plan broken by ScrollToBottom component.
     > section, .messages {
       overflow-y: auto;
     }

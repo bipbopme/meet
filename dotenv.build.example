@@ -1,0 +1,2 @@
+SWARM_CONFIG={"signalhubUrls": ["wss://bipbopme.herokuapp.com/"], "signalhubAppName": "bipbop-dev", "webrtcConfig": null}
+MATOMO_CONFIG={"enabled": false, "siteId": 0, "matomoUrl": "", "cookieDomain": "", "jsTrackerFile": "", "phpTrackerFile": ""}

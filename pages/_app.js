@@ -7,11 +7,7 @@ config.autoAddCss = false // Tell Font Awesome to skip adding the CSS automatica
 
 export default class MyApp extends App {
   componentDidMount () {
-    initMatomo({
-      siteId: 1,
-      matomoUrl: 'https://matomo.bipbop.me',
-      cookieDomain: '*.bipbop.me'
-    })
+    initMatomo()
   }
 
   render () {

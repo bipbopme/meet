@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 module.exports = {
   env: {
     SWARM_CONFIG: process.env.SWARM_CONFIG,

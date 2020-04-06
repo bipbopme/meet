@@ -1,6 +1,6 @@
+import React from 'react'
 import Settings from '../settings/settings'
 import { matopush } from '../../lib/matomo'
-import React from 'react'
 
 export default class Welcome extends React.Component {
   constructor (props) {

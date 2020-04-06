@@ -1,8 +1,8 @@
-import React from 'react'
-import shortid from 'shortid'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import React from 'react'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 import { matopush } from '../../lib/matomo'
+import shortid from 'shortid'
 
 export default class ChatBox extends React.Component {
   constructor (props) {

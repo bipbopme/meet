@@ -6,7 +6,6 @@ export default class Video extends React.Component {
     super(props)
 
     this.videoRef = React.createRef()
-
     this.handleClick = this.handleClick.bind(this)
 
     this.state = {
@@ -40,12 +39,7 @@ export default class Video extends React.Component {
     }
   }
 
-  getCssClasses () {
-    return 'video' + this.props.local ? ' local' : ''
-  }
-
   handleClick () {
-    // Toggle cover
     this.setState({ cover: !this.state.cover })
   }
 

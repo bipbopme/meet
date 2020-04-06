@@ -1,8 +1,9 @@
-import localforage from 'localforage'
-import Video from '../videoChat/video'
 import { getMediaContraints, stopStreamTracks } from '../../lib/utils'
-import { matopush } from '../../lib/matomo'
+
 import React from 'react'
+import Video from '../videoChat/video'
+import localforage from 'localforage'
+import { matopush } from '../../lib/matomo'
 
 export default class Settings extends React.Component {
   constructor (props) {

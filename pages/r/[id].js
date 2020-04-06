@@ -1,10 +1,10 @@
+import Head from 'next/head'
 import React from 'react'
+import Roster from '../../components/roster/roster'
 import SwarmCommander from '../../lib/swarmCommander'
 import TextChat from '../../components/textChat/textChat'
-import Roster from '../../components/roster/roster'
 import VideoChat from '../../components/videoChat/videoChat'
 import Welcome from '../../components/welcome/welcome'
-import Head from 'next/head'
 
 export default class RoomPage extends React.Component {
   static async getInitialProps ({ query, req }) {

@@ -6,13 +6,13 @@ export default class Message extends React.Component {
   }
 
   render () {
-    const msg = this.props.message
+    const message = this.props.message
 
     return (
       <div className='message'>
-        <img className='avatar' src={this.getAvatarSrc()} title={msg.name} />
-        <div className='name'>{msg.name}</div>
-        <div className='body'>{msg.body}</div>
+        <img className='avatar' src={this.getAvatarSrc()} title={message.name} />
+        <div className='name'>{message.name}</div>
+        <div className='body'>{message.body}</div>
       </div>
     )
   }

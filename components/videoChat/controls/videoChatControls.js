@@ -1,6 +1,6 @@
 import MicButton from './micButton'
-import VideoButton from './videoButton'
 import React from 'react'
+import VideoButton from './videoButton'
 
 export default class VideoChatControls extends React.Component {
   render () {

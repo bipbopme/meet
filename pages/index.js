@@ -1,7 +1,7 @@
 import Head from 'next/head'
+import React from 'react'
 import Router from 'next/router'
 import shortid from 'shortid'
-import React from 'react'
 
 export default class HomePage extends React.Component {
   handleClick () {

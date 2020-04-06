@@ -8,9 +8,6 @@ export default class VideoChat extends React.Component {
 
     this.swarm = props.swarm
 
-    // Send our stream to the swarm
-    this.swarm.streamToAll(props.localStream)
-
     this.swarm.on('connect', this.onNodeConnect.bind(this))
     this.swarm.on('disconnect', this.updateNodes.bind(this))
     this.swarm.on('stream', this.onNodeStream.bind(this))

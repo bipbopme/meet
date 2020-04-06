@@ -1,6 +1,6 @@
-import React from 'react'
 import ChatBox from './chatBox'
 import Message from './message'
+import React from 'react'
 import ScrollToBottom from 'react-scroll-to-bottom'
 import { matopush } from '../../lib/matomo'
 

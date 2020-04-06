@@ -1,7 +1,8 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faVideo, faVideoSlash } from '@fortawesome/free-solid-svg-icons'
-import { matopush } from '../../../lib/matomo'
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
+import { matopush } from '../../../lib/matomo'
 
 export default class VideoButton extends React.Component {
   constructor (props) {

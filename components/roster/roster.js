@@ -8,7 +8,6 @@ export default class Roster extends React.Component {
 
     this.swarm.on('connect', this.onNodeConnect.bind(this))
     this.swarm.on('disconnect', this.updateNodes.bind(this))
-
     this.swarm.on('roster.hello', this.onRosterHello.bind(this))
 
     this.state = {
@@ -19,16 +18,16 @@ export default class Roster extends React.Component {
   onRosterHello (node, data) {
     node.meta.roster = data
 
-    this.updateNodes(node)
+    this.updateNodes()
   }
 
   onNodeConnect (node) {
     this.swarm.sendToOne(node, 'roster.hello', { name: this.props.name })
 
-    this.updateNodes(node)
+    this.updateNodes()
   }
 
-  updateNodes (node) {
+  updateNodes () {
     this.setState({ nodes: this.swarm.nodes })
   }
 

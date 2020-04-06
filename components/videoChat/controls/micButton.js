@@ -1,7 +1,8 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMicrophone, faMicrophoneSlash } from '@fortawesome/free-solid-svg-icons'
-import { matopush } from '../../../lib/matomo'
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
+import { matopush } from '../../../lib/matomo'
 
 export default class MicButton extends React.Component {
   constructor (props) {
@@ -17,13 +18,15 @@ export default class MicButton extends React.Component {
   handleClick () {
     if (this.props.localStream) {
       const audioTrack = this.props.localStream.getAudioTracks()[0]
-      const currentlyMuted = this.state.muted
 
-      // These two are inverted so muted == disabled
-      audioTrack.enabled = currentlyMuted
+      // Toggle muted
+      const muted = !this.state.muted
 
       // Flip the state
-      this.setState({ muted: !currentlyMuted })
+      this.setState({ muted })
+
+      // These two are inverted so muted == disabled
+      audioTrack.enabled = !muted;
 
       matopush(['trackEvent', 'videoChat', 'videoButton', 'toggle'])
     }

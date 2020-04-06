@@ -1,22 +1,15 @@
 import Head from 'next/head'
 import React from 'react'
-import Roster from '../../components/roster/roster'
-import SwarmCommander from '../../lib/swarmCommander'
-import TextChat from '../../components/textChat/textChat'
-import VideoChat from '../../components/videoChat/videoChat'
-import Welcome from '../../components/welcome/welcome'
+import Roster from '../components/roster/roster'
+import SwarmCommander from '../lib/swarmCommander'
+import TextChat from '../components/textChat/textChat'
+import VideoChat from '../components/videoChat/videoChat'
+import Welcome from '../components/welcome/welcome'
 
 export default class RoomPage extends React.Component {
-  static async getInitialProps ({ query, req }) {
-    return {
-      id: query.id
-    }
-  }
-
   constructor (props) {
     super(props)
 
-    this.id = this.props.id
     this.handleJoin = this.handleJoin.bind(this)
     this.handleUnload = this.handleUnload.bind(this)
 
@@ -27,6 +20,9 @@ export default class RoomPage extends React.Component {
   }
 
   componentDidMount () {
+    // Remove the hash from the id
+    this.id = window.location.hash.slice(1)
+    
     window.addEventListener('beforeunload', this.handleUnload)
   }
 

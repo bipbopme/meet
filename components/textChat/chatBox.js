@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 import { matopush } from '../../lib/matomo'
-import shortid from 'shortid'
+import { uuid } from '../../lib/utils'
 
 export default class ChatBox extends React.Component {
   constructor (props) {
@@ -18,7 +18,7 @@ export default class ChatBox extends React.Component {
     e.preventDefault()
 
     // TODO: Pass down user info
-    const message = { id: shortid.generate(), name: this.props.name, body: this.inputRef.current.value }
+    const message = { id: uuid(), name: this.props.name, body: this.inputRef.current.value }
 
     this.swarm.sendToAll('chat.message', message)
     this.onReceiveMessage(null, message)

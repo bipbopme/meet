@@ -1,13 +1,11 @@
 import Head from 'next/head'
 import React from 'react'
 import Router from 'next/router'
-import shortid from 'shortid'
+import { uuid } from '../lib/utils'
 
 export default class HomePage extends React.Component {
   handleClick () {
-    const id = shortid.generate()
-
-    Router.push('/r/' + id)
+    Router.push(`/r#${uuid()}`)
   }
 
   render () {

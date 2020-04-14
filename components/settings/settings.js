@@ -127,6 +127,9 @@ export default class Settings extends React.Component {
 
   handleButtonClick () {
     if (this.props.onButtonClick) {
+      stopStreamTracks(this.state.localStream)
+      this.setState({ localStream: null })
+
       this.props.onButtonClick(this.state)
     }
   }

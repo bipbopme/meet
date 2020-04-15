@@ -24,7 +24,6 @@ export default class VideoChat extends React.Component {
   handleConferenceJoined () {
     this.props.localTracks.forEach((track) => {
       this.room.addTrack(track)
-
       this.room.setReceiverVideoConstraint(360)
     })
   }
@@ -36,21 +35,14 @@ export default class VideoChat extends React.Component {
   handleUserLeft (id) {
     if (this.tracksByParticipant[id]) {
       delete this.tracksByParticipant[id]
-
-      // TODO: Need to handle detaching video: track.detach(element)
-
       this.updateParticipants()
     }
   }
 
   handleTrackAdded (track) {
-    console.warn('track added!', track);
-
     if (!track.isLocal()) {
       const id = track.getParticipantId()
-
-      this.tracksByParticipant[id].push(track);
-
+      this.tracksByParticipant[id].push(track)
       this.updateParticipants()
     }
   }

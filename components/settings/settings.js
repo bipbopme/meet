@@ -1,5 +1,4 @@
-import { getMediaContraints, stopStreamTracks } from '../../lib/utils'
-
+/* global JitsiMeetJS */
 import React from 'react'
 import Video from '../videoChat/video'
 import localforage from 'localforage'
@@ -13,8 +12,8 @@ export default class Settings extends React.Component {
     this.handleAudioInputChange = this.handleAudioInputChange.bind(this)
     this.handleAudioOutputChange = this.handleAudioOutputChange.bind(this)
     this.handleVideoInputChange = this.handleVideoInputChange.bind(this)
-    this.onGetUserMedia = this.onGetUserMedia.bind(this)
-    this.onEnumerateDevices = this.onEnumerateDevices.bind(this)
+    this.handleCreateLocalTracks = this.handleCreateLocalTracks.bind(this)
+    this.handleEnumerateDevices = this.handleEnumerateDevices.bind(this)
     this.onError = this.onError.bind(this)
     this.handleButtonClick = this.handleButtonClick.bind(this)
 
@@ -23,7 +22,7 @@ export default class Settings extends React.Component {
       selectedAudioInputID: '',
       selectedAudioOutputID: '',
       selectedVideoInputID: '',
-      localStream: undefined
+      localTracks: undefined
     }
   }
 
@@ -32,13 +31,18 @@ export default class Settings extends React.Component {
   }
 
   async getUserMedia () {
-    stopStreamTracks(this.state.localStream)
-
     await this.loadSavedSettings()
 
-    const constraints = await getMediaContraints(this.state.selectedAudioInputID, this.state.selectedVideoInputID)
+    this.setAudioOutputDevice()
 
-    navigator.mediaDevices.getUserMedia(constraints).then(this.onGetUserMedia).then(this.onEnumerateDevices).catch(this.onError)
+    JitsiMeetJS.createLocalTracks({
+      devices: ['audio', 'video'],
+      cameraDeviceId: this.state.selectedVideoInputID,
+      micDeviceId: this.state.selectedAudioInputID
+    })
+      .then(this.handleCreateLocalTracks)
+      .then(this.handleEnumerateDevices)
+      .catch(this.onError)
   }
 
   async onError (error) {
@@ -55,8 +59,8 @@ export default class Settings extends React.Component {
     }
   }
 
-  onGetUserMedia (stream) {
-    this.setState({ localStream: stream })
+  handleCreateLocalTracks (tracks) {
+    this.setState({ localTracks: tracks })
 
     return navigator.mediaDevices.enumerateDevices()
   }
@@ -75,16 +79,18 @@ export default class Settings extends React.Component {
     })
   }
 
-  async onEnumerateDevices (devices) {
-    const audioInputs = devices.filter(d => d.kind === 'audioinput')
-    const audioOutputs = devices.filter(d => d.kind === 'audiooutput')
-    const videoInputs = devices.filter(d => d.kind === 'videoinput')
+  async handleEnumerateDevices (devices) {
+    if (devices) {
+      const audioInputs = devices.filter(d => d.kind === 'audioinput')
+      const audioOutputs = devices.filter(d => d.kind === 'audiooutput')
+      const videoInputs = devices.filter(d => d.kind === 'videoinput')
 
-    this.setState({
-      audioInputs,
-      audioOutputs,
-      videoInputs
-    })
+      this.setState({
+        audioInputs,
+        audioOutputs,
+        videoInputs
+      })
+    }
   }
 
   handleNameChange (event) {
@@ -111,6 +117,8 @@ export default class Settings extends React.Component {
     localforage.setItem('selectedAudioOutputID', selectedAudioOutputID)
     this.setState({ selectedAudioOutputID })
 
+    this.setAudioOutputDevice()
+
     matopush(['trackEvent', 'settings', 'audioOutput', 'update'])
   }
 
@@ -127,20 +135,23 @@ export default class Settings extends React.Component {
 
   handleButtonClick () {
     if (this.props.onButtonClick) {
-      stopStreamTracks(this.state.localStream)
-      this.setState({ localStream: null })
-
       this.props.onButtonClick(this.state)
+    }
+  }
+
+  setAudioOutputDevice () {
+    if (this.state.selectedAudioOutputID) {
+      JitsiMeetJS.mediaDevices.setAudioOutputDevice(this.state.selectedAudioOutputID)
     }
   }
 
   render () {
     return (
       <div className='settings'>
-        {this.state.localStream &&
+        {this.state.localTracks &&
           <>
             <div className='videoContainer'>
-              <Video key='localStream' local stream={this.state.localStream} />
+              <Video key='localVideo' local tracks={this.state.localTracks} />
             </div>
             <div className='formContainer'>
               <form>
@@ -182,7 +193,7 @@ export default class Settings extends React.Component {
               </div>}
           </>}
 
-        {!this.state.localStream &&
+        {!this.state.localTracks &&
           <div className='loading'>
             <h3>Waiting for video stream...</h3>
             <h4>Please allow video in your browser.</h4>

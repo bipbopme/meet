@@ -10,8 +10,16 @@ import Welcome from '../components/welcome/welcome'
 
 
 export default class RoomPage extends React.Component {
+  static async getInitialProps ({ query }) {
+    return {
+      id: query.id
+    }
+  }
+
   constructor (props) {
     super(props)
+
+    this.id = props.id
 
     this.connectionOptions = {
       hosts: {
@@ -34,9 +42,6 @@ export default class RoomPage extends React.Component {
   }
 
   componentDidMount () {
-    // Remove the hash from the id
-    this.id = window.location.hash.slice(1)
-
     window.addEventListener('beforeunload', this.handleUnload)
   }
 

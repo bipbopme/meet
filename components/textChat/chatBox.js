@@ -8,8 +8,7 @@ export default class ChatBox extends React.Component {
   constructor (props) {
     super(props)
 
-    this.swarm = props.swarm
-    this.onReceiveMessage = props.onReceiveMessage
+    this.conference = props.conference
     this.inputRef = React.createRef()
     this.handleSubmit = this.handleSubmit.bind(this)
   }
@@ -17,12 +16,7 @@ export default class ChatBox extends React.Component {
   handleSubmit (e) {
     e.preventDefault()
 
-    // TODO: Pass down user info
-    const message = { id: uuid(), name: this.props.name, body: this.inputRef.current.value }
-
-    this.swarm.sendToAll('chat.message', message)
-    this.onReceiveMessage(null, message)
-
+    this.conference.sendTextMessage(this.inputRef.current.value)
     this.inputRef.current.value = ''
 
     matopush(['trackEvent', 'textChat', 'message', 'sent'])

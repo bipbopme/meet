@@ -12,7 +12,7 @@ export default class Message extends React.Component {
       <div className='message'>
         <img className='avatar' src={this.getAvatarSrc()} title={message.name} />
         <div className='name'>{message.name}</div>
-        <div className='body'>{message.body}</div>
+        <div className='text'>{message.text}</div>
       </div>
     )
   }

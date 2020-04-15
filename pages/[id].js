@@ -45,15 +45,16 @@ export default class RoomPage extends React.Component {
 
   handleUnload () {
     if (this.connection) {
-      this.room.leave()
+      this.conference.leave()
       this.connection.disconnect()
     }
   }
 
   handleJoin (name, localTracks) {
-    this.room = this.connection.initJitsiConference(this.id, {})
+    this.conference = this.connection.initJitsiConference(this.id, {})
     this.setState({ name: name, localTracks: localTracks, joined: true })
-    this.room.join()
+    this.conference.join()
+
   }
 
   connect () {
@@ -72,8 +73,8 @@ export default class RoomPage extends React.Component {
             <title>Video Chat | bipbop</title>
             <meta key='viewport' name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1' />
           </Head>
-          <VideoChat room={this.room} localTracks={this.state.localTracks} />
-          {/* <TextChat swarm={this.swarm} name={this.state.name} /> */}
+          <VideoChat conference={this.conference} localTracks={this.state.localTracks} />
+          <TextChat conference={this.conference} name={this.state.name} />
         </div>
       )
     } else {

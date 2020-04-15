@@ -14,7 +14,7 @@ export default class Welcome extends React.Component {
   async handleJoinClick (settingsState) {
     matopush(['trackEvent', 'welcome', 'join', 'click'])
 
-    this.onJoin(settingsState.name, settingsState.localStream)
+    this.onJoin(settingsState.name, settingsState.localTracks)
   }
 
   render () {

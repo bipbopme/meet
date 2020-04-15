@@ -21,8 +21,6 @@
     "react-dom": "16.13.0",
     "react-scroll-to-bottom": "^1.3.2",
     "sass": "^1.26.3",
-    "short-uuid": "^3.1.1",
-    "signalhubws": "^1.0.12",
-    "webrtc-swarm": "https://github.com/nchapman/webrtc-swarm"
+    "short-uuid": "^3.1.1"
   }
 }

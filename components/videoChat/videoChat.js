@@ -7,14 +7,14 @@ export default class VideoChat extends React.Component {
   constructor (props) {
     super(props)
 
-    this.room = props.room
+    this.conference = props.conference
     this.tracksByParticipant = {}
 
-    this.room.on(JitsiMeetJS.events.conference.CONFERENCE_JOINED, this.handleConferenceJoined.bind(this))
-    this.room.on(JitsiMeetJS.events.conference.USER_JOINED, this.handleUserJoined.bind(this))
-    this.room.on(JitsiMeetJS.events.conference.USER_LEFT, this.handleUserLeft.bind(this))
-    this.room.on(JitsiMeetJS.events.conference.TRACK_ADDED, this.handleTrackAdded.bind(this))
-    this.room.on(JitsiMeetJS.events.conference.TRACK_REMOVED, this.handleTrackRemoved.bind(this))
+    this.conference.on(JitsiMeetJS.events.conference.CONFERENCE_JOINED, this.handleConferenceJoined.bind(this))
+    this.conference.on(JitsiMeetJS.events.conference.USER_JOINED, this.handleUserJoined.bind(this))
+    this.conference.on(JitsiMeetJS.events.conference.USER_LEFT, this.handleUserLeft.bind(this))
+    this.conference.on(JitsiMeetJS.events.conference.TRACK_ADDED, this.handleTrackAdded.bind(this))
+    this.conference.on(JitsiMeetJS.events.conference.TRACK_REMOVED, this.handleTrackRemoved.bind(this))
 
     this.state = {
       tracksByParticipant: []
@@ -23,8 +23,8 @@ export default class VideoChat extends React.Component {
 
   handleConferenceJoined () {
     this.props.localTracks.forEach((track) => {
-      this.room.addTrack(track)
-      this.room.setReceiverVideoConstraint(360)
+      this.conference.addTrack(track)
+      this.conference.setReceiverVideoConstraint(360)
     })
   }
 
@@ -66,7 +66,7 @@ export default class VideoChat extends React.Component {
   }
 
   selectAllParticipants () {
-    this.room.selectParticipants(Object.keys(this.tracksByParticipant))
+    this.conference.selectParticipants(Object.keys(this.tracksByParticipant))
   }
 
   render () {

@@ -28,14 +28,12 @@ export default class Settings extends React.Component {
 
   componentDidMount () {
     this.getUserMedia()
+
+    JitsiMeetJS.mediaDevices.addEventListener(JitsiMeetJS.events.mediaDevices.DEVICE_LIST_CHANGED, this.handleDeviceListChanged.bind(this))
   }
 
   async getUserMedia () {
     await this.loadSavedSettings()
-
-    if (this.state.selectedAudioOutputID) {
-      JitsiMeetJS.mediaDevices.setAudioOutputDevice(this.state.selectedAudioOutputID)
-    }
 
     JitsiMeetJS.createLocalTracks({
       devices: ['audio', 'video'],
@@ -87,12 +85,19 @@ export default class Settings extends React.Component {
       const audioOutputs = devices.filter(d => d.kind === 'audiooutput')
       const videoInputs = devices.filter(d => d.kind === 'videoinput')
 
+      this.syncAudioVideoDefaults(audioOutputs)
+
       this.setState({
         audioInputs,
         audioOutputs,
         videoInputs
       })
     }
+  }
+
+  handleDeviceListChanged (devices) {
+    console.log('Device list changed')
+    this.handleEnumerateDevices(devices)
   }
 
   handleNameChange (event) {
@@ -135,6 +140,44 @@ export default class Settings extends React.Component {
     this.getUserMedia()
 
     matopush(['trackEvent', 'settings', 'videoInput', 'update'])
+  }
+
+  // Handle device setting inconsistencies
+  syncAudioVideoDefaults (audioOutputs) {
+    const newState = {}
+
+    // Sync input settings
+    this.state.localTracks.forEach(track => {
+      const trackType = track.getType()
+      const trackDeviceId = track.getDeviceId()
+
+      if (trackType === 'video' && this.state.selectedVideoInputID !== trackDeviceId) {
+        localforage.setItem('selectedVideoInputID', trackDeviceId)
+        newState.selectedVideoInputID = trackDeviceId
+        console.log('Synced video input')
+      }
+
+      if (trackType === 'audio' && this.state.selectedAudioInputID !== trackDeviceId) {
+        localforage.setItem('selectedAudioInputID', trackDeviceId)
+        newState.selectedAudioInputID = trackDeviceId
+        console.log('Synced audio input')
+      }
+    })
+
+    // Sync output settings
+    if (this.state.selectedAudioOutputID) {
+      if (audioOutputs.find(d => d.deviceId === this.state.selectedAudioOutputID)) {
+        // Device exists so activate it
+        JitsiMeetJS.mediaDevices.setAudioOutputDevice(this.state.selectedAudioOutputID)
+      } else {
+        // Couldn't find previous device so clear it and rely on defaults
+        localforage.removeItem('selectedAudioOutputID')
+        newState.selectedAudioOutputID = null
+        console.log('Synced video output')
+      }
+    }
+
+    this.setState(newState)
   }
 
   handleButtonClick () {

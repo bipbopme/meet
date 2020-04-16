@@ -79,9 +79,9 @@ export default class VideoChat extends React.Component {
         </header>
         <section className={`videos videos-count-${pids.length + 1}`}>
           {pids.map(pid => (
-            <Video key={pid} tracks={this.state.tracksByParticipant[pid]} />
+            <Video key={pid} conference={this.conference} tracks={this.state.tracksByParticipant[pid]} />
           ))}
-          <Video key='myVideo' local tracks={this.props.localTracks} />
+          <Video key='myVideo' conference={this.conference} local tracks={this.props.localTracks} />
         </section>
         <VideoChatControls localTracks={this.props.localTracks} />
       </div>

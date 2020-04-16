@@ -2,7 +2,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 import { matopush } from '../../lib/matomo'
-import { uuid } from '../../lib/utils'
 
 export default class ChatBox extends React.Component {
   constructor (props) {

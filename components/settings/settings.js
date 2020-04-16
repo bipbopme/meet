@@ -33,7 +33,9 @@ export default class Settings extends React.Component {
   async getUserMedia () {
     await this.loadSavedSettings()
 
-    this.setAudioOutputDevice()
+    if (this.state.selectedAudioOutputID) {
+      JitsiMeetJS.mediaDevices.setAudioOutputDevice(this.state.selectedAudioOutputID)
+    }
 
     JitsiMeetJS.createLocalTracks({
       devices: ['audio', 'video'],
@@ -108,6 +110,8 @@ export default class Settings extends React.Component {
     localforage.setItem('selectedAudioInputID', selectedAudioInputID)
     this.setState({ selectedAudioInputID })
 
+    this.getUserMedia()
+
     matopush(['trackEvent', 'settings', 'audioInput', 'update'])
   }
 
@@ -117,7 +121,7 @@ export default class Settings extends React.Component {
     localforage.setItem('selectedAudioOutputID', selectedAudioOutputID)
     this.setState({ selectedAudioOutputID })
 
-    this.setAudioOutputDevice()
+    JitsiMeetJS.mediaDevices.setAudioOutputDevice(selectedAudioOutputID)
 
     matopush(['trackEvent', 'settings', 'audioOutput', 'update'])
   }
@@ -128,20 +132,14 @@ export default class Settings extends React.Component {
     localforage.setItem('selectedVideoInputID', selectedVideoInputID)
     this.setState({ selectedVideoInputID })
 
-    matopush(['trackEvent', 'settings', 'videoInput', 'update'])
-
     this.getUserMedia()
+
+    matopush(['trackEvent', 'settings', 'videoInput', 'update'])
   }
 
   handleButtonClick () {
     if (this.props.onButtonClick) {
       this.props.onButtonClick(this.state)
-    }
-  }
-
-  setAudioOutputDevice () {
-    if (this.state.selectedAudioOutputID) {
-      JitsiMeetJS.mediaDevices.setAudioOutputDevice(this.state.selectedAudioOutputID)
     }
   }
 

@@ -198,14 +198,45 @@ $breakpoint: 'max-width: 960px';
     position: relative;
 
     .video {
+      border-radius: 15px;
+      overflow: hidden;
+      position: relative;
+
+      &.videoMuted {
+        background: #555;
+
+        .fa-video-slash {
+          font-size: 36px;
+          color: #fff;
+          left: 50%;
+          position: absolute;
+          top: 50%;
+          transform: translate(-50%, -50%);
+        }
+
+        video {
+          display: none;
+        }
+      }
+
+      &.audioMuted {
+        .fa-microphone-slash {
+          color: #fff;
+          bottom: 20px;
+          position: absolute;
+          right: 20px;
+        }
+      }
+
       video {
-        border-radius: 15px;
         height: 100%;
         width: 100%;
       }
 
       &.local {
-        transform: scaleX(-1);
+        video {
+          transform: scaleX(-1);
+        }
       }
     }
 

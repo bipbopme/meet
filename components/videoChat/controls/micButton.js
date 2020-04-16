@@ -16,8 +16,8 @@ export default class MicButton extends React.Component {
   }
 
   handleClick () {
-    if (this.props.localStream) {
-      const audioTrack = this.props.localStream.getAudioTracks()[0]
+    if (this.props.localTracks) {
+      const audioTrack = this.props.localTracks.filter(t => t.getType() === 'audio')[0]
 
       // Toggle muted
       const muted = !this.state.muted
@@ -25,10 +25,13 @@ export default class MicButton extends React.Component {
       // Flip the state
       this.setState({ muted })
 
-      // These two are inverted so muted == disabled
-      audioTrack.enabled = !muted;
+      if (muted) {
+        audioTrack.mute()
+      } else {
+        audioTrack.unmute()
+      }
 
-      matopush(['trackEvent', 'videoChat', 'videoButton', 'toggle'])
+      matopush(['trackEvent', 'videoChat', 'micButton', 'toggle'])
     }
   }
 

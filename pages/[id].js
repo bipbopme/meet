@@ -5,7 +5,10 @@ import Roster from '../components/roster/roster'
 import TextChat from '../components/textChat/textChat'
 import VideoChat from '../components/videoChat/videoChat'
 import Welcome from '../components/welcome/welcome'
+import JitsiManager from '../lib/jitsiManager'
+import { observer } from 'mobx-react'
 
+@observer
 export default class RoomPage extends React.Component {
   static async getInitialProps ({ query }) {
     return {
@@ -17,16 +20,6 @@ export default class RoomPage extends React.Component {
     super(props)
 
     this.id = props.id
-
-    this.connectionOptions = {
-      hosts: {
-        domain: 'jitsi.bipbop.me',
-        muc: 'conference.jitsi.bipbop.me'
-      },
-      serviceUrl: 'https://jitsi.bipbop.me/http-bind',
-      clientNode: 'http://bipbop.me/JitsiMeetJS'
-    }
-
     this.handleJoin = this.handleJoin.bind(this)
     this.handleUnload = this.handleUnload.bind(this)
 
@@ -40,29 +33,17 @@ export default class RoomPage extends React.Component {
   componentDidMount () {
     window.addEventListener('beforeunload', this.handleUnload)
 
-    this.connect()
+    this.jitsi = new JitsiManager()
   }
 
   handleUnload () {
-    if (this.connection) {
-      this.conference.leave()
-      this.connection.disconnect()
-    }
+    this.jitsi.disconnect()
   }
 
   handleJoin (name, localTracks) {
-    this.conference = this.connection.initJitsiConference(this.id, {})
+    this.conference = this.jitsi.initConferenceManager(this.id, localTracks)
     this.setState({ name: name, localTracks: localTracks, joined: true })
     this.conference.join()
-
-  }
-
-  connect () {
-    JitsiMeetJS.init({ disableAudioLevels: true, disableThirdPartyRequests: true })
-    JitsiMeetJS.setLogLevel(JitsiMeetJS.logLevels.INFO)
-
-    this.connection = new JitsiMeetJS.JitsiConnection(null, null, this.connectionOptions)
-    this.connection.connect()
   }
 
   render () {
@@ -73,8 +54,8 @@ export default class RoomPage extends React.Component {
             <title>Video Chat | bipbop</title>
             <meta key='viewport' name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1' />
           </Head>
-          <VideoChat conference={this.conference} localTracks={this.state.localTracks} />
-          <TextChat conference={this.conference} name={this.state.name} />
+          <VideoChat conference={this.conference} />
+          {/* <TextChat conference={this.conference} name={this.state.name} /> */}
         </div>
       )
     } else {

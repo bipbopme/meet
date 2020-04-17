@@ -189,12 +189,19 @@ export default class Settings extends React.Component {
   }
 
   render () {
+    let audioTrack, videoTrack
+
+    if (this.state.localTracks) {
+      audioTrack = this.state.localTracks.find(t => t.getType() === 'audio')
+      videoTrack = this.state.localTracks.find(t => t.getType() === 'video')
+    }
+
     return (
       <div className='settings'>
         {this.state.localTracks &&
           <>
             <div className='videoContainer'>
-              <Video key='localVideo' local tracks={this.state.localTracks} />
+              <Video key='localVideo' isLocal audioTrack={audioTrack} videoTrack={videoTrack} />
             </div>
             <div className='formContainer'>
               <form onSubmit={this.handleSubmit}>

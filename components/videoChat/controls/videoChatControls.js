@@ -6,8 +6,8 @@ export default class VideoChatControls extends React.Component {
   render () {
     return (
       <footer className='controls'>
-        <MicButton localTracks={this.props.localTracks} />
-        <VideoButton localTracks={this.props.localTracks} />
+        <MicButton localParticipant={this.props.localParticipant} />
+        <VideoButton localParticipant={this.props.localParticipant} />
       </footer>
     )
   }

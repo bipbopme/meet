@@ -11,28 +11,24 @@ export default class VideoButton extends React.Component {
     this.handleClick = this.handleClick.bind(this)
 
     this.state = {
-      muted: false
+      muted: this.props.localParticipant.isVideoMuted
     }
   }
 
   handleClick () {
-    if (this.props.localTracks) {
-      const videoTrack = this.props.localTracks.filter(t => t.getType() === 'video')[0]
+    // Toggle muted
+    const muted = !this.state.muted
 
-      // Toggle muted
-      const muted = !this.state.muted
+    // Flip the state
+    this.setState({ muted })
 
-      // Flip the state
-      this.setState({ muted })
-
-      if (muted) {
-        videoTrack.mute()
-      } else {
-        videoTrack.unmute()
-      }
-
-      matopush(['trackEvent', 'videoChat', 'videoButton', 'toggle'])
+    if (muted) {
+      this.props.localParticipant.muteVideo()
+    } else {
+      this.props.localParticipant.unmuteVideo()
     }
+
+    matopush(['trackEvent', 'videoChat', 'videoButton', 'toggle'])
   }
 
   render () {

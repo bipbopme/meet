@@ -6,87 +6,63 @@ export default class Video extends React.Component {
   constructor (props) {
     super(props)
 
-    this.conference = this.props.conference
     this.videoRef = React.createRef()
     this.audioRef = React.createRef()
     this.handleClick = this.handleClick.bind(this)
 
-    if (this.conference) {
-      this.conference.on(JitsiMeetJS.events.conference.TRACK_MUTE_CHANGED, this.handleTrackMuteChanged.bind(this))
-    }
-
     this.state = {
-      cover: true,
-      audioMuted: false,
-      videoMuted: false
+      cover: true
     }
-
-    this.ensureMuteStates(this.props.tracks)
   }
 
   componentDidMount () {
-    this.attachTracks(this.props.tracks)
-  }
-
-  componentWillUpdate () {
-    this.ensureMuteStates(this.props.tracks)
+    this.updateTrackAttachments()
   }
 
   componentDidUpdate (prevProps) {
-    if (prevProps.tracks) {
-      this.detachTracks(prevProps.tracks)
+    this.updateTrackAttachments(prevProps)
+  }
+
+  // TODO: This finally feels stable but needs to be simplified
+  updateTrackAttachments (prevProps = {}) {
+    // Add audio track
+    if (!prevProps.audioTrack && this.props.audioTrack) {
+      this.props.audioTrack.attach(this.audioRef.current)
     }
 
-    this.attachTracks(this.props.tracks)
-  }
-
-  componentWillUnmount () {
-    this.detachTracks(this.props.tracks)
-  }
-
-  handleTrackMuteChanged (track) {
-    if (this.props.tracks && this.props.tracks.find(t => t === track)) {
-      if (track.getType() === 'video') {
-        this.setState({ videoMuted: track.isMuted() })
+    // Update audio track
+    if (prevProps.audioTrack && this.props.audioTrack) {
+      if (prevProps.audioTrack.getId() !== this.props.audioTrack.getId()) {
+        prevProps.audioTrack.detach(this.audioRef.current)
+        this.props.audioTrack.attach(this.audioRef.current)
       } else {
-        this.setState({ audioMuted: track.isMuted() })
+        // They're the same so do nothing
       }
     }
-  }
 
-  ensureMuteStates (tracks) {
-    if (tracks) {
-      tracks.forEach(track => {
-        if (track.getType() === 'video') {
-          this.state.videoMuted = track.isMuted()
-        } else {
-          this.state.audioMuted = track.isMuted()
-        }
-      })
+    // Remove audio track
+    if (prevProps.audioTrack && !this.props.audioTrack) {
+      prevProps.audioTrack.detach(this.audioRef.current)
     }
-  }
 
-  attachTracks (tracks) {
-    if (tracks) {
-      tracks.forEach(track => {
-        if (track.getType() === 'video') {
-          track.attach(this.videoRef.current)
-        } else {
-          track.attach(this.audioRef.current)
-        }
-      })
+    // Add video track
+    if (!prevProps.videoTrack && this.props.videoTrack) {
+      this.props.videoTrack.attach(this.videoRef.current)
     }
-  }
 
-  detachTracks (tracks) {
-    if (tracks) {
-      tracks.forEach(track => {
-        if (track.getType() === 'video') {
-          track.detach(this.videoRef.current)
-        } else {
-          track.detach(this.audioRef.current)
-        }
-      })
+    // Update video track
+    if (prevProps.videoTrack && this.props.videoTrack) {
+      if (prevProps.videoTrack.getId() !== this.props.videoTrack.getId()) {
+        prevProps.videoTrack.detach(this.videoRef.current)
+        this.props.videoTrack.attach(this.videoRef.current)
+      } else {
+        // They're the same so do nothing
+      }
+    }
+
+    // Remove video track
+    if (prevProps.videoTrack && !this.props.videoTrack) {
+      prevProps.videoTrack.detach(this.videoRef.current)
     }
   }
 
@@ -97,13 +73,13 @@ export default class Video extends React.Component {
   getClassNames () {
     let classNames = ['video']
 
-    classNames.push(this.props.local ? 'local' : 'remote')
+    classNames.push(this.props.isLocal ? 'local' : 'remote')
 
-    if (this.state.audioMuted) {
+    if (this.props.isAudioMuted) {
       classNames.push('audioMuted')
     }
 
-    if (this.state.videoMuted) {
+    if (this.props.isVideoMuted) {
       classNames.push('videoMuted')
     }
 
@@ -114,11 +90,11 @@ export default class Video extends React.Component {
     return (
       <div className={this.getClassNames()} onClick={this.handleClick}>
         <video ref={this.videoRef} autoPlay playsInline style={{ objectFit: this.state.cover ? 'cover' : 'contain' }} />
-        <audio ref={this.audioRef} autoPlay muted={this.props.local} />
-        {this.state.audioMuted &&
+        <audio ref={this.audioRef} autoPlay muted={this.props.isLocal} />
+        {this.props.isAudioMuted &&
           <FontAwesomeIcon icon={faMicrophoneSlash} />
         }
-        {this.state.videoMuted &&
+        {this.props.isVideoMuted &&
           <FontAwesomeIcon icon={faVideoSlash} />
         }
       </div>

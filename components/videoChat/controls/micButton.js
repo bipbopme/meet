@@ -11,28 +11,24 @@ export default class MicButton extends React.Component {
     this.handleClick = this.handleClick.bind(this)
 
     this.state = {
-      muted: false
+      muted: this.props.localParticipant.isAudioMuted
     }
   }
 
   handleClick () {
-    if (this.props.localTracks) {
-      const audioTrack = this.props.localTracks.filter(t => t.getType() === 'audio')[0]
+    // Toggle muted
+    const muted = !this.state.muted
 
-      // Toggle muted
-      const muted = !this.state.muted
+    // Flip the state
+    this.setState({ muted })
 
-      // Flip the state
-      this.setState({ muted })
-
-      if (muted) {
-        audioTrack.mute()
-      } else {
-        audioTrack.unmute()
-      }
-
-      matopush(['trackEvent', 'videoChat', 'micButton', 'toggle'])
+    if (muted) {
+      this.props.localParticipant.muteAudio()
+    } else {
+      this.props.localParticipant.unmuteAudio()
     }
+
+    matopush(['trackEvent', 'videoChat', 'micButton', 'toggle'])
   }
 
   render () {

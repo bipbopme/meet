@@ -2,51 +2,31 @@
 import React from 'react'
 import Video from './video'
 import VideoChatControls from './controls/videoChatControls'
-import debounce from 'lodash/debounce'
+import { bind } from 'decko'
+import { debounce } from 'lodash'
+import { observer } from 'mobx-react'
 
+@observer
 export default class VideoChat extends React.Component {
   constructor (props) {
     super(props)
 
     this.conference = props.conference
-    this.tracksByParticipant = {}
+    this.debouncedCalculateVideoContraint = debounce(this.calculateVideoConstraint, 1000)
 
-    this.conference.on(JitsiMeetJS.events.conference.CONFERENCE_JOINED, this.handleConferenceJoined.bind(this))
-    this.conference.on(JitsiMeetJS.events.conference.USER_JOINED, this.handleUserJoined.bind(this))
-    this.conference.on(JitsiMeetJS.events.conference.USER_LEFT, this.handleUserLeft.bind(this))
-    this.conference.on(JitsiMeetJS.events.conference.TRACK_ADDED, this.handleTrackAdded.bind(this))
-    this.conference.on(JitsiMeetJS.events.conference.TRACK_REMOVED, this.handleTrackRemoved.bind(this))
-
-    this.debouncedCalculateVideoConstraint = debounce(this.calculateVideoConstraint.bind(this), 1000)
-
-    window.addEventListener('resize', this.debouncedCalculateVideoConstraint)
-
-    this.state = {
-      tracksByParticipant: []
-    }
+    window.addEventListener('resize', this.debouncedCalculateVideoContraint)
   }
 
-  handleConferenceJoined () {
-    this.props.localTracks.forEach((track) => {
-      this.conference.addTrack(track)
-    })
-
-    this.debouncedCalculateVideoConstraint()
-  }
-
-  handleUserJoined (id) {
-    this.tracksByParticipant[id] = []
-
-    this.debouncedCalculateVideoConstraint()
-  }
-
+  @bind
   calculateVideoConstraint () {
+    console.log('calculating video constraint')
     const sampleVideoContainer = document.getElementsByClassName('video')[0]
 
     if (sampleVideoContainer) {
       let elementHeight = sampleVideoContainer.offsetHeight
       let videoConstraint;
 
+      // TODO: these are okay values for wide video but not for cropped vertical video
       if (elementHeight < 180) {
         videoConstraint = 180
       } else if (elementHeight < 500) {
@@ -57,66 +37,32 @@ export default class VideoChat extends React.Component {
         videoConstraint = 1080
       }
 
-      console.log('calculateVideoConstraint', elementHeight, videoConstraint)
+      console.log('calculateVideoConstraint', sampleVideoContainer, elementHeight, videoConstraint)
 
       this.conference.setReceiverVideoConstraint(videoConstraint)
     }
   }
 
-  handleUserLeft (id) {
-    if (this.tracksByParticipant[id]) {
-      delete this.tracksByParticipant[id]
-
-      this.updateParticipants()
-      this.debouncedCalculateVideoConstraint()
-    }
-  }
-
-  handleTrackAdded (track) {
-    if (!track.isLocal()) {
-      const id = track.getParticipantId()
-      this.tracksByParticipant[id].push(track)
-      this.updateParticipants()
-    }
-  }
-
-  handleTrackRemoved (track) {
-    const id = track.getParticipantId()
-
-    if (this.tracksByParticipant[id]) {
-      const index = this.tracksByParticipant[id].indexOf(track)
-
-      if (index <= 0) {
-        this.tracksByParticipant[id].slice(index, 1)
-        this.updateParticipants()
-      }
-    }
-  }
-
-  updateParticipants () {
-    this.selectAllParticipants()
-    this.setState({ tracksByParticipant: this.tracksByParticipant })
-  }
-
-  selectAllParticipants () {
-    this.conference.selectParticipants(Object.keys(this.tracksByParticipant))
-  }
-
   render () {
-    const pids = Object.keys(this.tracksByParticipant)
+    const { participants, localParticipant, status } = this.props.conference
 
     return (
       <div className='videoChat'>
         <header>
           <h1>bipbop</h1>
         </header>
-        <section className={`videos videos-count-${pids.length + 1}`}>
-          {pids.map(pid => (
-            <Video key={pid} conference={this.conference} tracks={this.state.tracksByParticipant[pid]} />
-          ))}
-          <Video key='myVideo' conference={this.conference} local tracks={this.props.localTracks} />
-        </section>
-        <VideoChatControls localTracks={this.props.localTracks} />
+        {status === 'joined' &&
+          <>
+            <section className={`videos videos-count-${participants.length + 1}`}>
+              {participants.map(participant => (
+                <Video key={participant.id} audioTrack={participant.audioTrack} videoTrack={participant.videoTrack} isAudioMuted={participant.isAudioMuted} isVideoMuted={participant.isVideoMuted} />
+              ))}
+              <Video key={localParticipant.id} isLocal audioTrack={localParticipant.audioTrack} videoTrack={localParticipant.videoTrack} isAudioMuted={localParticipant.isAudioMuted} isVideoMuted={localParticipant.isVideoMuted}  />
+            </section>
+            <VideoChatControls localParticipant={localParticipant} />
+          </>
+        }
+
       </div>
     )
   }

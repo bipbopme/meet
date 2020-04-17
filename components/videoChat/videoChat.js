@@ -2,6 +2,7 @@
 import React from 'react'
 import Video from './video'
 import VideoChatControls from './controls/videoChatControls'
+import debounce from 'lodash/debounce'
 
 export default class VideoChat extends React.Component {
   constructor (props) {
@@ -16,6 +17,10 @@ export default class VideoChat extends React.Component {
     this.conference.on(JitsiMeetJS.events.conference.TRACK_ADDED, this.handleTrackAdded.bind(this))
     this.conference.on(JitsiMeetJS.events.conference.TRACK_REMOVED, this.handleTrackRemoved.bind(this))
 
+    this.debouncedCalculateVideoConstraint = debounce(this.calculateVideoConstraint.bind(this), 1000)
+
+    window.addEventListener('resize', this.debouncedCalculateVideoConstraint)
+
     this.state = {
       tracksByParticipant: []
     }
@@ -24,18 +29,46 @@ export default class VideoChat extends React.Component {
   handleConferenceJoined () {
     this.props.localTracks.forEach((track) => {
       this.conference.addTrack(track)
-      this.conference.setReceiverVideoConstraint(360)
     })
+
+    this.debouncedCalculateVideoConstraint()
   }
 
   handleUserJoined (id) {
     this.tracksByParticipant[id] = []
+
+    this.debouncedCalculateVideoConstraint()
+  }
+
+  calculateVideoConstraint () {
+    const sampleVideoContainer = document.getElementsByClassName('video')[0]
+
+    if (sampleVideoContainer) {
+      let elementHeight = sampleVideoContainer.offsetHeight
+      let videoConstraint;
+
+      if (elementHeight < 180) {
+        videoConstraint = 180
+      } else if (elementHeight < 500) {
+        videoConstraint = 360
+      } else if (elementHeight < 1000) {
+        videoConstraint = 720
+      } else {
+        videoConstraint = 1080
+      }
+
+      console.log('calculateVideoConstraint', elementHeight, videoConstraint)
+
+      this.conference.setReceiverVideoConstraint(videoConstraint)
+    }
   }
 
   handleUserLeft (id) {
     if (this.tracksByParticipant[id]) {
       delete this.tracksByParticipant[id]
+
       this.updateParticipants()
+      this.debouncedCalculateVideoConstraint()
     }
   }
 

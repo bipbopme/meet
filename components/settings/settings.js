@@ -15,7 +15,7 @@ export default class Settings extends React.Component {
     this.handleCreateLocalTracks = this.handleCreateLocalTracks.bind(this)
     this.handleEnumerateDevices = this.handleEnumerateDevices.bind(this)
     this.onError = this.onError.bind(this)
-    this.handleButtonClick = this.handleButtonClick.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
 
     this.state = {
       name: '',
@@ -180,7 +180,9 @@ export default class Settings extends React.Component {
     this.setState(newState)
   }
 
-  handleButtonClick () {
+  handleSubmit (event) {
+    event.preventDefault()
+
     if (this.props.onButtonClick) {
       this.props.onButtonClick(this.state)
     }
@@ -195,7 +197,7 @@ export default class Settings extends React.Component {
               <Video key='localVideo' local tracks={this.state.localTracks} />
             </div>
             <div className='formContainer'>
-              <form>
+              <form onSubmit={this.handleSubmit}>
                 <label>Name</label>
                 <input value={this.state.name} onChange={this.handleNameChange} />
 
@@ -230,7 +232,7 @@ export default class Settings extends React.Component {
             </div>
             {this.props.buttonText &&
               <div className='buttonContainer'>
-                <button onClick={this.handleButtonClick}>{this.props.buttonText}</button>
+                <button onClick={this.handleSubmit}>{this.props.buttonText}</button>
               </div>}
           </>}
 

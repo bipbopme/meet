@@ -1,11 +1,9 @@
-/* global JitsiMeetJS */
 import Head from 'next/head'
+import JitsiManager from '../../lib/jitsiManager'
 import React from 'react'
-import Roster from '../components/roster/roster'
-import TextChat from '../components/textChat/textChat'
-import VideoChat from '../components/videoChat/videoChat'
-import Welcome from '../components/welcome/welcome'
-import JitsiManager from '../lib/jitsiManager'
+import TextChat from '../../components/textChat/textChat'
+import VideoChat from '../../components/videoChat/videoChat'
+import Welcome from '../../components/welcome/welcome'
 import { observer } from 'mobx-react'
 
 @observer
@@ -33,7 +31,7 @@ export default class RoomPage extends React.Component {
   componentDidMount () {
     window.addEventListener('beforeunload', this.handleUnload)
 
-    this.jitsi = new JitsiManager()
+    this.jitsi = new JitsiManager('jitsi.bipbop.me')
   }
 
   handleUnload () {
@@ -41,7 +39,7 @@ export default class RoomPage extends React.Component {
   }
 
   handleJoin (name, localTracks) {
-    this.conference = this.jitsi.initConferenceManager(this.id, localTracks)
+    this.conference = this.jitsi.initConferenceManager(this.id, localTracks, name)
     this.setState({ name: name, localTracks: localTracks, joined: true })
     this.conference.join()
   }
@@ -55,7 +53,7 @@ export default class RoomPage extends React.Component {
             <meta key='viewport' name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1' />
           </Head>
           <VideoChat conference={this.conference} />
-          {/* <TextChat conference={this.conference} name={this.state.name} /> */}
+          <TextChat conference={this.conference} />
         </div>
       )
     } else {

@@ -5,7 +5,7 @@ import { uuid } from '../lib/utils'
 
 export default class HomePage extends React.Component {
   handleClick () {
-    Router.push(`/${uuid()}`)
+    Router.push(`/r/${uuid()}`)
   }
 
   render () {
@@ -16,7 +16,7 @@ export default class HomePage extends React.Component {
         </Head>
 
         <h1>bipbop</h1>
-        <h2>private 👏 simple 👏 free 👏 video 👏 chat</h2>
+        <h2>simple 👏 free 👏 video 👏 chat</h2>
 
         <button onClick={this.handleClick}>Start</button>
       </div>

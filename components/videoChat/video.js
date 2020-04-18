@@ -1,6 +1,7 @@
-import React from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMicrophoneSlash, faVideoSlash } from '@fortawesome/free-solid-svg-icons'
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import React from 'react'
 
 export default class Video extends React.Component {
   constructor (props) {
@@ -71,7 +72,7 @@ export default class Video extends React.Component {
   }
 
   getClassNames () {
-    let classNames = ['video']
+    const classNames = ['video']
 
     classNames.push(this.props.isLocal ? 'local' : 'remote')
 
@@ -92,11 +93,9 @@ export default class Video extends React.Component {
         <video ref={this.videoRef} autoPlay playsInline style={{ objectFit: this.state.cover ? 'cover' : 'contain' }} />
         <audio ref={this.audioRef} autoPlay muted={this.props.isLocal} />
         {this.props.isAudioMuted &&
-          <FontAwesomeIcon icon={faMicrophoneSlash} />
-        }
+          <FontAwesomeIcon icon={faMicrophoneSlash} />}
         {this.props.isVideoMuted &&
-          <FontAwesomeIcon icon={faVideoSlash} />
-        }
+          <FontAwesomeIcon icon={faVideoSlash} />}
       </div>
     )
   }

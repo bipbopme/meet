@@ -6,6 +6,8 @@ import VideoChat from '../../components/videoChat/videoChat'
 import Welcome from '../../components/welcome/welcome'
 import { observer } from 'mobx-react'
 
+const JITSI_CONFIG = JSON.parse(process.env.JITSI_CONFIG)
+
 @observer
 export default class RoomPage extends React.Component {
   static async getInitialProps ({ query }) {
@@ -22,16 +24,14 @@ export default class RoomPage extends React.Component {
     this.handleUnload = this.handleUnload.bind(this)
 
     this.state = {
-      name: '',
-      joined: false,
-      localTracks: undefined
+      joined: false
     }
   }
 
   componentDidMount () {
-    window.addEventListener('beforeunload', this.handleUnload)
+    this.jitsi = new JitsiManager(JITSI_CONFIG.host)
 
-    this.jitsi = new JitsiManager('meet.bipbop.me')
+    window.addEventListener('beforeunload', this.handleUnload)
   }
 
   handleUnload () {
@@ -40,7 +40,7 @@ export default class RoomPage extends React.Component {
 
   handleJoin (name, localTracks) {
     this.conference = this.jitsi.initConferenceManager(this.id, localTracks, name)
-    this.setState({ name: name, localTracks: localTracks, joined: true })
+    this.setState({ joined: true })
     this.conference.join()
   }
 

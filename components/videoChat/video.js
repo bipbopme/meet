@@ -84,6 +84,10 @@ export default class Video extends React.Component {
       classNames.push('videoMuted')
     }
 
+    if (this.props.isDominantSpeaker) {
+      classNames.push('dominantSpeaker')
+    }
+
     return classNames.join(' ')
   }
 

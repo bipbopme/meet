@@ -193,12 +193,11 @@ $breakpoint: 'max-width: 960px';
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     grid-template-rows: repeat(12, 1fr);
-    grid-gap: 10px;
-    padding: 10px;
+    grid-gap: 2px;
+    padding: 0;
     position: relative;
 
     .video {
-      border-radius: 15px;
       overflow: hidden;
       position: relative;
 
@@ -237,6 +236,12 @@ $breakpoint: 'max-width: 960px';
         video {
           transform: scaleX(-1);
         }
+      }
+    }
+
+    &.videos-count-3-or-more {
+      .dominantSpeaker {
+        border: 1px solid blue;
       }
     }
 

@@ -31,7 +31,7 @@ export default class RoomPage extends React.Component {
   componentDidMount () {
     window.addEventListener('beforeunload', this.handleUnload)
 
-    this.jitsi = new JitsiManager('jitsi.bipbop.me')
+    this.jitsi = new JitsiManager('meet.bipbop.me')
   }
 
   handleUnload () {

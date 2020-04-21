@@ -1,8 +1,8 @@
 {
   "build": {
     "env": {
-      "SWARM_CONFIG": "@swarm-config",
-      "MATOMO_CONFIG": "@matomo-config"
+      "MATOMO_CONFIG": "@matomo-config",
+      "JITSI_CONFIG": "@jitsi-config"
     }
   }
 }

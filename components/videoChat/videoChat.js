@@ -45,6 +45,21 @@ export default class VideoChat extends React.Component {
     }
   }
 
+  getCssClasses (participants) {
+    const cssClasses = ['videos']
+    const videosCount = participants.length + 1
+
+    cssClasses.push(`videos-count-${videosCount}`)
+
+    if (videosCount > 2) {
+      cssClasses.push('videos-count-3-or-more')
+    } else {
+      cssClasses.push('videos-count-2-or-less')
+    }
+
+    return cssClasses.join(' ')
+  }
+
   render () {
     const { participants, localParticipant, status } = this.props.conference
 
@@ -53,11 +68,11 @@ export default class VideoChat extends React.Component {
         <header>
           <h1>bipbop</h1>
         </header>
-        <section className={`videos videos-count-${participants.length + 1}`}>
+        <section className={this.getCssClasses(participants)}>
           {participants.map(participant => (
-            <Video key={participant.id} audioTrack={participant.audioTrack} videoTrack={participant.videoTrack} isAudioMuted={participant.isAudioMuted} isVideoMuted={participant.isVideoMuted} />
+            <Video key={participant.id} audioTrack={participant.audioTrack} videoTrack={participant.videoTrack} isAudioMuted={participant.isAudioMuted} isVideoMuted={participant.isVideoMuted} isDominantSpeaker={participant.isDominantSpeaker} />
           ))}
-          <Video key={localParticipant.id} isLocal audioTrack={localParticipant.audioTrack} videoTrack={localParticipant.videoTrack} isAudioMuted={localParticipant.isAudioMuted} isVideoMuted={localParticipant.isVideoMuted}  />
+          <Video key={localParticipant.id} isLocal audioTrack={localParticipant.audioTrack} videoTrack={localParticipant.videoTrack} isAudioMuted={localParticipant.isAudioMuted} isVideoMuted={localParticipant.isVideoMuted} isDominantSpeaker={localParticipant.isDominantSpeaker} />
         </section>
         <VideoChatControls localParticipant={localParticipant} />
       </div>

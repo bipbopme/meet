@@ -10,16 +10,9 @@ const JITSI_CONFIG = JSON.parse(process.env.JITSI_CONFIG)
 
 @observer
 export default class RoomPage extends React.Component {
-  static async getInitialProps ({ query }) {
-    return {
-      id: query.id
-    }
-  }
-
   constructor (props) {
     super(props)
 
-    this.id = props.id
     this.handleJoin = this.handleJoin.bind(this)
     this.handleUnload = this.handleUnload.bind(this)
 
@@ -29,6 +22,7 @@ export default class RoomPage extends React.Component {
   }
 
   componentDidMount () {
+    this.id = window.location.pathname.split('/').pop()
     this.jitsi = new JitsiManager(JITSI_CONFIG.host)
 
     window.addEventListener('beforeunload', this.handleUnload)

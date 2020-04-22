@@ -27,17 +27,23 @@ export default class ScreenShareButton extends React.Component {
 
     // TODO: Update this after settings refactor
     const selectedVideoInputID = await localforage.getItem('selectedVideoInputID')
-    const device = shared ? 'desktop' : 'video'
+    const options = {}
+
+    if (shared) {
+      options.devices = ['desktop']
+    } else {
+      options.devices = ['video']
+      options.cameraDeviceId = selectedVideoInputID
+    }
 
     try {
-      const tracks = await JitsiMeetJS.createLocalTracks({
-        devices: [device],
-        cameraDeviceId: selectedVideoInputID
-      })
+      const tracks = await JitsiMeetJS.createLocalTracks(options)
 
       localParticipant.switchConferenceVideoTrack(tracks[0])
     }
     catch(error) {
+      console.warn(error)
+
       // Flip the state back
       this.setState({ shared: !shared })
     }

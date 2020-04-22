@@ -200,6 +200,7 @@ $breakpoint: 'max-width: 960px';
     .video {
       overflow: hidden;
       position: relative;
+      object-fit: contain;
 
       &.videoMuted {
         background: #555;
@@ -233,8 +234,20 @@ $breakpoint: 'max-width: 960px';
       }
 
       &.local.cameraVideoType {
-        video {
+
+      }
+
+      &.cameraVideoType {
+        &.local video {
           transform: scaleX(-1);
+        }
+
+        &.coverVideo video {
+          object-fit: cover;
+        }
+
+        &.containVideo video {
+          object-fit: contain;
         }
       }
     }

@@ -72,7 +72,7 @@ export default class Video extends React.Component {
   }
 
   getClassNames () {
-    const {isLocal, isAudioMuted, isVideoMuted, isDominantSpeaker, videoTrack } = this.props
+    const { isLocal, isAudioMuted, isVideoMuted, isDominantSpeaker, videoTrack } = this.props
     const classNames = ['video']
 
     classNames.push(isLocal ? 'local' : 'remote')
@@ -93,13 +93,15 @@ export default class Video extends React.Component {
       classNames.push(`${videoTrack.videoType}VideoType`)
     }
 
+    classNames.push(this.state.cover ? 'coverVideo' : 'containVideo')
+
     return classNames.join(' ')
   }
 
   render () {
     return (
       <div className={this.getClassNames()} onClick={this.handleClick}>
-        <video ref={this.videoRef} autoPlay playsInline style={{ objectFit: this.state.cover ? 'cover' : 'contain' }} />
+        <video ref={this.videoRef} autoPlay playsInline />
         <audio ref={this.audioRef} autoPlay muted={this.props.isLocal} />
         {this.props.isAudioMuted &&
           <FontAwesomeIcon icon={faMicrophoneSlash} />}

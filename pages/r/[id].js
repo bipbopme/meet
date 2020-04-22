@@ -63,9 +63,6 @@ export default class RoomPage extends React.Component {
           <Head>
             <title>Welcome | bipbop</title>
             <meta key='viewport' name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1' />
-            {/* TODO: replace this with bundled versions */}
-            <script src='/jitsi/jquery-3.5.0.min.js' />
-            <script src='/jitsi/lib-jitsi-meet.min.js' />
           </Head>
           <div className='videoChat'>
             <header><h1>bipbop</h1></header>

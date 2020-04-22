@@ -232,7 +232,7 @@ $breakpoint: 'max-width: 960px';
         width: 100%;
       }
 
-      &.local {
+      &.local.cameraVideoType {
         video {
           transform: scaleX(-1);
         }

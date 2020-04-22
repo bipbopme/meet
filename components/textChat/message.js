@@ -9,13 +9,13 @@ export default class Message extends React.Component {
   }
 
   render () {
-    const message = this.props.message
+    const { participant, text} = this.props.message
 
     return (
-      <div className='message'>
-        <img className='avatar' src={this.getAvatarSrc()} title={message.participant.displayName} />
-        <div className='name'>{message.participant.displayName}</div>
-        <div className='text'>{message.text}</div>
+      <div className={`message ${participant.isLocal ? 'fromMe' : 'fromThem'}`}>
+        <img className='avatar' src={this.getAvatarSrc()} title={participant.displayName} />
+        <div className='name'>{participant.displayName}</div>
+        <div className='text'>{text}</div>
       </div>
     )
   }

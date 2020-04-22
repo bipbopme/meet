@@ -19,9 +19,9 @@ export default class Settings extends React.Component {
 
     this.state = {
       name: '',
-      selectedAudioInputID: '',
-      selectedAudioOutputID: '',
-      selectedVideoInputID: '',
+      selectedAudioInputID: undefined,
+      selectedAudioOutputID: undefined,
+      selectedVideoInputID: undefined,
       localTracks: undefined
     }
   }
@@ -206,11 +206,11 @@ export default class Settings extends React.Component {
             <div className='formContainer'>
               <form onSubmit={this.handleSubmit}>
                 <label>Name</label>
-                <input value={this.state.name} onChange={this.handleNameChange} />
+                <input value={this.state.name || ''} onChange={this.handleNameChange} />
 
                 <div className='row'>
                   <label>Microphone</label>
-                  <select onChange={this.handleAudioInputChange} value={this.state.selectedAudioInputID}>
+                  <select onChange={this.handleAudioInputChange} value={this.state.selectedAudioInputID || ''}>
                     {this.state.audioInputs && this.state.audioInputs.map(audioInput => (
                       <option key={audioInput.deviceId} value={audioInput.deviceId}>{audioInput.label}</option>
                     ))}
@@ -220,7 +220,7 @@ export default class Settings extends React.Component {
                 {this.state.audioOutputs && this.state.audioOutputs.length > 0 &&
                   <div className='row'>
                     <label>Speaker</label>
-                    <select onChange={this.handleAudioOutputChange} value={this.state.selectedAudioOutputID}>
+                    <select onChange={this.handleAudioOutputChange} value={this.state.selectedAudioOutputID || ''}>
                       {this.state.audioOutputs && this.state.audioOutputs.map(audioOutput => (
                         <option key={audioOutput.deviceId} value={audioOutput.deviceId}>{audioOutput.label}</option>
                       ))}
@@ -229,7 +229,7 @@ export default class Settings extends React.Component {
 
                 <div className='row'>
                   <label>Camera</label>
-                  <select onChange={this.handleVideoInputChange} value={this.state.selectedVideoInputID}>
+                  <select onChange={this.handleVideoInputChange} value={this.state.selectedVideoInputID || ''}>
                     {this.state.videoInputs && this.state.videoInputs.map(videoInput => (
                       <option key={videoInput.deviceId} value={videoInput.deviceId}>{videoInput.label}</option>
                     ))}

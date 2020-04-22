@@ -72,20 +72,25 @@ export default class Video extends React.Component {
   }
 
   getClassNames () {
+    const {isLocal, isAudioMuted, isVideoMuted, isDominantSpeaker, videoTrack } = this.props
     const classNames = ['video']
 
-    classNames.push(this.props.isLocal ? 'local' : 'remote')
+    classNames.push(isLocal ? 'local' : 'remote')
 
-    if (this.props.isAudioMuted) {
+    if (isAudioMuted) {
       classNames.push('audioMuted')
     }
 
-    if (this.props.isVideoMuted) {
+    if (isVideoMuted) {
       classNames.push('videoMuted')
     }
 
-    if (this.props.isDominantSpeaker) {
+    if (isDominantSpeaker) {
       classNames.push('dominantSpeaker')
+    }
+
+    if (videoTrack) {
+      classNames.push(`${videoTrack.videoType}VideoType`)
     }
 
     return classNames.join(' ')

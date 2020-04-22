@@ -200,7 +200,6 @@ $breakpoint: 'max-width: 960px';
     .video {
       overflow: hidden;
       position: relative;
-      object-fit: contain;
 
       &.videoMuted {
         background: #555;
@@ -231,10 +230,6 @@ $breakpoint: 'max-width: 960px';
       video {
         height: 100%;
         width: 100%;
-      }
-
-      &.local.cameraVideoType {
-
       }
 
       &.cameraVideoType {
@@ -374,6 +369,24 @@ $breakpoint: 'max-width: 960px';
     &.videos-count-10,  &.videos-count-11, &.videos-count-12 {
       grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(4, 1fr);
+    }
+
+    // 4x4
+    &.videos-count-13,  &.videos-count-14, &.videos-count-15, &.videos-count-16 {
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+    }
+
+    // 4x5
+    &.videos-count-17,  &.videos-count-18, &.videos-count-19, &.videos-count-20 {
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+    }
+
+    // 5x5
+    &.videos-count-21,  &.videos-count-22, &.videos-count-23, &.videos-count-24, &.videos-count-25 {
+      grid-template-columns: repeat(5, 1fr);
+      grid-template-rows: repeat(5, 1fr);
     }
   }
 

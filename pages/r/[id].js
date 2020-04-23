@@ -14,7 +14,6 @@ export default class RoomPage extends React.Component {
     super(props)
 
     this.handleJoin = this.handleJoin.bind(this)
-    this.handleUnload = this.handleUnload.bind(this)
 
     this.state = {
       joined: false
@@ -24,12 +23,6 @@ export default class RoomPage extends React.Component {
   componentDidMount () {
     this.id = window.location.pathname.split('/').pop()
     this.jitsi = new JitsiManager(JITSI_CONFIG.host)
-
-    window.addEventListener('beforeunload', this.handleUnload)
-  }
-
-  handleUnload () {
-    this.jitsi.disconnect()
   }
 
   handleJoin (name, localTracks) {

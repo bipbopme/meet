@@ -7,6 +7,7 @@ module.exports = {
   },
   webpack: (config, { isServer, webpack }) => {
     if (!isServer) {
+      // lib-jitsi-meet expects globals so give it the globals it craves
       config.plugins.push(new webpack.ProvidePlugin({
         $: 'jquery',
         JitsiMeetJS: __dirname + '/dist/lib-jitsi-meet.min.js'

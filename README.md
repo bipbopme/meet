@@ -1,30 +1,15 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/zeit/next.js/tree/canary/packages/create-next-app).
+# bipbop - easy video chat in your browser
 
-## Getting Started
+Bipbop is a [Next.js](https://nextjs.org/) web app that lets you video chat from any browser on desktop or mobile. It runs on top of [Jitsi](https://jitsi.org/) and uses [lib-jitsi-meet](https://github.com/jitsi/lib-jitsi-meet) to integrate with the [Jitsi Meet server](https://jitsi.org/jitsi-meet/). You can use it at [https://bipbop.me/](https://bipbop.me/).
 
-First, run the development server:
+## Development
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+1. Clone this repo.
+2. `yarn`
+3. `cp dotenv.example .env`
+4. `yarn dev`
+5. Visit [http://localhost:3000/](http://localhost:3000/)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Deployment
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/zeit/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on ZEIT Now
-
-The easiest way to deploy your Next.js app is to use the [ZEIT Now Platform](https://zeit.co/import?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Obviously more details to come here, but the quick overview is that you can deploy the bipbop to [Vercel](https://vercel.com/) and point it to [your own deployment of Jitsi](https://github.com/jitsi/jitsi-meet/blob/master/doc/quick-install.md). You will have to update your Prosody config to [allow cross domain bosh](https://prosody.im/doc/modules/mod_bosh).

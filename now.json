@@ -1,8 +1,0 @@
-{
-  "build": {
-    "env": {
-      "MATOMO_CONFIG": "@matomo-config",
-      "JITSI_CONFIG": "@jitsi-config"
-    }
-  }
-}

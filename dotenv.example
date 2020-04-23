@@ -1,2 +1,2 @@
 MATOMO_CONFIG={"enabled": false, "siteId": 0, "matomoUrl": "", "cookieDomain": "", "jsTrackerFile": "", "phpTrackerFile": ""}
-JITSI_CONFIG={"host": "meet.example.com"}
+JITSI_CONFIG={"host": "meet.dev.bipbop.me"}

@@ -1,7 +1,6 @@
 import React from 'react'
 import Video from './video'
 import VideoChatControls from './controls/videoChatControls'
-import { bind } from 'decko'
 import { debounce } from 'lodash'
 import { observer } from 'mobx-react'
 

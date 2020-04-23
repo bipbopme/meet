@@ -107,11 +107,7 @@ $breakpoint: 'max-width: 960px';
 .textChat {
   .messages {
     background: #f7f7f7;
-
-    // This is extra div is from ScrollToBottom
-    > div {
-      padding: 10px;
-    }
+    padding: 10px;
 
     .message {
       margin-bottom: 10px;

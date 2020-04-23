@@ -1,3 +1,4 @@
+import DetectRTC from 'detectrtc'
 import MicButton from './micButton'
 import React from 'react'
 import ScreenShareButton from './screenShareButton'
@@ -7,7 +8,8 @@ export default class VideoChatControls extends React.Component {
   constructor (props) {
     super(props)
 
-    this.canScreenCapture = !!navigator.mediaDevices.getDisplayMedia
+    // TODO: Safari should work but it's failing right now so disable it
+    this.canScreenCapture = DetectRTC.isScreenCapturingSupported && !DetectRTC.isMobileDevice && !DetectRTC.browser.isSafari
   }
 
   render () {

@@ -11,6 +11,8 @@ export default class LeaveButton extends React.Component {
   }
 
   handleClick () {
+    this.props.onLeave()
+
     matopush(['trackEvent', 'videoChat', 'leaveButton', 'click'])
   }
 

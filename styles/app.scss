@@ -51,7 +51,6 @@ $breakpoint: 'max-width: 960px';
       border-bottom: 1px solid #eee;
     }
 
-    // TODO: Clean this up. section tag plan broken by ScrollToBottom component.
     > section {
       overflow-y: auto;
     }
@@ -74,6 +73,23 @@ $breakpoint: 'max-width: 960px';
       display: none;
     }
   //}
+}
+
+.leftRoom {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  justify-content: center;
+
+  h1 {
+    font-size: 28px;
+    margin-bottom: 20px;
+  }
+
+  button {
+    width: 100px;
+  }
 }
 
 .roster {

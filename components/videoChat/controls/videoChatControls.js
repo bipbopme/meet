@@ -24,7 +24,7 @@ export default class VideoChatControls extends React.Component {
         </div>
         <div className='center'>
           <MicButton localParticipant={this.props.localParticipant} />
-          <LeaveButton localParticipant={this.props.localParticipant} />
+          <LeaveButton localParticipant={this.props.localParticipant} onLeave={this.props.onLeave} />
           <VideoButton localParticipant={this.props.localParticipant} />
         </div>
         <div className='right'>

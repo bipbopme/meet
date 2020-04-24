@@ -14,9 +14,11 @@ export default class RoomPage extends React.Component {
     super(props)
 
     this.handleJoin = this.handleJoin.bind(this)
+    this.handleLeave = this.handleLeave.bind(this)
 
     this.state = {
-      joined: false
+      joined: false,
+      left: false
     }
   }
 
@@ -31,18 +33,38 @@ export default class RoomPage extends React.Component {
     this.conference.join()
   }
 
+  handleLeave () {
+    this.conference.leave()
+    this.jitsi.disconnect()
+
+    this.setState({ left: true })
+  }
+
+  handleRejoin () {
+    window.location.reload()
+  }
+
   render () {
     if (this.state.joined) {
-      return (
-        <div className='roomPage'>
-          <Head>
-            <title>Video Chat | bipbop</title>
-            <meta key='viewport' name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1' />
-          </Head>
-          <VideoChat conference={this.conference} />
-          <TextChat conference={this.conference} />
-        </div>
-      )
+      if (this.state.left) {
+        return (
+          <div className='leftRoom'>
+            <h1>👋You left the chat.</h1>
+            <button onClick={this.handleRejoin}>Join again</button>
+          </div>
+        )
+      } else {
+        return (
+          <div className='roomPage'>
+            <Head>
+              <title>Video Chat | bipbop</title>
+              <meta key='viewport' name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1' />
+            </Head>
+            <VideoChat conference={this.conference} onLeave={this.handleLeave} />
+            <TextChat conference={this.conference} />
+          </div>
+        )
+      }
     } else {
       return (
         <div className='roomPage'>

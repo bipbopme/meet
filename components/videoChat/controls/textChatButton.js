@@ -9,9 +9,19 @@ export default class TextChatButton extends React.Component {
     super(props)
 
     this.handleClick = this.handleClick.bind(this)
+    this.props.conference.on('MESSAGE_RECEIVED', this.handleMessageRecieved.bind(this))
 
     this.state = {
-      shown: false
+      shown: false,
+      hiddenMessagesCount: 0
+    }
+  }
+
+  handleMessageRecieved () {
+    if (!this.state.shown) {
+      this.setState((state, props) => ({
+        hiddenMessagesCount: state.hiddenMessagesCount + 1
+      }))
     }
   }
 
@@ -20,7 +30,10 @@ export default class TextChatButton extends React.Component {
     const shown = !this.state.shown
 
     // Flip the state
-    this.setState({ shown })
+    this.setState({ shown, hiddenMessagesCount: 0 })
+
+    // Toggle chat visibility up the chain
+    this.props.onToggleChat()
 
     matopush(['trackEvent', 'videoChat', 'textChatButton', 'toggle'])
   }
@@ -29,9 +42,18 @@ export default class TextChatButton extends React.Component {
     return (
       <div className='button textChatButton' onClick={this.handleClick}>
         {!this.state.shown &&
-          <><FontAwesomeIcon icon={faCommentAlt} /> <span className='label'>Show chat</span></>}
+          <>
+            <FontAwesomeIcon icon={faCommentAlt} />
+            {this.state.hiddenMessagesCount > 0 &&
+              <span className='count'>{this.state.hiddenMessagesCount}</span>
+            }
+            <span className='label'>Show chat</span>
+          </>}
         {this.state.shown &&
-          <><FontAwesomeIcon icon={fasCommentAlt} /> <span className='label'>Hide chat</span></>}
+          <>
+            <FontAwesomeIcon icon={fasCommentAlt} />
+            <span className='label'>Hide chat</span>
+          </>}
       </div>
     )
   }

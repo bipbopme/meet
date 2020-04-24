@@ -73,7 +73,7 @@ export default class VideoChat extends React.Component {
           ))}
           <Video key={localParticipant.id} isLocal audioTrack={localParticipant.audioTrack} videoTrack={localParticipant.videoTrack} isAudioMuted={localParticipant.isAudioMuted} isVideoMuted={localParticipant.isVideoMuted} isDominantSpeaker={localParticipant.isDominantSpeaker} />
         </section>
-        <VideoChatControls localParticipant={localParticipant} onLeave={this.props.onLeave} />
+        <VideoChatControls conference={this.conference} localParticipant={localParticipant} onLeave={this.props.onLeave} onToggleChat={this.props.onToggleChat} />
       </div>
     ) : null
   }

@@ -35,9 +35,9 @@ export default class MicButton extends React.Component {
     return (
       <div className='button micButton' onClick={this.handleClick}>
         {this.state.muted &&
-          <span><FontAwesomeIcon icon={faMicrophoneSlash} /> Unmute</span>}
+          <FontAwesomeIcon title="Turn On Microphone" icon={faMicrophoneSlash} />}
         {!this.state.muted &&
-          <span><FontAwesomeIcon icon={faMicrophone} /> Mute</span>}
+          <FontAwesomeIcon title="Turn Off Microphone" icon={faMicrophone} />}
       </div>
     )
   }

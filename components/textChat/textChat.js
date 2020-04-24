@@ -27,11 +27,11 @@ export default class TextChat extends React.Component {
     return (
       <div className='textChat'>
         <header />
-        <div className='messages' ref={this.messagesRef}>
+        <section className='messages' ref={this.messagesRef}>
           {messages.map(message => (
             <Message key={message.id} message={message} />
           ))}
-        </div>
+        </section>
         <ChatBox conference={this.props.conference} />
       </div>
     )

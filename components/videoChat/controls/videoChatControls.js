@@ -1,7 +1,9 @@
 import DetectRTC from 'detectrtc'
+import LeaveButton from './leaveButton'
 import MicButton from './micButton'
 import React from 'react'
 import ScreenShareButton from './screenShareButton'
+import TextChatButton from './textChatButton'
 import VideoButton from './videoButton'
 
 export default class VideoChatControls extends React.Component {
@@ -15,11 +17,19 @@ export default class VideoChatControls extends React.Component {
   render () {
     return (
       <footer className='controls'>
-        <MicButton localParticipant={this.props.localParticipant} />
-        <VideoButton localParticipant={this.props.localParticipant} />
-        {this.canScreenCapture &&
-          <ScreenShareButton localParticipant={this.props.localParticipant} />
-        }
+        <div className='left'>
+          {this.canScreenCapture &&
+            <ScreenShareButton localParticipant={this.props.localParticipant} />
+          }
+        </div>
+        <div className='center'>
+          <MicButton localParticipant={this.props.localParticipant} />
+          <LeaveButton localParticipant={this.props.localParticipant} />
+          <VideoButton localParticipant={this.props.localParticipant} />
+        </div>
+        <div className='right'>
+        <TextChatButton />
+        </div>
       </footer>
     )
   }

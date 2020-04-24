@@ -33,11 +33,11 @@ export default class VideoButton extends React.Component {
 
   render () {
     return (
-      <div className='button micButton' onClick={this.handleClick}>
+      <div className='button videoButton' onClick={this.handleClick}>
         {this.state.muted &&
-          <span><FontAwesomeIcon icon={faVideoSlash} /> On</span>}
+          <FontAwesomeIcon title="Turn On Camera" icon={faVideoSlash} />}
         {!this.state.muted &&
-          <span><FontAwesomeIcon icon={faVideo} /> Off</span>}
+          <FontAwesomeIcon title="Turn Off Camera" icon={faVideo} />}
       </div>
     )
   }

@@ -38,8 +38,16 @@ $breakpoint: 'max-width: 960px';
   display: grid;
   height: 100%;
   width: 100%;
-  grid-template-columns: auto 300px;
+  grid-template-columns: auto;
   grid-template-rows: auto;
+
+  &.chatShown {
+    grid-template-columns: auto 300px;
+
+    .textChat {
+      display: grid;
+    }
+  }
 
   .videoChat, .textChat {
     display: grid;
@@ -66,13 +74,9 @@ $breakpoint: 'max-width: 960px';
     }
   }
 
-  //@include responsive($breakpoint) {
-    grid-template-columns: auto;
-
-    .textChat {
-      display: none;
-    }
-  //}
+  .textChat {
+    display: none;
+  }
 }
 
 .leftRoom {
@@ -499,6 +503,19 @@ $breakpoint: 'max-width: 960px';
 
         &.textChatButton {
           width: 110px;
+          position: relative;
+
+          .count {
+            background: red;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 10px;
+            font-weight: bold;
+            right: 35%;
+            padding: 3px 5px;
+            position: absolute;
+            top: 8px;
+          }
         }
       }
     }

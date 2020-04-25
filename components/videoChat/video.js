@@ -100,7 +100,7 @@ export default class Video extends React.Component {
 
   render () {
     return (
-      <div className={this.getClassNames()} onClick={this.handleClick}>
+      <div className={this.getClassNames()}>
         <video ref={this.videoRef} autoPlay playsInline />
         <audio ref={this.audioRef} autoPlay muted={this.props.isLocal} />
         {this.props.isAudioMuted &&

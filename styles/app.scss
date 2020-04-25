@@ -49,14 +49,60 @@ $breakpoint: 'max-width: 960px';
     }
   }
 
-  .videoChat, .textChat {
+  .videoChat {
+    position: relative;
+
+    > header, > footer {
+      background-color: transparentize($color: #fff, $amount: 0.02);
+      height: 70px;
+      position: absolute;
+      transition: background-color 250ms, opacity 250ms, color 250ms, text-shadow 250ms;
+      width: 100%;
+      z-index: 10;
+    }
+
+    > header {
+      top: 0;
+    }
+
+    > section {
+      height: 100vh;
+      width: 100%;
+    }
+
+    > footer {
+      bottom: 0;
+    }
+  }
+
+  &.hideControls {
+    .videoChat {
+      > header {
+        background-color: transparent;
+        border: 0;
+
+        h1 {
+          color: #fff;
+          text-shadow: 0 0 5px rgba(0,0,0,0.4);
+        }
+      }
+
+      > footer {
+        opacity: 0;
+      }
+    }
+  }
+
+  .textChat {
     display: grid;
     grid-template-columns: auto;
     grid-template-rows: 70px auto 70px;
     overflow: auto; // this hack makes children scrollable
+  }
 
+  .videoChat, .textChat {
     > header {
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
     }
 
     > section {
@@ -64,13 +110,13 @@ $breakpoint: 'max-width: 960px';
     }
 
     > footer {
-      border-top: 1px solid #eee;
+      border-top: 1px solid rgba(0,0,0,0.1);
     }
   }
 
   .videoChat {
     > * {
-      border-right: 1px solid #eee;
+      border-right: 1px solid rgba(0,0,0,0.1);
     }
   }
 
@@ -93,6 +139,8 @@ $breakpoint: 'max-width: 960px';
 
   button {
     width: 100px;
+    // This shifts the content up
+    margin-bottom: 100px;
   }
 }
 
@@ -108,7 +156,7 @@ $breakpoint: 'max-width: 960px';
   position: absolute;
   height: 100%;
   width: 100%;
-  z-index: 10;
+  z-index: 20;
 
   .inner {
     background: #fff;
@@ -433,6 +481,10 @@ $breakpoint: 'max-width: 960px';
         border-radius: 100%;
         height: 50px;
         width: 50px;
+
+        svg {
+          color: #717171;
+        }
       }
 
       .leaveButton {
@@ -465,6 +517,7 @@ $breakpoint: 'max-width: 960px';
       flex-direction: column;
       font-size: 14px;
       justify-content: center;
+      user-select: none;
 
       &:hover {
         background: #f6f6f6;
@@ -517,6 +570,11 @@ $breakpoint: 'max-width: 960px';
             top: 8px;
           }
         }
+      }
+
+      // Hide the left and right toolbars on mobile for now
+      @include responsive($breakpoint) {
+        display: none;
       }
     }
   }

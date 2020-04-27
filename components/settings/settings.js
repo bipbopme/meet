@@ -22,7 +22,8 @@ export default class Settings extends React.Component {
       selectedAudioInputID: undefined,
       selectedAudioOutputID: undefined,
       selectedVideoInputID: undefined,
-      localTracks: undefined
+      audioTrack: undefined,
+      videoTrack: undefined
     }
   }
 
@@ -60,7 +61,14 @@ export default class Settings extends React.Component {
   }
 
   handleCreateLocalTracks (tracks) {
-    this.setState({ localTracks: tracks })
+    let audioTrack, videoTrack
+
+    if (tracks) {
+      audioTrack = tracks.find(t => t.getType() === 'audio')
+      videoTrack = tracks.find(t => t.getType() === 'video')
+    }
+
+    this.setState({ audioTrack: audioTrack, videoTrack: videoTrack })
 
     return navigator.mediaDevices.enumerateDevices()
   }
@@ -146,29 +154,35 @@ export default class Settings extends React.Component {
   syncAudioVideoDefaults (audioOutputs) {
     const newState = {}
 
-    // Sync input settings
-    this.state.localTracks.forEach(track => {
-      const trackType = track.getType()
-      const trackDeviceId = track.getDeviceId()
+    const { audioTrack, videoTrack, selectedVideoInputID, selectedAudioInputID, selectedAudioOutputID } = this.state
 
-      if (trackType === 'video' && this.state.selectedVideoInputID !== trackDeviceId) {
-        localforage.setItem('selectedVideoInputID', trackDeviceId)
-        newState.selectedVideoInputID = trackDeviceId
-        console.log('Synced video input')
-      }
+    if (audioTrack) {
+      const audioTrackDeviceId = audioTrack.getDeviceId()
 
-      if (trackType === 'audio' && this.state.selectedAudioInputID !== trackDeviceId) {
-        localforage.setItem('selectedAudioInputID', trackDeviceId)
-        newState.selectedAudioInputID = trackDeviceId
+      if (selectedAudioInputID !== audioTrackDeviceId) {
+        localforage.setItem('selectedAudioInputID', audioTrackDeviceId)
+        newState.selectedAudioInputID = audioTrackDeviceId
+
         console.log('Synced audio input')
       }
-    })
+    }
+
+    if (videoTrack) {
+      const videoTrackDeviceId = videoTrack.getDeviceId()
+
+      if (selectedVideoInputID !== videoTrackDeviceId) {
+        localforage.setItem('selectedVideoInputID', videoTrackDeviceId)
+        newState.selectedVideoInputID = videoTrackDeviceId
+
+        console.log('Synced video input')
+      }
+    }
 
     // Sync output settings
-    if (this.state.selectedAudioOutputID) {
-      if (audioOutputs.find(d => d.deviceId === this.state.selectedAudioOutputID)) {
+    if (selectedAudioOutputID) {
+      if (audioOutputs.find(d => d.deviceId === selectedAudioOutputID)) {
         // Device exists so activate it
-        JitsiMeetJS.mediaDevices.setAudioOutputDevice(this.state.selectedAudioOutputID)
+        JitsiMeetJS.mediaDevices.setAudioOutputDevice(selectedAudioOutputID)
       } else {
         // Couldn't find previous device so clear it and rely on defaults
         localforage.removeItem('selectedAudioOutputID')
@@ -184,24 +198,19 @@ export default class Settings extends React.Component {
     event.preventDefault()
 
     if (this.props.onButtonClick) {
-      this.props.onButtonClick(this.state)
+      const { name, audioTrack, videoTrack } = this.state
+
+      this.props.onButtonClick({ name, audioTrack, videoTrack })
     }
   }
 
   render () {
-    let audioTrack, videoTrack
-
-    if (this.state.localTracks) {
-      audioTrack = this.state.localTracks.find(t => t.getType() === 'audio')
-      videoTrack = this.state.localTracks.find(t => t.getType() === 'video')
-    }
-
     return (
       <div className='settings'>
-        {this.state.localTracks &&
+        {this.state.videoTrack &&
           <>
             <div className='videoContainer'>
-              <Video key='localVideo' isLocal audioTrack={audioTrack} videoTrack={videoTrack} />
+              <Video key='localVideo' isLocal audioTrack={this.state.audioTrack} videoTrack={this.state.videoTrack} />
             </div>
             <div className='formContainer'>
               <form onSubmit={this.handleSubmit}>
@@ -243,7 +252,7 @@ export default class Settings extends React.Component {
               </div>}
           </>}
 
-        {!this.state.localTracks &&
+        {!this.state.videoTrack &&
           <div className='loading'>
             <h3>Waiting for video stream...</h3>
             <h4>Please allow video in your browser.</h4>

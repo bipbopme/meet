@@ -10,11 +10,10 @@ export default class Welcome extends React.Component {
     this.handleJoinClick = this.handleJoinClick.bind(this)
   }
 
-  // TODO: This requires it to know too much about the settings state
-  async handleJoinClick (settingsState) {
+  async handleJoinClick (result) {
     matopush(['trackEvent', 'welcome', 'join', 'click'])
 
-    this.onJoin(settingsState.name, settingsState.localTracks)
+    this.onJoin(result.name, result.audioTrack, result.videoTrack)
   }
 
   render () {

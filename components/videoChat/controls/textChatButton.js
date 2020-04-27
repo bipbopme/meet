@@ -12,13 +12,13 @@ export default class TextChatButton extends React.Component {
     this.props.conference.on('MESSAGE_RECEIVED', this.handleMessageRecieved.bind(this))
 
     this.state = {
-      shown: false,
+      show: false,
       hiddenMessagesCount: 0
     }
   }
 
   handleMessageRecieved () {
-    if (!this.state.shown) {
+    if (!this.state.show) {
       this.setState((state, props) => ({
         hiddenMessagesCount: state.hiddenMessagesCount + 1
       }))
@@ -26,11 +26,11 @@ export default class TextChatButton extends React.Component {
   }
 
   handleClick () {
-    // Toggle shown
-    const shown = !this.state.shown
+    // Toggle show
+    const show = !this.state.show
 
     // Flip the state
-    this.setState({ shown, hiddenMessagesCount: 0 })
+    this.setState({ show, hiddenMessagesCount: 0 })
 
     // Toggle chat visibility up the chain
     this.props.onToggleChat()
@@ -40,8 +40,8 @@ export default class TextChatButton extends React.Component {
 
   render () {
     return (
-      <div className='button textChatButton' onClick={this.handleClick}>
-        {!this.state.shown &&
+      <div className={`button textChatButton ${this.state.hiddenMessagesCount > 0 ? 'hasHiddenMessages' : ''}`} onClick={this.handleClick}>
+        {!this.state.show &&
           <>
             <FontAwesomeIcon icon={faCommentAlt} />
             {this.state.hiddenMessagesCount > 0 &&
@@ -49,7 +49,7 @@ export default class TextChatButton extends React.Component {
             }
             <span className='label'>Show chat</span>
           </>}
-        {this.state.shown &&
+        {this.state.show &&
           <>
             <FontAwesomeIcon icon={fasCommentAlt} />
             <span className='label'>Hide chat</span>

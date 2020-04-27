@@ -56,12 +56,9 @@ $breakpoint: 'max-width: 960px';
       background-color: rgba(255,255,255, 0.98);
       height: 70px;
       position: absolute;
+      transition: 250ms ease-in;
       width: 100%;
       z-index: 10;
-
-      &, & * {
-        transition: background-color 250ms, opacity 250ms, color 250ms, text-shadow 250ms;
-      }
     }
 
     > header {
@@ -71,10 +68,6 @@ $breakpoint: 'max-width: 960px';
     > section {
       height: 100vh;
       width: 100%;
-
-      &.videos-count-2 .video:nth-child(2) {
-        top: 70px !important;
-      }
     }
 
     > footer {
@@ -97,7 +90,7 @@ $breakpoint: 'max-width: 960px';
 
       > section {
         &.videos-count-2 .video:nth-child(2) {
-          top: 0 !important;
+          top: 0;
         }
       }
 
@@ -106,16 +99,30 @@ $breakpoint: 'max-width: 960px';
         border-color: transparent;
 
         .left {
-          opacity: 0;
+          .button {
+            visibility: hidden;
+          }
         }
 
         .center {
-          opacity: 0;
+          .button {
+            background-color: rgba(255,255,255, 0.1);
+            border-color: rgba(255,255,255, 0.1);
+
+            svg {
+              color: rgba(255,255,255, 0.9);
+            }
+          }
         }
 
         .right {
           .textChatButton {
+            color: #fff;
             opacity: 0;
+
+            svg {
+              color: #fff;
+            }
 
             &.hasHiddenMessages {
               opacity: 1;
@@ -368,14 +375,12 @@ $breakpoint: 'max-width: 960px';
 
     &.videos-count-2 {
       display: block;
-      border: 1px solid rgba(0,0,0,0.1);
-      border-width: 0 0 1px 1px;
 
       .video:nth-child(2) {
         position: absolute;
         max-height: 200px;
         max-width: 200px;
-        top: 0;
+        top: 70px;
         right: 0;
 
         video {
@@ -512,7 +517,7 @@ $breakpoint: 'max-width: 960px';
       justify-content: center;
 
       .button {
-        border: 1px solid #ccc;
+        border: 1px solid rgba(0,0,0, 0.2);
         border-radius: 100%;
         height: 50px;
         width: 50px;
@@ -555,7 +560,7 @@ $breakpoint: 'max-width: 960px';
       user-select: none;
 
       &:hover {
-        background: #f6f6f6;
+        background: rgba(0,0,0, 0.03);
       }
 
       &:active {

@@ -99,8 +99,17 @@ $breakpoint: 'max-width: 960px';
         border-color: transparent;
 
         .left {
-          .button {
-            visibility: hidden;
+          .screenShareButton {
+            color: #fff;
+            opacity: 0;
+
+            svg {
+              color: #fff;
+            }
+
+            &.shared {
+              opacity: 1;
+            }
           }
         }
 
@@ -154,13 +163,11 @@ $breakpoint: 'max-width: 960px';
     }
   }
 
-  .videoChat {
-    > * {
-      border-right: 1px solid rgba(0,0,0,0.1);
-    }
-  }
-
   .textChat {
+    > * {
+      border-left: 1px solid rgba(0,0,0,0.1);
+    }
+
     display: none;
   }
 }
@@ -190,7 +197,7 @@ $breakpoint: 'max-width: 960px';
 
 .welcome {
   align-items: center;
-  background: rgba(0,0,0,0.3);
+  background: rgba(0,0,0,0.4);
   display: flex;
   justify-content: center;
   position: absolute;

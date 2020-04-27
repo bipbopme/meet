@@ -53,7 +53,7 @@ export default class ScreenShareButton extends React.Component {
 
   render () {
     return (
-      <div className='button screenShareButton' onClick={this.handleClick}>
+      <div className={`button screenShareButton ${this.state.shared ? 'shared' : ''}`} onClick={this.handleClick}>
         {!this.state.shared &&
           <><FontAwesomeIcon icon={faDesktop} /> <span className='label'>Share screen</span></>}
         {this.state.shared &&

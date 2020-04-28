@@ -26,9 +26,8 @@ export default class RoomPage extends React.Component {
     this.jitsi = new JitsiManager(JITSI_CONFIG.host)
   }
 
-  handleJoin (name, audioTrack, videoTrack) {
-    console.warn(name, audioTrack, videoTrack)
-    this.conference = this.jitsi.initConferenceManager(this.id, [audioTrack, videoTrack], name)
+  handleJoin (result) {
+    this.conference = this.jitsi.initConferenceManager(this.id, [result.audioTrack, result.videoTrack], result.name)
     this.setState({ joined: true })
     this.conference.join()
   }

@@ -60,7 +60,7 @@ export default class RoomActive extends React.Component {
 
   render () {
     return (
-      <div className={`roomPage ${this.state.showChat ? 'showChat' : 'hideChat'} ${this.state.showControls ? 'showControls' : 'hideControls'}`}>
+      <div className={`roomPage roomActive ${this.state.showChat ? 'showChat' : 'hideChat'} ${this.state.showControls ? 'showControls' : 'hideControls'}`}>
         <Head>
           <title>Video Chat | bipbop</title>
           <meta key='viewport' name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1' />

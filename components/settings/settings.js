@@ -1,6 +1,8 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 /* global JitsiMeetJS */
 import React from 'react'
 import Video from '../videoChat/video'
+import { faCog } from '@fortawesome/free-solid-svg-icons'
 import localforage from 'localforage'
 import { matopush } from '../../lib/matomo'
 
@@ -16,6 +18,7 @@ export default class Settings extends React.Component {
     this.handleEnumerateDevices = this.handleEnumerateDevices.bind(this)
     this.onError = this.onError.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleShowAudioVideoSettings = this.handleShowAudioVideoSettings.bind(this)
 
     this.state = {
       name: '',
@@ -23,7 +26,8 @@ export default class Settings extends React.Component {
       selectedAudioOutputID: undefined,
       selectedVideoInputID: undefined,
       audioTrack: undefined,
-      videoTrack: undefined
+      videoTrack: undefined,
+      collapseAudioVideoSettings: this.props.collapseAudioVideoSettings
     }
   }
 
@@ -204,6 +208,10 @@ export default class Settings extends React.Component {
     }
   }
 
+  handleShowAudioVideoSettings () {
+    this.setState({ collapseAudioVideoSettings: false })
+  }
+
   render () {
     return (
       <div className='settings'>
@@ -213,49 +221,65 @@ export default class Settings extends React.Component {
               <Video key='localVideo' isLocal audioTrack={this.state.audioTrack} videoTrack={this.state.videoTrack} />
             </div>
             <div className='formContainer'>
+              {this.props.titleText &&
+                <h2>{this.props.titleText}</h2>
+              }
               <form onSubmit={this.handleSubmit}>
-                <label>Name</label>
-                <input value={this.state.name || ''} onChange={this.handleNameChange} />
-
-                <div className='row'>
-                  <label>Microphone</label>
-                  <select onChange={this.handleAudioInputChange} value={this.state.selectedAudioInputID || ''}>
-                    {this.state.audioInputs && this.state.audioInputs.map(audioInput => (
-                      <option key={audioInput.deviceId} value={audioInput.deviceId}>{audioInput.label}</option>
-                    ))}
-                  </select>
+                <div className='row nameRow'>
+                  <label>Name</label>
+                  <input value={this.state.name || ''} onChange={this.handleNameChange} />
                 </div>
 
-                {this.state.audioOutputs && this.state.audioOutputs.length > 0 &&
-                  <div className='row'>
-                    <label>Speaker</label>
-                    <select onChange={this.handleAudioOutputChange} value={this.state.selectedAudioOutputID || ''}>
-                      {this.state.audioOutputs && this.state.audioOutputs.map(audioOutput => (
-                        <option key={audioOutput.deviceId} value={audioOutput.deviceId}>{audioOutput.label}</option>
-                      ))}
-                    </select>
-                  </div>}
+                {this.state.collapseAudioVideoSettings &&
+                  <div className='showAudioVideoSettings'>
+                    <a onClick={this.handleShowAudioVideoSettings}><FontAwesomeIcon icon={faCog} /> Change camera or microphone</a>
+                  </div>
+                }
 
-                <div className='row'>
-                  <label>Camera</label>
-                  <select onChange={this.handleVideoInputChange} value={this.state.selectedVideoInputID || ''}>
-                    {this.state.videoInputs && this.state.videoInputs.map(videoInput => (
-                      <option key={videoInput.deviceId} value={videoInput.deviceId}>{videoInput.label}</option>
-                    ))}
-                  </select>
-                </div>
+                {!this.state.collapseAudioVideoSettings &&
+                  <div className='audioVideoSettings'>
+                    <div className='row'>
+                      <label>Microphone</label>
+                      <select onChange={this.handleAudioInputChange} value={this.state.selectedAudioInputID || ''}>
+                        {this.state.audioInputs && this.state.audioInputs.map(audioInput => (
+                          <option key={audioInput.deviceId} value={audioInput.deviceId}>{audioInput.label}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {this.state.audioOutputs && this.state.audioOutputs.length > 0 &&
+                      <div className='row'>
+                        <label>Speaker</label>
+                        <select onChange={this.handleAudioOutputChange} value={this.state.selectedAudioOutputID || ''}>
+                          {this.state.audioOutputs && this.state.audioOutputs.map(audioOutput => (
+                            <option key={audioOutput.deviceId} value={audioOutput.deviceId}>{audioOutput.label}</option>
+                          ))}
+                        </select>
+                      </div>}
+
+                    <div className='row'>
+                      <label>Camera</label>
+                      <select onChange={this.handleVideoInputChange} value={this.state.selectedVideoInputID || ''}>
+                        {this.state.videoInputs && this.state.videoInputs.map(videoInput => (
+                          <option key={videoInput.deviceId} value={videoInput.deviceId}>{videoInput.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                }
+                {this.props.buttonText &&
+                  <div className='row buttonRow'>
+                    <button onClick={this.handleSubmit}>{this.props.buttonText}</button>
+                  </div>
+                }
               </form>
             </div>
-            {this.props.buttonText &&
-              <div className='buttonContainer'>
-                <button onClick={this.handleSubmit}>{this.props.buttonText}</button>
-              </div>}
           </>}
 
         {!this.state.videoTrack &&
           <div className='loading'>
-            <h3>Waiting for video stream...</h3>
-            <h4>Please allow video in your browser.</h4>
+            <h2>Hello, there.</h2>
+            <h3>Please allow access to your camera and microphone.</h3>
           </div>}
       </div>
     )

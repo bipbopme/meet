@@ -4,6 +4,8 @@
 
 $breakpoint: 'max-width: 960px';
 
+$transparent-white: rgba(255,255,255, 0.97);
+
 .homePage {
   text-align: center;
 
@@ -43,12 +45,22 @@ $breakpoint: 'max-width: 960px';
   z-index: 20;
 
   .modalInner {
-    background: #fff;
+    background: $transparent-white;
     box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.2);
     border-radius: 15px;
     max-width: 700px;
     padding: 20px;
     width: 100%;
+
+    h2 {
+      font-size: 24px;
+      margin-bottom: 15px;
+    }
+
+    h3 {
+      font-size: 20px;
+      margin: 15px 0;
+    }
   }
 }
 
@@ -73,7 +85,7 @@ $breakpoint: 'max-width: 960px';
     position: relative;
 
     > header, > footer {
-      background-color: rgba(255,255,255, 0.98);
+      background-color: $transparent-white;
       height: 70px;
       position: absolute;
       transition: 250ms ease-in;
@@ -105,6 +117,10 @@ $breakpoint: 'max-width: 960px';
           color: #fff;
           text-shadow: 0 0 5px rgba(0,0,0,0.6);
           opacity: 0.9;
+        }
+
+        .controls {
+          opacity: 0;
         }
       }
 
@@ -322,7 +338,16 @@ $breakpoint: 'max-width: 960px';
 
     h1 {
       font-size: 22px;
+      flex-grow: 1;
       margin-left: 15px;
+    }
+
+    .controls {
+      height: 100%;
+
+      .label {
+        display: none !important;
+      }
     }
   }
 

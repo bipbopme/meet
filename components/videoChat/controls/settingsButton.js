@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Portal } from 'react-portal'
+import Modal from '../../modal'
 import React from 'react'
 import Settings from '../../settings/settings'
 import { faCog } from '@fortawesome/free-solid-svg-icons'
@@ -12,6 +12,7 @@ export default class SettingsButton extends React.Component {
     this.localParticipant = this.props.localParticipant
     this.handleClick = this.handleClick.bind(this)
     this.handleDone = this.handleDone.bind(this)
+    this.handleModalCancel = this.handleModalCancel.bind(this)
 
     this.state = {
       showSettings: false
@@ -31,21 +32,21 @@ export default class SettingsButton extends React.Component {
     this.setState({ showSettings: false })
   }
 
+  handleModalCancel () {
+    this.setState({ showSettings: false })
+  }
+
   render () {
     return (
       <>
-        <div className='button settingsButton' onClick={this.handleClick}>
-          <span title="Settings"><FontAwesomeIcon icon={faCog} /></span>
+        <div className='button settingsButton' title='Settings for camera and microphone' onClick={this.handleClick}>
+          <FontAwesomeIcon icon={faCog} /> <span className='label'>Settings</span>
         </div>
         {this.state.showSettings &&
-          <Portal>
-            <div className='modal'>
-              <div className='modalInner'>
-                <h3>Settings</h3>
-                <Settings buttonText='Done' onButtonClick={this.handleDone} />
-              </div>
-            </div>
-          </Portal>
+          <Modal onCancel={this.handleModalCancel}>
+            <h2>Settings</h2>
+            <Settings buttonText='Done' onButtonClick={this.handleDone} />
+          </Modal>
         }
       </>
     )

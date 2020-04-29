@@ -4,6 +4,8 @@
 
 $breakpoint: 'max-width: 960px';
 
+$transparent-white: rgba(255,255,255, 0.97);
+
 .homePage {
   text-align: center;
 
@@ -32,6 +34,36 @@ $breakpoint: 'max-width: 960px';
   }
 }
 
+.modal {
+  align-items: center;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 20;
+
+  .modalInner {
+    background: $transparent-white;
+    box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.2);
+    border-radius: 15px;
+    max-width: 700px;
+    padding: 20px;
+    width: 100%;
+
+    h2 {
+      font-size: 24px;
+      margin-bottom: 15px;
+    }
+
+    h3 {
+      font-size: 20px;
+      margin: 15px 0;
+    }
+  }
+}
+
 .roomPage {
   position: absolute;
   top: 0; left: 0;
@@ -53,7 +85,7 @@ $breakpoint: 'max-width: 960px';
     position: relative;
 
     > header, > footer {
-      background-color: rgba(255,255,255, 0.98);
+      background-color: $transparent-white;
       height: 70px;
       position: absolute;
       transition: 250ms ease-in;
@@ -85,6 +117,10 @@ $breakpoint: 'max-width: 960px';
           color: #fff;
           text-shadow: 0 0 5px rgba(0,0,0,0.6);
           opacity: 0.9;
+        }
+
+        .controls {
+          opacity: 0;
         }
       }
 
@@ -170,6 +206,14 @@ $breakpoint: 'max-width: 960px';
 
     display: none;
   }
+
+  &.roomSetup {
+    .videoChat > section {
+      align-items: center;
+      display: flex;
+      justify-content: center;
+    }
+  }
 }
 
 .leftRoom {
@@ -193,36 +237,6 @@ $breakpoint: 'max-width: 960px';
 
 .roster {
   display: none;
-}
-
-.welcome {
-  align-items: center;
-  background: rgba(0,0,0,0.4);
-  display: flex;
-  justify-content: center;
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  z-index: 20;
-
-  .inner {
-    background: #fff;
-    box-shadow: 0px 2px 10px 0px rgba(0,0,0,0.2);
-    border-radius: 15px;
-    max-width: 700px;
-    padding: 20px;
-    width: 100%;
-
-    h2 {
-      font-size: 24px;
-      margin-bottom: 15px;
-    }
-
-    h3 {
-      font-size: 20px;
-      margin: 15px 0;
-    }
-  }
 }
 
 .textChat {
@@ -302,7 +316,16 @@ $breakpoint: 'max-width: 960px';
 
     h1 {
       font-size: 22px;
+      flex-grow: 1;
       margin-left: 15px;
+    }
+
+    .controls {
+      height: 100%;
+
+      .label {
+        display: none !important;
+      }
     }
   }
 
@@ -628,84 +651,102 @@ $breakpoint: 'max-width: 960px';
 }
 
 .settings {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
+  align-items: center;
+  display: flex;
   width: 100%;
 
-  .loading {
-    grid-column: 1 / 3;
-    height: 100px;
-    min-width: 400px;
-    width: 100%;
-
-    h3 {
-      font-size: 16px;
-      margin-bottom: 5px;
-      margin-top: 0;
-    }
-
-    h4 {
-      color: #999;
-      font-size: 14px;
+  .videoContainer {
+    .video {
+      video {
+        border-radius: 10px;
+        max-width: 700px;
+        transform: scaleX(-1);
+        width: 100%;
+      }
     }
   }
 
-  .video {
-    width: 100%;
-    padding-bottom: 75%;
-    position: relative;
+  .formContainer {
+    width: 350px;
+    padding-left: 20px;
+    text-align: center;
 
-    video {
-      border-radius: 15px;
-      height: 100%;
-      object-fit: cover;
-      position: absolute;
+    h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .nameRow {
+      display: none;
+    }
+
+    .showAudioVideoSettings {
+      color: #777;
+      cursor: default;
+      font-size: 14px;
+      margin: 15px 0 20px 0;
+    }
+
+    .audioVideoSettings {
+      text-align: left;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 2px;
+    }
+
+    select, input {
+      background: #fff;
+      border: 1px solid #bbb;
+      border-radius: 5px;
+      font-size: 14px;
+      margin-bottom: 10px;
+      padding: 5px;
       width: 100%;
     }
-  }
 
-  label {
-    display: block;
-    font-size: 14px;
-    font-weight: bold;
-    margin-bottom: 2px;
-  }
+    .buttonRow {
+      button {
+        background-color: #eee;
+        border-radius: 25px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+        font-weight: bold;
+        padding: 10px 30px;
+        transition: 100ms;
 
-  select, input {
-    background: #fff;
-    border: 1px solid #bbb;
-    border-radius: 5px;
-    font-size: 14px;
-    margin-bottom: 10px;
-    padding: 5px;
-    width: 100%;
-  }
-
-  .buttonContainer {
-    grid-area: 2 / 2 / 3 / 3;
-    justify-self: end;
-
-    button {
-      background-color: #eee;
-      border-radius: 5px;
-      border: 1px solid #999;
-      font-size: 16px;
-      font-weight: bold;
-      padding: 10px 20px;
+        &:hover {
+          background-color: #ddd;
+        }
+      }
     }
   }
 
   @include responsive($breakpoint) {
-    grid-template-columns: auto;
-    grid-template-rows: auto auto;
+    flex-direction: column;
 
-    .video {
-      padding-bottom: 40vh;
+    video {
+      max-height: 350px !important;
     }
 
-    .buttonContainer {
-      grid-area: unset;
+    .formContainer {
+      padding: 20px 0 0 0;
     }
+  }
+}
+
+.statusMessage {
+  h2 {
+    font-size: 24px;
+    margin-bottom: 5px;
+    margin-top: 0;
+  }
+
+  h3 {
+    color: #777;
+    font-size: 14px;
   }
 }

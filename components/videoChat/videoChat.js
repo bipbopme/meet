@@ -1,4 +1,5 @@
 import React from 'react'
+import SettingsButton from './controls/settingsButton'
 import Video from './video'
 import VideoChatControls from './controls/videoChatControls'
 import { debounce } from 'lodash'
@@ -66,6 +67,11 @@ export default class VideoChat extends React.Component {
       <div className='videoChat'>
         <header>
           <h1>bipbop</h1>
+          <div className='controls'>
+            <div className='right'>
+              <SettingsButton localParticipant={localParticipant} />
+            </div>
+          </div>
         </header>
         <section className={this.getCssClasses(participants)}>
           {participants.map(participant => (

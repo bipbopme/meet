@@ -39,7 +39,7 @@ export default class ScreenShareButton extends React.Component {
     try {
       const tracks = await JitsiMeetJS.createLocalTracks(options)
 
-      localParticipant.switchConferenceVideoTrack(tracks[0])
+      localParticipant.replaceVideoTrack(tracks[0])
     }
     catch(error) {
       console.warn(error)

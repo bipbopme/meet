@@ -11,10 +11,11 @@ import { observer } from 'mobx-react'
 
 const JITSI_CONFIG = JSON.parse(process.env.JITSI_CONFIG)
 
-export async function getServerSideProps({ req }) {
+export async function getServerSideProps({ req, query }) {
   return {
     props: {
-      region: nowTraceToRegion(req.headers['x-now-trace'])
+      // Allows override from the query string
+      region: query.region || nowTraceToRegion(req.headers['x-now-trace'])
     }
   }
 }

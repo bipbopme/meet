@@ -207,7 +207,7 @@ $transparent-white: rgba(255,255,255, 0.97);
     display: none;
   }
 
-  &.roomPreview {
+  &.roomSetup {
     .videoChat > section {
       align-items: center;
       display: flex;
@@ -655,19 +655,6 @@ $transparent-white: rgba(255,255,255, 0.97);
   display: flex;
   width: 100%;
 
-  .loading {
-    h2 {
-      font-size: 24px;
-      margin-bottom: 5px;
-      margin-top: 0;
-    }
-
-    h3 {
-      color: #777;
-      font-size: 14px;
-    }
-  }
-
   .videoContainer {
     .video {
       video {
@@ -748,5 +735,18 @@ $transparent-white: rgba(255,255,255, 0.97);
     .formContainer {
       padding: 20px 0 0 0;
     }
+  }
+}
+
+.statusMessage {
+  h2 {
+    font-size: 24px;
+    margin-bottom: 5px;
+    margin-top: 0;
+  }
+
+  h3 {
+    color: #777;
+    font-size: 14px;
   }
 }

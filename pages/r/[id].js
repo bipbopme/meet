@@ -2,7 +2,8 @@ import JitsiManager from '../../lib/jitsiManager'
 import React from 'react'
 import RoomActive from '../../components/room/roomActive'
 import RoomLeft from '../../components/room/roomLeft'
-import RoomPreview from '../../components/room/roomPreview'
+import RoomSetup from '../../components/room/roomSetup'
+import RoomStatus from '../../components/room/roomStatus'
 import { observer } from 'mobx-react'
 
 const JITSI_CONFIG = JSON.parse(process.env.JITSI_CONFIG)
@@ -12,11 +13,13 @@ export default class RoomPage extends React.Component {
   constructor (props) {
     super(props)
 
-    this.handleJoin = this.handleJoin.bind(this)
+    this.handleSetupComplete = this.handleSetupComplete.bind(this)
     this.handleLeave = this.handleLeave.bind(this)
+    this.handleJitsiConnected = this.handleJitsiConnected.bind(this)
 
     this.state = {
-      joined: false,
+      setupComplete: false,
+      conferenceInitialized: false,
       left: false
     }
   }
@@ -24,12 +27,32 @@ export default class RoomPage extends React.Component {
   componentDidMount () {
     this.id = window.location.pathname.split('/').pop()
     this.jitsi = new JitsiManager(JITSI_CONFIG.host)
+    this.jitsi.once('CONNECTION_ESTABLISHED', this.handleJitsiConnected)
+    this.jitsi.connect()
   }
 
-  handleJoin (result) {
-    this.conference = this.jitsi.initConferenceManager(this.id, [result.audioTrack, result.videoTrack], result.name)
-    this.setState({ joined: true })
-    this.conference.join()
+  handleJitsiConnected () {
+    // If setup is already complete, init the conference
+    if (this.state.setupComplete) {
+      this.initConference(this.state.name, this.state.audioTrack, this.state.videoTrack)
+    }
+  }
+
+  handleSetupComplete (result) {
+    const { name, audioTrack, videoTrack } = result
+
+    this.setState({ setupComplete: true })
+
+    // If we're already connected then init conference
+    if (this.jitsi.status === 'connected') {
+      this.initConference(name, audioTrack, videoTrack)
+    } else {
+      this.setState({
+        name: name,
+        audioTrack: audioTrack,
+        videoTrack: videoTrack
+      })
+    }
   }
 
   handleLeave () {
@@ -43,15 +66,30 @@ export default class RoomPage extends React.Component {
     window.location.reload()
   }
 
+  initConference (name, audioTrack, videoTrack) {
+    this.conference = this.jitsi.initConferenceManager(this.id, [audioTrack, videoTrack], name)
+    this.conference.join()
+
+    this.setState({ conferenceInitialized: true })
+  }
+
   render () {
-    if (this.state.joined) {
-      if (this.state.left) {
-        return <RoomLeft onRejoin={this.handleRejoin} />
+    if (this.state.setupComplete) {
+      if (this.state.conferenceInitialized) {
+        if (this.state.left) {
+          return <RoomLeft onRejoin={this.handleRejoin} />
+        } else {
+          return <RoomActive conference={this.conference} onLeave={this.handleLeave} />
+        }
       } else {
-        return <RoomActive conference={this.conference} onLeave={this.handleLeave} />
+        if (this.jitsi.status === 'connecting') {
+          return <RoomStatus><h2>Connecting...</h2></RoomStatus>
+        } else {
+          return <RoomStatus><h2>Sorry something went wrong.</h2></RoomStatus>
+        }
       }
     } else {
-      return <RoomPreview onJoin={this.handleJoin} />
+      return <RoomSetup onComplete={this.handleSetupComplete} />
     }
   }
 }

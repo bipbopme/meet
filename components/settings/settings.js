@@ -277,7 +277,7 @@ export default class Settings extends React.Component {
           </>}
 
         {!this.state.videoTrack &&
-          <div className='loading'>
+          <div className='statusMessage'>
             <h2>Hello, there.</h2>
             <h3>Please allow access to your camera and microphone.</h3>
           </div>}

@@ -1,3 +1,4 @@
+import { Portal } from 'react-portal'
 import React from 'react'
 import SettingsButton from './controls/settingsButton'
 import Video from './video'
@@ -62,6 +63,8 @@ export default class VideoChat extends React.Component {
 
   render () {
     const { participants, localParticipant, status } = this.props.conference
+    const activeParticipants = participants.filter(p => p.isVideoTagActive)
+    const disabledParticipants = participants.filter(p => !p.isVideoTagActive)
 
     return status === 'joined' ? (
       <div className='videoChat'>
@@ -73,12 +76,19 @@ export default class VideoChat extends React.Component {
             </div>
           </div>
         </header>
-        <section className={this.getCssClasses(participants)}>
-          {participants.map(participant => (
-            <Video key={participant.id} audioTrack={participant.audioTrack} videoTrack={participant.videoTrack} isAudioMuted={participant.isAudioMuted} isVideoMuted={participant.isVideoMuted} isDominantSpeaker={participant.isDominantSpeaker} />
+        <section className={this.getCssClasses(activeParticipants)}>
+          {activeParticipants.map(participant => (
+            <Video key={participant.id} participant={participant} audioTrack={participant.audioTrack} videoTrack={participant.videoTrack} isAudioMuted={participant.isAudioMuted} isVideoMuted={participant.isVideoMuted} isDominantSpeaker={participant.isDominantSpeaker} />
           ))}
           <Video key={localParticipant.id} isLocal audioTrack={localParticipant.audioTrack} videoTrack={localParticipant.videoTrack} isAudioMuted={localParticipant.isAudioMuted} isVideoMuted={localParticipant.isVideoMuted} isDominantSpeaker={localParticipant.isDominantSpeaker} />
         </section>
+        <Portal>
+          <div className='disabledVideos'>
+            {disabledParticipants.map(participant => (
+              <Video key={participant.id} participant={participant} audioTrack={participant.audioTrack} videoTrack={participant.videoTrack} isAudioMuted={participant.isAudioMuted} isVideoMuted={participant.isVideoMuted} isDominantSpeaker={participant.isDominantSpeaker} />
+            ))}
+          </div>
+        </Portal>
         <VideoChatControls conference={this.conference} localParticipant={localParticipant} onLeave={this.props.onLeave} onToggleChat={this.props.onToggleChat} />
       </div>
     ) : null

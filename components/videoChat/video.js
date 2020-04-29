@@ -2,14 +2,20 @@ import { faMicrophoneSlash, faVideoSlash } from '@fortawesome/free-solid-svg-ico
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
+import { action } from 'mobx'
+import { observer } from 'mobx-react'
 
+@observer
 export default class Video extends React.Component {
   constructor (props) {
     super(props)
 
+    this.participant = this.props.participant
     this.videoRef = React.createRef()
     this.audioRef = React.createRef()
     this.handleClick = this.handleClick.bind(this)
+    this.handleVideoCanPlay = this.handleVideoCanPlay.bind(this)
+    this.handleVideoEmptied = this.handleVideoEmptied.bind(this)
 
     this.state = {
       cover: true
@@ -18,6 +24,9 @@ export default class Video extends React.Component {
 
   componentDidMount () {
     this.updateTrackAttachments()
+
+    this.videoRef.current.addEventListener('canplay', this.handleVideoCanPlay)
+    this.videoRef.current.addEventListener('emptied', this.handleVideoEmptied)
   }
 
   componentDidUpdate (prevProps) {
@@ -49,6 +58,8 @@ export default class Video extends React.Component {
     // Add video track
     if (!prevProps.videoTrack && this.props.videoTrack) {
       this.props.videoTrack.attach(this.videoRef.current)
+
+      this.watchTrackForDisconnect(this.props.videoTrack)
     }
 
     // Update video track
@@ -67,8 +78,35 @@ export default class Video extends React.Component {
     }
   }
 
+  // TODO: This is a hack to catch video disconnects faster.
+  //       The right solution here is to switch to websockets.
+  watchTrackForDisconnect (track) {
+    if (track.rtc) {
+      track.rtc.on('rtc.endpoint_conn_status_changed', (id, active) => {
+        if (!active) {
+          this.updateVideoTagStaus(false)
+        }
+      })
+    }
+  }
+
   handleClick () {
     this.setState({ cover: !this.state.cover })
+  }
+
+  handleVideoCanPlay () {
+    this.updateVideoTagStaus(true)
+  }
+
+  handleVideoEmptied () {
+    this.updateVideoTagStaus(false)
+  }
+
+  @action
+  updateVideoTagStaus (active) {
+    if (this.participant) {
+      this.participant.isVideoTagActive = active
+    }
   }
 
   getClassNames () {

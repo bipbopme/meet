@@ -1,7 +1,9 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 /* global JitsiMeetJS */
+import DetectRTC from 'detectrtc'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 import Video from '../videoChat/video'
+import _uniqBy from 'lodash/uniqBy'
 import { faCog } from '@fortawesome/free-solid-svg-icons'
 import localforage from 'localforage'
 import { matopush } from '../../lib/matomo'
@@ -40,14 +42,28 @@ export default class Settings extends React.Component {
   async getUserMedia () {
     await this.loadSavedSettings()
 
-    JitsiMeetJS.createLocalTracks({
-      devices: ['audio', 'video'],
-      cameraDeviceId: this.state.selectedVideoInputID,
-      micDeviceId: this.state.selectedAudioInputID
-    })
-      .then(this.handleCreateLocalTracks)
-      .then(this.handleEnumerateDevices)
-      .catch(this.onError)
+    const options = {
+      devices: ['audio', 'video']
+    }
+
+    // TODO: Work around bug in JitsiMeetJS
+    if (DetectRTC.browser.isFirefox) {
+      options.constraints = {
+        audio: {
+          deviceId: this.state.selectedAudioInputID ? { exact: this.state.selectedAudioInputID } : undefined
+        },
+        video: {
+          deviceId: this.state.selectedVideoInputID ? { exact: this.state.selectedVideoInputID } : undefined,
+          width: { min: 320, ideal: 1280, max: 1920 },
+          height: { min: 240, ideal: 720, max: 1080 }
+        }
+      }
+    } else {
+      options.cameraDeviceId = this.state.selectedVideoInputID,
+      options.micDeviceId = this.state.selectedAudioInputID
+    }
+
+    JitsiMeetJS.createLocalTracks(options).then(this.handleCreateLocalTracks).catch(this.onError)
   }
 
   async onError (error) {
@@ -74,7 +90,7 @@ export default class Settings extends React.Component {
 
     this.setState({ audioTrack: audioTrack, videoTrack: videoTrack })
 
-    return navigator.mediaDevices.enumerateDevices()
+    JitsiMeetJS.mediaDevices.enumerateDevices(this.handleEnumerateDevices)
   }
 
   async loadSavedSettings () {
@@ -93,9 +109,9 @@ export default class Settings extends React.Component {
 
   async handleEnumerateDevices (devices) {
     if (devices) {
-      const audioInputs = devices.filter(d => d.kind === 'audioinput')
-      const audioOutputs = devices.filter(d => d.kind === 'audiooutput')
-      const videoInputs = devices.filter(d => d.kind === 'videoinput')
+      const audioInputs = _uniqBy(devices.filter(d => d.kind === 'audioinput'), 'deviceId')
+      const audioOutputs = _uniqBy(devices.filter(d => d.kind === 'audiooutput'), 'deviceId')
+      const videoInputs = _uniqBy(devices.filter(d => d.kind === 'videoinput'), 'deviceId')
 
       this.syncAudioVideoDefaults(audioOutputs)
 
@@ -239,6 +255,14 @@ export default class Settings extends React.Component {
                 {!this.state.collapseAudioVideoSettings &&
                   <div className='audioVideoSettings'>
                     <div className='row'>
+                      <label>Camera</label>
+                      <select onChange={this.handleVideoInputChange} value={this.state.selectedVideoInputID || ''}>
+                        {this.state.videoInputs && this.state.videoInputs.map(videoInput => (
+                          <option key={videoInput.deviceId} value={videoInput.deviceId}>{videoInput.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className='row'>
                       <label>Microphone</label>
                       <select onChange={this.handleAudioInputChange} value={this.state.selectedAudioInputID || ''}>
                         {this.state.audioInputs && this.state.audioInputs.map(audioInput => (
@@ -255,16 +279,8 @@ export default class Settings extends React.Component {
                             <option key={audioOutput.deviceId} value={audioOutput.deviceId}>{audioOutput.label}</option>
                           ))}
                         </select>
-                      </div>}
-
-                    <div className='row'>
-                      <label>Camera</label>
-                      <select onChange={this.handleVideoInputChange} value={this.state.selectedVideoInputID || ''}>
-                        {this.state.videoInputs && this.state.videoInputs.map(videoInput => (
-                          <option key={videoInput.deviceId} value={videoInput.deviceId}>{videoInput.label}</option>
-                        ))}
-                      </select>
-                    </div>
+                      </div>
+                    }
                   </div>
                 }
                 {this.props.buttonText &&

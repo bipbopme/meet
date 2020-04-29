@@ -99,6 +99,7 @@ $transparent-white: rgba(255,255,255, 0.97);
 
     > section {
       height: 100vh;
+      height: calc(var(--mvh, 1vh) * 100);
       width: 100%;
     }
 

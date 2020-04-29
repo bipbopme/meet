@@ -1,9 +1,11 @@
+import DetectRTC from 'detectrtc'
 import JitsiManager from '../../lib/jitsiManager'
 import React from 'react'
 import RoomActive from '../../components/room/roomActive'
 import RoomLeft from '../../components/room/roomLeft'
 import RoomSetup from '../../components/room/roomSetup'
 import RoomStatus from '../../components/room/roomStatus'
+import _debounce from 'lodash/debounce'
 import { observer } from 'mobx-react'
 
 const JITSI_CONFIG = JSON.parse(process.env.JITSI_CONFIG)
@@ -16,6 +18,7 @@ export default class RoomPage extends React.Component {
     this.handleSetupComplete = this.handleSetupComplete.bind(this)
     this.handleLeave = this.handleLeave.bind(this)
     this.handleJitsiConnected = this.handleJitsiConnected.bind(this)
+    this.updateMobileViewportHeightDebounced = _debounce(this.updateMobileViewportHeight, 50)
 
     this.state = {
       setupComplete: false,
@@ -26,9 +29,17 @@ export default class RoomPage extends React.Component {
 
   componentDidMount () {
     this.id = window.location.pathname.split('/').pop()
+
     this.jitsi = new JitsiManager(JITSI_CONFIG.host)
     this.jitsi.once('CONNECTION_ESTABLISHED', this.handleJitsiConnected)
     this.jitsi.connect()
+
+    // Override mobile viewport height behavior
+    // Also apply to Safari since iPad pretends to be desktop
+    if (DetectRTC.isMobileDevice || DetectRTC.browser.isSafari) {
+      this.updateMobileViewportHeightDebounced()
+      window.addEventListener('resize', this.updateMobileViewportHeightDebounced)
+    }
   }
 
   handleJitsiConnected () {
@@ -71,6 +82,20 @@ export default class RoomPage extends React.Component {
     this.conference.join()
 
     this.setState({ conferenceInitialized: true })
+  }
+
+  // https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
+  updateMobileViewportHeight () {
+    // First we get the viewport height and we multiply it by 1% to get a value for a vh unit
+    const mvh = window.innerHeight * 0.01;
+
+    // Then we set the value in the --mvh custom property to the root of the document
+    try {
+      document.documentElement.style.setProperty('--mvh', `${mvh}px`);
+    }
+    catch (e) {
+      console.warn(e)
+    }
   }
 
   render () {

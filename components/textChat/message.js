@@ -5,7 +5,7 @@ export default class Message extends React.Component {
     const participant = this.props.message.participant
     const avatarName = `${participant.displayName}-${participant.id}`
 
-    return `https://avatars.dicebear.com/v2/initials/${encodeURIComponent(avatarName)}.svg?options[chars][]=1`
+    return `https://avatars.dicebear.com/v2/jdenticon/${encodeURIComponent(avatarName)}.svg`
   }
 
   render () {

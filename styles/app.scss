@@ -409,13 +409,13 @@ $transparent-white: rgba(255,255,255, 0.97);
 
       .video:nth-child(2) {
         position: absolute;
-        max-height: 200px;
-        max-width: 200px;
         top: 70px;
         right: 0;
 
         video {
-          object-fit: contain;
+          height: auto;
+          max-height: 150px;
+          width: auto;
         }
       }
     }

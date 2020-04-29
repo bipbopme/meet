@@ -4,15 +4,15 @@ import { nowTraceToRegion } from '../../lib/utils'
 export async function getServerSideProps({ req }) {
   return {
     props: {
-      trace: req.headers['x-now-trace'] || null
+      trace: req.headers['x-now-trace'] || null,
+      region: nowTraceToRegion(req.headers['x-now-trace'])
     }
   }
 }
 
 export default class DebugPage extends React.Component {
   render () {
-    const { trace } = this.props
-    const region = nowTraceToRegion(trace)
+    const { trace, region } = this.props
 
     return (
       <div className='debugPage'>
@@ -23,7 +23,7 @@ export default class DebugPage extends React.Component {
               <td>{trace || 'not set'}</td>
             </tr>
             <tr>
-              <th>Region</th>
+              <th>region</th>
               <td>{region || 'not set'}</td>
             </tr>
           </tbody>

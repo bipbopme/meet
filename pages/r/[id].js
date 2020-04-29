@@ -6,15 +6,25 @@ import RoomLeft from '../../components/room/roomLeft'
 import RoomSetup from '../../components/room/roomSetup'
 import RoomStatus from '../../components/room/roomStatus'
 import _debounce from 'lodash/debounce'
+import { nowTraceToRegion } from '../../lib/utils'
 import { observer } from 'mobx-react'
 
 const JITSI_CONFIG = JSON.parse(process.env.JITSI_CONFIG)
+
+export async function getServerSideProps({ req }) {
+  return {
+    props: {
+      region: nowTraceToRegion(req.headers['x-now-trace'])
+    }
+  }
+}
 
 @observer
 export default class RoomPage extends React.Component {
   constructor (props) {
     super(props)
 
+    this.region = this.props.region
     this.handleSetupComplete = this.handleSetupComplete.bind(this)
     this.handleLeave = this.handleLeave.bind(this)
     this.handleJitsiConnected = this.handleJitsiConnected.bind(this)
@@ -30,7 +40,7 @@ export default class RoomPage extends React.Component {
   componentDidMount () {
     this.id = window.location.pathname.split('/').pop()
 
-    this.jitsi = new JitsiManager(JITSI_CONFIG.host)
+    this.jitsi = new JitsiManager(JITSI_CONFIG.host, this.region)
     this.jitsi.once('CONNECTION_ESTABLISHED', this.handleJitsiConnected)
     this.jitsi.connect()
 

@@ -37,13 +37,15 @@ export default class Video extends React.Component {
   updateTrackAttachments (prevProps = {}) {
     // Add audio track
     if (!prevProps.audioTrack && this.props.audioTrack) {
+      console.debug('Add audio track')
       this.props.audioTrack.attach(this.audioRef.current)
     }
 
     // Update audio track
     if (prevProps.audioTrack && this.props.audioTrack) {
       if (prevProps.audioTrack.getId() !== this.props.audioTrack.getId()) {
-        prevProps.audioTrack.detach(this.audioRef.current)
+        console.debug('Replace audio track')
+        prevProps.audioTrack.detach()
         this.props.audioTrack.attach(this.audioRef.current)
       } else {
         // They're the same so do nothing
@@ -52,11 +54,13 @@ export default class Video extends React.Component {
 
     // Remove audio track
     if (prevProps.audioTrack && !this.props.audioTrack) {
-      prevProps.audioTrack.detach(this.audioRef.current)
+      console.debug('Remove audio track')
+      prevProps.audioTrack.detach()
     }
 
     // Add video track
     if (!prevProps.videoTrack && this.props.videoTrack) {
+      console.debug('Add video track')
       this.props.videoTrack.attach(this.videoRef.current)
 
       this.watchTrackForDisconnect(this.props.videoTrack)
@@ -65,7 +69,8 @@ export default class Video extends React.Component {
     // Update video track
     if (prevProps.videoTrack && this.props.videoTrack) {
       if (prevProps.videoTrack.getId() !== this.props.videoTrack.getId()) {
-        prevProps.videoTrack.detach(this.videoRef.current)
+        console.debug('Replace video track')
+        prevProps.videoTrack.detach()
         this.props.videoTrack.attach(this.videoRef.current)
       } else {
         // They're the same so do nothing
@@ -74,7 +79,8 @@ export default class Video extends React.Component {
 
     // Remove video track
     if (prevProps.videoTrack && !this.props.videoTrack) {
-      prevProps.videoTrack.detach(this.videoRef.current)
+      console.debug('Remove video track')
+      prevProps.videoTrack.detach()
     }
   }
 

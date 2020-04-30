@@ -42,6 +42,11 @@ export default class Settings extends React.Component {
   async getUserMedia () {
     await this.loadSavedSettings()
 
+    // Prevents too many concurrent microphones
+    if (this.state.audioTrack) {
+      this.state.audioTrack.getTrack().stop()
+    }
+
     const options = {
       devices: ['audio', 'video']
     }
@@ -54,12 +59,11 @@ export default class Settings extends React.Component {
         },
         video: {
           deviceId: this.state.selectedVideoInputID ? { exact: this.state.selectedVideoInputID } : undefined,
-          width: { min: 320, ideal: 1280, max: 1920 },
-          height: { min: 240, ideal: 720, max: 1080 }
+          height: { ideal: 720, max: 720, min: 240 }
         }
       }
     } else {
-      options.cameraDeviceId = this.state.selectedVideoInputID,
+      options.cameraDeviceId = this.state.selectedVideoInputID
       options.micDeviceId = this.state.selectedAudioInputID
     }
 

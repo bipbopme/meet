@@ -3,6 +3,7 @@ import React from 'react'
 import SettingsButton from './controls/settingsButton'
 import Video from './video'
 import VideoChatControls from './controls/videoChatControls'
+import ViewButton from './controls/viewButton'
 import _chunk from 'lodash/chunk'
 import { debounce } from 'lodash'
 import { observer } from 'mobx-react'
@@ -12,22 +13,33 @@ export default class VideoChat extends React.Component {
   constructor (props) {
     super(props)
 
-    this.videoChatRef = React.createRef()
+    this.videosRef = React.createRef()
 
     this.conference = props.conference
     this.handleResizeDebounced = debounce(this.handleResize.bind(this), 25)
     this.calculateVideoContraintDebounced = debounce(this.calculateVideoConstraint.bind(this), 1000)
+    this.handleToggleVideoZoom = this.handleToggleVideoZoom.bind(this)
 
-    window.addEventListener('resize', this.handleResizeDebounced, 100)
+    window.addEventListener('resize', this.handleResizeDebounced, 50)
+
+    this.state = {
+      videoZoomed: true
+    }
+  }
+
+  handleToggleVideoZoom (zoomed) {
+    this.setState({ videoZoomed: zoomed })
   }
 
   componentDidUpdate () {
+    console.warn('componentDidUpdate', this.state)
     this.handleResize()
   }
 
   handleResize () {
-    if (this.videoChatRef.current && this.gridDimensions) {
-      this.updateVideoDimensions(this.gridDimensions)
+    if (this.videosRef.current && this.gridDimensions) {
+      console.warn('handleResize', this.state)
+      this.updateVideoDimensions({ gridDimensions: this.gridDimensions, zoom: this.state.videoZoomed })
       this.calculateVideoContraintDebounced()
     }
   }
@@ -59,49 +71,50 @@ export default class VideoChat extends React.Component {
 
   getGridDimensions (count) {
     let sqrt = Math.sqrt(count)
-    let columns = Math.ceil(sqrt)
+    let rows = Math.ceil(sqrt)
     console.warn({ sqrt })
-    let rows = sqrt === columns || (sqrt - Math.floor(sqrt)) >= 0.5 ?  columns : columns - 1
+    let columns = sqrt === rows || (sqrt - Math.floor(sqrt)) >= 0.5 ?  rows : rows - 1
 
     return { columns, rows }
   }
 
-  updateVideoDimensions (gridDimensions) {
-    const videoContainerAspectRatio = 16 / 9
-    const containerHeight = this.videoChatRef.current.offsetHeight
-    const containerWidth = this.videoChatRef.current.offsetWidth
+  updateVideoDimensions ({ gridDimensions, zoom = false, aspectRatio = 16/9, minContainerWidth = 900, videoMargin = 1 }) {
+    let containerHeight = this.videosRef.current.offsetHeight
+    let containerWidth = this.videosRef.current.offsetWidth
+    let doubleVideoMargin = videoMargin * 2
 
-    console.warn({ videoContainerAspectRatio, containerHeight, containerWidth, gridDimensions, ref: this.videoChatRef.current })
+    // Remove margin from the container calculation
+    containerHeight = containerHeight - doubleVideoMargin
+    containerWidth = containerWidth - doubleVideoMargin
 
-    // Try landscape first
-    let videoWidth = containerWidth / gridDimensions.columns
-    let videoHeight = videoWidth / videoContainerAspectRatio
+    let cover = zoom || containerWidth <= minContainerWidth
+    let height, width
 
-    // If it's too tall then use portrait orientation
-    if ((videoHeight * gridDimensions.rows) > containerHeight) {
-      videoHeight = containerHeight / gridDimensions.rows
-      videoWidth = videoHeight * videoContainerAspectRatio
-    }
-
-    console.warn('Update video dimensions', videoWidth, videoHeight)
-
-    document.documentElement.style.setProperty('--video-height', `${videoHeight}px`)
-    document.documentElement.style.setProperty('--video-width', `${videoWidth}px`)
-  }
-
-  getCssClasses (participants) {
-    const cssClasses = ['videos']
-    const videosCount = participants.length + 1
-
-    cssClasses.push(`videos-count-${videosCount}`)
-
-    if (videosCount > 2) {
-      cssClasses.push('videos-count-3-or-more')
+    // Fill all the available space
+    if (cover) {
+      height = containerHeight / gridDimensions.rows
+      width = containerWidth / gridDimensions.columns
+    // Keep aspect ratio
     } else {
-      cssClasses.push('videos-count-2-or-less')
+      // Try landscape first
+      width = containerWidth / gridDimensions.columns
+      height = width / aspectRatio
+
+      // If it's too tall then use portrait orientation
+      if ((height * gridDimensions.rows) > containerHeight) {
+        height = containerHeight / gridDimensions.rows
+        width = height * aspectRatio
+      }
     }
 
-    return cssClasses.join(' ')
+    // Adjust video size to account for margin
+    height = Math.floor(height) - doubleVideoMargin
+    width = Math.floor(width) - doubleVideoMargin
+
+    document.documentElement.style.setProperty('--video-height', `${height}px`)
+    document.documentElement.style.setProperty('--video-width', `${width}px`)
+    document.documentElement.style.setProperty('--video-margin', `${videoMargin}px`)
+    document.documentElement.style.setProperty('--video-cover', cover ? 'cover' : 'contain')
   }
 
   render () {
@@ -115,16 +128,17 @@ export default class VideoChat extends React.Component {
     const participantChunks = _chunk(activeParticipants, this.gridDimensions.columns)
 
     return status === 'joined' ? (
-      <div className='videoChat' ref={this.videoChatRef}>
+      <div className='videoChat'>
         <header>
           <h1>bipbop</h1>
           <div className='controls'>
             <div className='right'>
+              <ViewButton onToggle={this.handleToggleVideoZoom} />
               <SettingsButton localParticipant={localParticipant} />
             </div>
           </div>
         </header>
-        <section className={this.getCssClasses(activeParticipants)}>
+        <section className={`videos ${this.state.videoZoomed ? 'videoZoomed' : 'videoOriginal'}`} ref={this.videosRef}>
           <div className='grid'>
             {participantChunks.map(participants => (
               <div className='row'>

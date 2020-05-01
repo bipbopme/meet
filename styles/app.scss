@@ -333,19 +333,17 @@ $transparent-white: rgba(255,255,255, 0.97);
   }
 
   .videos {
+    //background: linear-gradient(#333, #444);
     align-items: center;
     display: flex;
     justify-content: center;
-    // display: grid;
-    // grid-template-columns: repeat(12, 1fr);
-    // grid-template-rows: repeat(12, 1fr);
-    // grid-gap: 2px;
     padding: 0;
     position: relative;
 
     .grid {
       display: flex;
       flex-direction: column;
+      margin: var(--video-margin);
 
       .row {
         display: flex;
@@ -354,12 +352,15 @@ $transparent-white: rgba(255,255,255, 0.97);
 
         .video {
           height: var(--video-height);
+          margin: var(--video-margin);
+          overflow: hidden;
           width: var(--video-width);
 
           video {
+            // border-radius: 10px;
             height: 100%;
             width: 100%;
-            object-fit: contain;
+            object-fit: var(--video-cover);
           }
         }
       }

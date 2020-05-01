@@ -3,6 +3,7 @@ import React from 'react'
 import SettingsButton from './controls/settingsButton'
 import Video from './video'
 import VideoChatControls from './controls/videoChatControls'
+import _chunk from 'lodash/chunk'
 import { debounce } from 'lodash'
 import { observer } from 'mobx-react'
 
@@ -11,14 +12,24 @@ export default class VideoChat extends React.Component {
   constructor (props) {
     super(props)
 
+    this.videoChatRef = React.createRef()
+
     this.conference = props.conference
-    this.debouncedCalculateVideoContraint = debounce(this.calculateVideoConstraint.bind(this), 1000)
+    this.handleResizeDebounced = debounce(this.handleResize.bind(this), 25)
+    this.calculateVideoContraintDebounced = debounce(this.calculateVideoConstraint.bind(this), 1000)
 
-    this.conference.on('CONFERENCE_JOINED', this.debouncedCalculateVideoContraint)
-    this.conference.on('PARTICIPANT_JOINED', this.debouncedCalculateVideoContraint)
-    this.conference.on('PARTICIPANT_LEFT', this.debouncedCalculateVideoContraint)
+    window.addEventListener('resize', this.handleResizeDebounced, 100)
+  }
 
-    window.addEventListener('resize', this.debouncedCalculateVideoContraint)
+  componentDidUpdate () {
+    this.handleResize()
+  }
+
+  handleResize () {
+    if (this.videoChatRef.current && this.gridDimensions) {
+      this.updateVideoDimensions(this.gridDimensions)
+      this.calculateVideoContraintDebounced()
+    }
   }
 
   calculateVideoConstraint () {
@@ -46,6 +57,38 @@ export default class VideoChat extends React.Component {
     }
   }
 
+  getGridDimensions (count) {
+    let sqrt = Math.sqrt(count)
+    let columns = Math.ceil(sqrt)
+    console.warn({ sqrt })
+    let rows = sqrt === columns || (sqrt - Math.floor(sqrt)) >= 0.5 ?  columns : columns - 1
+
+    return { columns, rows }
+  }
+
+  updateVideoDimensions (gridDimensions) {
+    const videoContainerAspectRatio = 16 / 9
+    const containerHeight = this.videoChatRef.current.offsetHeight
+    const containerWidth = this.videoChatRef.current.offsetWidth
+
+    console.warn({ videoContainerAspectRatio, containerHeight, containerWidth, gridDimensions, ref: this.videoChatRef.current })
+
+    // Try landscape first
+    let videoWidth = containerWidth / gridDimensions.columns
+    let videoHeight = videoWidth / videoContainerAspectRatio
+
+    // If it's too tall then use portrait orientation
+    if ((videoHeight * gridDimensions.rows) > containerHeight) {
+      videoHeight = containerHeight / gridDimensions.rows
+      videoWidth = videoHeight * videoContainerAspectRatio
+    }
+
+    console.warn('Update video dimensions', videoWidth, videoHeight)
+
+    document.documentElement.style.setProperty('--video-height', `${videoHeight}px`)
+    document.documentElement.style.setProperty('--video-width', `${videoWidth}px`)
+  }
+
   getCssClasses (participants) {
     const cssClasses = ['videos']
     const videosCount = participants.length + 1
@@ -63,11 +106,16 @@ export default class VideoChat extends React.Component {
 
   render () {
     const { participants, localParticipant, status } = this.props.conference
-    const activeParticipants = participants.filter(p => p.isVideoTagActive)
+    const activeParticipants = [...participants.filter(p => p.isVideoTagActive), localParticipant]
     const disabledParticipants = participants.filter(p => !p.isVideoTagActive)
 
+    // Save dimensions so we can calulate video dimensions after render
+    this.gridDimensions = this.getGridDimensions(activeParticipants.length)
+
+    const participantChunks = _chunk(activeParticipants, this.gridDimensions.columns)
+
     return status === 'joined' ? (
-      <div className='videoChat'>
+      <div className='videoChat' ref={this.videoChatRef}>
         <header>
           <h1>bipbop</h1>
           <div className='controls'>
@@ -77,10 +125,15 @@ export default class VideoChat extends React.Component {
           </div>
         </header>
         <section className={this.getCssClasses(activeParticipants)}>
-          {activeParticipants.map(participant => (
-            <Video key={participant.id} participant={participant} audioTrack={participant.audioTrack} videoTrack={participant.videoTrack} isAudioMuted={participant.isAudioMuted} isVideoMuted={participant.isVideoMuted} isDominantSpeaker={participant.isDominantSpeaker} />
-          ))}
-          <Video key={localParticipant.id} isLocal audioTrack={localParticipant.audioTrack} videoTrack={localParticipant.videoTrack} isAudioMuted={localParticipant.isAudioMuted} isVideoMuted={localParticipant.isVideoMuted} isDominantSpeaker={localParticipant.isDominantSpeaker} />
+          <div className='grid'>
+            {participantChunks.map(participants => (
+              <div className='row'>
+                {participants.map(participant => (
+                  <Video key={participant.id} isLocal={participant.isLocal} participant={participant} audioTrack={participant.audioTrack} videoTrack={participant.videoTrack} isAudioMuted={participant.isAudioMuted} isVideoMuted={participant.isVideoMuted} isDominantSpeaker={participant.isDominantSpeaker} />
+                ))}
+              </div>
+            ))}
+          </div>
         </section>
         <Portal>
           <div className='disabledVideos'>

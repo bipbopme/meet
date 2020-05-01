@@ -98,11 +98,11 @@ export default class RoomPage extends React.Component {
   // https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
   updateMobileViewportHeight () {
     // First we get the viewport height and we multiply it by 1% to get a value for a vh unit
-    const mvh = window.innerHeight * 0.01;
+    const mvh = window.innerHeight * 0.01
 
     // Then we set the value in the --mvh custom property to the root of the document
     try {
-      document.documentElement.style.setProperty('--mvh', `${mvh}px`);
+      document.documentElement.style.setProperty('--mvh', `${mvh}px`)
     }
     catch (e) {
       console.warn(e)

@@ -18,7 +18,7 @@ export default class Video extends React.Component {
     this.handleVideoEmptied = this.handleVideoEmptied.bind(this)
 
     this.state = {
-      cover: true
+      cover: false
     }
   }
 

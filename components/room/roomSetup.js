@@ -17,7 +17,6 @@ export default class RoomSetup extends React.Component {
               <Settings titleText='Ready to join?' buttonText='Join' onButtonClick={this.props.onComplete} collapseAudioVideoSettings='true' />
             </div>
           </section>
-          <footer className='controls' />
         </div>
         <div className='textChat'>
           <header />

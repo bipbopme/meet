@@ -339,7 +339,46 @@ $transparent-white: rgba(255,255,255, 0.97);
     padding: 0;
     position: relative;
 
-    .grid {
+    .singleView {
+      height: 100%;
+      width: 100%;
+
+      .nonSpeakingParticipants {
+        background: #fff;
+        align-items: center;
+        display: flex;
+        justify-content: center;
+        left: 0;
+        position: absolute;
+        top: 75px;
+        width: 100%;
+
+        .video {
+
+          video {
+            height: 100px;
+          }
+        }
+      }
+
+      .speakingParticipant {
+        height: 100%;
+        width: 100%;
+
+        .video {
+          height: 100%;
+          width: 100%;
+
+          video {
+            height: 100%;
+            object-fit: contain;
+            width: 100%;
+          }
+        }
+      }
+    }
+
+    .gridView {
       display: flex;
       flex-direction: column;
       margin: var(--video-margin);

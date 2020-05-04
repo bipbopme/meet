@@ -6,7 +6,7 @@ import { debounce } from 'lodash'
 import { observer } from 'mobx-react'
 
 @observer
-export default class VideoGrid extends React.Component {
+export default class GridView extends React.Component {
   constructor (props) {
     super(props)
 
@@ -34,27 +34,29 @@ export default class VideoGrid extends React.Component {
   }
 
   calculateVideoConstraint () {
-    const sampleVideoContainer = this.videosRef.current.getElementsByClassName('video')[0]
+    if (this.videosRef.current) {
+      const sampleVideoContainer = this.videosRef.current.getElementsByClassName('video')[0]
 
-    if (sampleVideoContainer) {
-      let elementHeight = sampleVideoContainer.offsetHeight
-      let videoConstraint;
+      if (sampleVideoContainer) {
+        let elementHeight = sampleVideoContainer.offsetHeight
+        let videoConstraint;
 
-      // TODO: these are okay values for wide video but not for cropped vertical video
-      if (elementHeight < 180) {
-        videoConstraint = 180
-      } else if (elementHeight < 500) {
-        videoConstraint = 360
-      } else if (elementHeight < 1000) {
-        videoConstraint = 720
-      } else {
-        videoConstraint = 1080
+        // TODO: these are okay values for wide video but not for cropped vertical video
+        if (elementHeight < 180) {
+          videoConstraint = 180
+        } else if (elementHeight < 500) {
+          videoConstraint = 360
+        } else if (elementHeight < 1000) {
+          videoConstraint = 720
+        } else {
+          videoConstraint = 1080
+        }
+
+        console.log('calculateVideoConstraint', elementHeight, videoConstraint)
+
+        this.conference.selectAllParticipants()
+        this.conference.setReceiverVideoConstraint(videoConstraint)
       }
-
-      console.log('calculateVideoConstraint', elementHeight, videoConstraint)
-
-      this.conference.selectAllParticipants()
-      this.conference.setReceiverVideoConstraint(videoConstraint)
     }
   }
 
@@ -106,7 +108,7 @@ export default class VideoGrid extends React.Component {
   }
 
   getCssClassNames () {
-    let classNames = ['grid']
+    let classNames = ['gridView']
 
     classNames.push(this.props.videoZoomed ? 'videoCropped' : 'videoOriginal')
 

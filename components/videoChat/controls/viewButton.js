@@ -22,7 +22,7 @@ export default class ViewButton extends React.Component {
     // Flip the state
     this.setState({ zoomed })
 
-    this.props.onToggle(zoomed)
+    this.props.onToggle(zoomed ? 'grid' : 'single')
 
     matopush(['trackEvent', 'videoChat', 'videoButton', 'toggle'])
   }

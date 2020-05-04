@@ -1,10 +1,10 @@
+import GridView from './gridView'
 import React from 'react'
 import SettingsButton from './controls/settingsButton'
+import SingleView from './singleView'
 import VideoChatControls from './controls/videoChatControls'
-import VideoGrid from './videoGrid'
 import ViewButton from './controls/viewButton'
 import _chunk from 'lodash/chunk'
-import { debounce } from 'lodash'
 import { observer } from 'mobx-react'
 
 @observer
@@ -12,15 +12,15 @@ export default class VideoChat extends React.Component {
   constructor (props) {
     super(props)
 
-    this.handleToggleVideoZoom = this.handleToggleVideoZoom.bind(this)
+    this.handleViewChange = this.handleViewChange.bind(this)
 
     this.state = {
-      videoZoomed: false
+      view: 'single'
     }
   }
 
-  handleToggleVideoZoom (zoomed) {
-    this.setState({ videoZoomed: zoomed })
+  handleViewChange (view) {
+    this.setState({ view: view })
   }
 
   render () {
@@ -32,12 +32,19 @@ export default class VideoChat extends React.Component {
           <h1>bipbop</h1>
           <div className='controls'>
             <div className='right'>
-              <ViewButton onToggle={this.handleToggleVideoZoom} />
+              <ViewButton onToggle={this.handleViewChange} />
               <SettingsButton localParticipant={localParticipant} />
             </div>
           </div>
         </header>
-        <VideoGrid conference={this.props.conference} videoZoomed={this.state.videoZoomed} />
+        {this.state.view === 'single' &&
+          <SingleView conference={this.props.conference} videoZoomed={this.state.videoZoomed} />
+        }
+
+        {this.state.view === 'grid' &&
+          <GridView conference={this.props.conference} videoZoomed={this.state.videoZoomed} />
+        }
+
         <VideoChatControls conference={this.props.conference} localParticipant={localParticipant} onLeave={this.props.onLeave} onToggleChat={this.props.onToggleChat} />
       </div>
     ) : null

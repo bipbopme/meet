@@ -11,7 +11,7 @@ export default class ViewButton extends React.Component {
     this.handleClick = this.handleClick.bind(this)
 
     this.state = {
-      zoomed: true
+      zoomed: false
     }
   }
 

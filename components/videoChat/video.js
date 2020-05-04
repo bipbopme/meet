@@ -11,6 +11,7 @@ export default class Video extends React.Component {
     super(props)
 
     this.participant = this.props.participant
+    this.videoContainerRef = React.createRef()
     this.videoRef = React.createRef()
     this.audioRef = React.createRef()
     this.handleClick = this.handleClick.bind(this)
@@ -82,6 +83,8 @@ export default class Video extends React.Component {
       console.debug('Remove video track')
       prevProps.videoTrack.detach()
     }
+
+    this.detectAspectRatio()
   }
 
   // TODO: This is a hack to catch video disconnects faster.
@@ -102,6 +105,7 @@ export default class Video extends React.Component {
 
   handleVideoCanPlay () {
     this.updateVideoTagStaus(true)
+    this.detectAspectRatio()
   }
 
   handleVideoEmptied () {
@@ -112,6 +116,19 @@ export default class Video extends React.Component {
   updateVideoTagStaus (active) {
     if (this.participant) {
       this.participant.isVideoTagActive = active
+    }
+  }
+
+  detectAspectRatio () {
+    let containerEl = this.videoContainerRef.current
+    let videoEl = this.videoRef.current
+
+    if (containerEl && videoEl) {
+      let className = (videoEl.videoWidth / videoEl.videoHeight) < (16 / 9) ?
+        'narrowAspect' : 'wideAspect'
+
+        containerEl.classList.remove('narrowAspect', 'wideAspect')
+        containerEl.classList.add(className)
     }
   }
 
@@ -144,7 +161,7 @@ export default class Video extends React.Component {
 
   render () {
     return (
-      <div className={this.getClassNames()}>
+      <div className={this.getClassNames()} ref={this.videoContainerRef}>
         <video ref={this.videoRef} autoPlay playsInline />
         <audio ref={this.audioRef} autoPlay muted={this.props.isLocal} />
         {this.props.isAudioMuted &&

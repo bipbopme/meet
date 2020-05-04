@@ -16,14 +16,14 @@ export default class VideoChat extends React.Component {
     this.videosRef = React.createRef()
 
     this.conference = props.conference
-    this.handleResizeDebounced = debounce(this.handleResize.bind(this), 25)
+    this.handleResizeDebounced = debounce(this.handleResize.bind(this), 20)
     this.calculateVideoContraintDebounced = debounce(this.calculateVideoConstraint.bind(this), 1000)
     this.handleToggleVideoZoom = this.handleToggleVideoZoom.bind(this)
 
-    window.addEventListener('resize', this.handleResizeDebounced, 50)
+    window.addEventListener('resize', this.handleResizeDebounced)
 
     this.state = {
-      videoZoomed: true
+      videoZoomed: false
     }
   }
 
@@ -32,13 +32,11 @@ export default class VideoChat extends React.Component {
   }
 
   componentDidUpdate () {
-    console.warn('componentDidUpdate', this.state)
     this.handleResize()
   }
 
   handleResize () {
     if (this.videosRef.current && this.gridDimensions) {
-      console.warn('handleResize', this.state)
       this.updateVideoDimensions({ gridDimensions: this.gridDimensions, zoom: this.state.videoZoomed })
       this.calculateVideoContraintDebounced()
     }
@@ -72,20 +70,19 @@ export default class VideoChat extends React.Component {
   getGridDimensions (count) {
     let sqrt = Math.sqrt(count)
     let rows = Math.ceil(sqrt)
-    console.warn({ sqrt })
     let columns = sqrt === rows || (sqrt - Math.floor(sqrt)) >= 0.5 ?  rows : rows - 1
 
     return { columns, rows }
   }
 
-  updateVideoDimensions ({ gridDimensions, zoom = false, aspectRatio = 16/9, minContainerWidth = 900, videoMargin = 1 }) {
+  updateVideoDimensions ({ gridDimensions, zoom = false, aspectRatio = 16/9, minContainerWidth = 900, videoMargin = 5 }) {
     let containerHeight = this.videosRef.current.offsetHeight
     let containerWidth = this.videosRef.current.offsetWidth
-    let doubleVideoMargin = videoMargin * 2
+    let combinedMargin = videoMargin * 2
 
     // Remove margin from the container calculation
-    containerHeight = containerHeight - doubleVideoMargin
-    containerWidth = containerWidth - doubleVideoMargin
+    containerHeight = containerHeight - combinedMargin
+    containerWidth = containerWidth - combinedMargin
 
     let cover = zoom || containerWidth <= minContainerWidth
     let height, width
@@ -108,8 +105,8 @@ export default class VideoChat extends React.Component {
     }
 
     // Adjust video size to account for margin
-    height = Math.floor(height) - doubleVideoMargin
-    width = Math.floor(width) - doubleVideoMargin
+    height = height - combinedMargin
+    width = width - combinedMargin
 
     document.documentElement.style.setProperty('--video-height', `${height}px`)
     document.documentElement.style.setProperty('--video-width', `${width}px`)
@@ -138,8 +135,8 @@ export default class VideoChat extends React.Component {
             </div>
           </div>
         </header>
-        <section className={`videos ${this.state.videoZoomed ? 'videoZoomed' : 'videoOriginal'}`} ref={this.videosRef}>
-          <div className='grid'>
+        <section className='videos' ref={this.videosRef}>
+          <div className={`grid ${this.state.videoZoomed ? 'videoCropped' : 'videoOriginal'}`}>
             {participantChunks.map(participants => (
               <div className='row'>
                 {participants.map(participant => (

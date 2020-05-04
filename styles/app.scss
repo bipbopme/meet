@@ -333,7 +333,6 @@ $transparent-white: rgba(255,255,255, 0.97);
   }
 
   .videos {
-    //background: linear-gradient(#333, #444);
     align-items: center;
     display: flex;
     justify-content: center;
@@ -351,221 +350,75 @@ $transparent-white: rgba(255,255,255, 0.97);
         flex-grow: 1;
 
         .video {
+          border-radius: 15px;
+          background: #000;
           height: var(--video-height);
           margin: var(--video-margin);
           overflow: hidden;
+          position: relative;
           width: var(--video-width);
 
           video {
-            // border-radius: 10px;
             height: 100%;
             width: 100%;
-            object-fit: var(--video-cover);
+            object-fit: contain;
+          }
+
+          &.cameraVideoType {
+            &.wideAspect {
+              background: transparent;
+
+              video {
+                // This is already close to the correct aspect ratio but this fills in gaps
+                object-fit: cover;
+              }
+            }
+
+            &.local video {
+              transform: scaleX(-1);
+            }
+          }
+
+          &.videoMuted {
+            background: #555 !important;
+
+            .fa-video-slash {
+              font-size: 36px;
+              color: #fff;
+              left: 50%;
+              position: absolute;
+              top: 50%;
+              transform: translate(-50%, -50%);
+            }
+
+            video {
+              display: none;
+            }
+          }
+
+          &.audioMuted {
+            .fa-microphone-slash {
+              color: #fff;
+              bottom: 20px;
+              position: absolute;
+              right: 20px;
+            }
           }
         }
       }
 
-      // 2x3 = (16 + 16) / (9 + 9)
-      // @include responsive('min-aspect-ratio: 32/18') {
-      //   .row {
-      //     video {
-      //       width: calc(50vh * (16/9));
-      //     }
-      //   }
-      // }
+      &.videoCropped {
+        .row {
+          .video {
+            &.cameraVideoType.wideAspect {
+              video {
+                object-fit: cover;
+              }
+            }
+          }
+        }
+      }
     }
-
-    // .video {
-    //   overflow: hidden;
-    //   position: relative;
-
-    //   &.videoMuted {
-    //     background: #555;
-
-    //     .fa-video-slash {
-    //       font-size: 36px;
-    //       color: #fff;
-    //       left: 50%;
-    //       position: absolute;
-    //       top: 50%;
-    //       transform: translate(-50%, -50%);
-    //     }
-
-    //     video {
-    //       display: none;
-    //     }
-    //   }
-
-    //   &.audioMuted {
-    //     .fa-microphone-slash {
-    //       color: #fff;
-    //       bottom: 20px;
-    //       position: absolute;
-    //       right: 20px;
-    //     }
-    //   }
-
-    //   video {
-    //     height: 100%;
-    //     width: 100%;
-    //   }
-
-    //   &.cameraVideoType {
-    //     &.local video {
-    //       transform: scaleX(-1);
-    //     }
-
-    //     &.coverVideo video {
-    //       object-fit: cover;
-    //     }
-
-    //     &.containVideo video {
-    //       object-fit: contain;
-    //     }
-    //   }
-    // }
-
-    // &.videos-count-3-or-more {
-    //   .dominantSpeaker {
-    //     border: 1px solid blue;
-    //   }
-    // }
-
-    // // Grids and absolute positioning don't mix
-    // &.videos-count-1, &.videos-count-2 {
-    //   display: block;
-
-    //   .video:nth-child(1) {
-    //     width: 100%;
-    //     height: 100%;
-    //   }
-    // }
-
-    // &.videos-count-2 {
-    //   display: block;
-
-    //   .video:nth-child(2) {
-    //     position: absolute;
-    //     top: 70px;
-    //     right: 0;
-
-    //     video {
-    //       height: auto;
-    //       max-height: 150px;
-    //       width: auto;
-    //     }
-    //   }
-    // }
-
-    // &.videos-count-3 {
-    //   .video:nth-child(1) {
-    //     grid-area: 1 / 1 / 7 / 7;
-    //   }
-
-    //   .video:nth-child(2) {
-    //     grid-area: 1 / 7 / 7 / 13;
-    //   }
-
-    //   .video:nth-child(3) {
-    //     grid-area: 7 / 4 / 13 / 10;
-    //   }
-    // }
-
-    // &.videos-count-4 {
-    //   .video:nth-child(1) {
-    //     grid-area: 1 / 1 / 7 / 7;
-    //   }
-
-    //   .video:nth-child(2) {
-    //     grid-area: 1 / 7 / 7 / 13;
-    //   }
-
-    //   .video:nth-child(3) {
-    //     grid-area: 7 / 1 / 13 / 7;
-    //   }
-
-    //   .video:nth-child(4) {
-    //     grid-area: 7 / 7 / 13 / 13;
-    //   }
-    // }
-
-    // &.videos-count-5 {
-    //   .video:nth-child(1) {
-    //     grid-area: 1 / 1 / 5 / 7;
-    //   }
-
-    //   .video:nth-child(2) {
-    //     grid-area: 1 / 7 / 5 / 13;
-    //   }
-
-    //   .video:nth-child(3) {
-    //     grid-area: 5 / 1 / 9 / 7;
-    //   }
-
-    //   .video:nth-child(4) {
-    //     grid-area: 5 / 7 / 9 / 13;
-    //   }
-
-    //   .video:nth-child(5) {
-    //     grid-area: 9 / 4 / 13 / 10;
-    //   }
-    // }
-
-    // &.videos-count-6 {
-    //   .video:nth-child(1) {
-    //     grid-area: 1 / 1 / 5 / 7;
-    //   }
-
-    //   .video:nth-child(2) {
-    //     grid-area: 1 / 7 / 5 / 13;
-    //   }
-
-    //   .video:nth-child(3) {
-    //     grid-area: 5 / 1 / 9 / 7;
-    //   }
-
-    //   .video:nth-child(4) {
-    //     grid-area: 5 / 7 / 9 / 13;
-    //   }
-
-    //   .video:nth-child(5) {
-    //     grid-area: 9 / 1 / 13 / 7;
-    //   }
-
-    //   .video:nth-child(6) {
-    //     grid-area: 9 / 7 / 13 / 13;
-    //   }
-    // }
-
-    // // 3x3
-    // &.videos-count-7,  &.videos-count-8, &.videos-count-9 {
-    //   grid-template-columns: repeat(3, 1fr);
-    //   grid-template-rows: repeat(3, 1fr);
-    // }
-
-    // // 3x4
-    // &.videos-count-10,  &.videos-count-11, &.videos-count-12 {
-    //   grid-template-columns: repeat(3, 1fr);
-    //   grid-template-rows: repeat(4, 1fr);
-    // }
-
-    // // 4x4
-    // &.videos-count-13,  &.videos-count-14, &.videos-count-15, &.videos-count-16 {
-    //   grid-template-columns: repeat(4, 1fr);
-    //   grid-template-rows: repeat(4, 1fr);
-    // }
-
-    // // 4x5
-    // &.videos-count-17,  &.videos-count-18, &.videos-count-19, &.videos-count-20 {
-    //   grid-template-columns: repeat(4, 1fr);
-    //   grid-template-rows: repeat(4, 1fr);
-    // }
-
-    // // 5x5
-    // &.videos-count-21,  &.videos-count-22, &.videos-count-23, &.videos-count-24, &.videos-count-25 {
-    //   grid-template-columns: repeat(5, 1fr);
-    //   grid-template-rows: repeat(5, 1fr);
-    // }
   }
 
   .controls {

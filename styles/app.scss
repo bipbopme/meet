@@ -3,6 +3,7 @@
 @import 'mixins';
 
 $breakpoint: 'max-width: 960px';
+$aspectBreakpoint: 'max-aspect-ratio: 3/4';
 
 $transparent-white: rgba(255,255,255, 0.97);
 
@@ -95,6 +96,8 @@ $transparent-white: rgba(255,255,255, 0.97);
 
     > header {
       top: 0;
+
+      display: none;
     }
 
     > section {
@@ -334,30 +337,99 @@ $transparent-white: rgba(255,255,255, 0.97);
 
   .videos {
     align-items: center;
+    background: #111;
     display: flex;
     justify-content: center;
     padding: 0;
     position: relative;
+
+    .video {
+      overflow: hidden;
+      position: relative;
+
+      video {
+        height: 100%;
+        width: 100%;
+        object-fit: contain;
+      }
+
+      &.cameraVideoType {
+        &.local video {
+          transform: scaleX(-1);
+        }
+
+        &.wideAspect {
+          background: transparent;
+
+          video {
+            // The container is the matching aspect ratio
+            object-fit: cover;
+          }
+        }
+      }
+
+      &.videoMuted {
+        background: #555 !important;
+
+        .fa-video-slash {
+          font-size: 36px;
+          color: #fff;
+          left: 50%;
+          position: absolute;
+          top: 50%;
+          transform: translate(-50%, -50%);
+        }
+
+        video {
+          visibility: hidden;
+        }
+      }
+
+      &.audioMuted {
+        .fa-microphone-slash {
+          color: #fff;
+          bottom: 20px;
+          position: absolute;
+          left: 20px;
+        }
+      }
+    }
+
+    .cropped {
+      .video {
+        // Cover all the things on narrow screens
+        @include responsive($aspectBreakpoint) {
+          video {
+            object-fit: cover !important;
+          }
+        }
+      }
+    }
 
     .singleView {
       height: 100%;
       width: 100%;
 
       .nonSpeakingParticipants {
-        background: #fff;
-        align-items: center;
+        background: #000;
         display: flex;
-        justify-content: center;
-        left: 0;
+        flex-direction: column;
+        max-width: 100%;
+        max-height: 100%;
         position: absolute;
-        top: 75px;
-        width: 100%;
+        right: 0;
+        top: 0;
+        z-index: 10;
 
         .video {
+          height: calc(15 / (16/9))vh;
+          width: 15vw;
+        }
 
-          video {
-            height: 100px;
-          }
+        @include responsive($aspectBreakpoint) {
+          left: 0;
+          flex-direction: row;
+          right: unset;
         }
       }
 
@@ -370,9 +442,28 @@ $transparent-white: rgba(255,255,255, 0.97);
           width: 100%;
 
           video {
-            height: 100%;
             object-fit: contain;
-            width: 100%;
+          }
+        }
+      }
+
+      &.cropped {
+        .nonSpeakingParticipants {
+          @include responsive($aspectBreakpoint) {
+            .video {
+              width: calc(15vh / (16/9)) !important;
+              height: 15vh !important;
+            }
+          }
+        }
+
+        .speakingParticipant {
+          .video {
+            &.wideAspect {
+              video {
+                object-fit: cover;
+              }
+            }
           }
         }
       }
@@ -393,68 +484,7 @@ $transparent-white: rgba(255,255,255, 0.97);
           background: #000;
           height: var(--video-height);
           margin: var(--video-margin);
-          overflow: hidden;
-          position: relative;
           width: var(--video-width);
-
-          video {
-            height: 100%;
-            width: 100%;
-            object-fit: contain;
-          }
-
-          &.cameraVideoType {
-            &.wideAspect {
-              background: transparent;
-
-              video {
-                // This is already close to the correct aspect ratio but this fills in gaps
-                object-fit: cover;
-              }
-            }
-
-            &.local video {
-              transform: scaleX(-1);
-            }
-          }
-
-          &.videoMuted {
-            background: #555 !important;
-
-            .fa-video-slash {
-              font-size: 36px;
-              color: #fff;
-              left: 50%;
-              position: absolute;
-              top: 50%;
-              transform: translate(-50%, -50%);
-            }
-
-            video {
-              display: none;
-            }
-          }
-
-          &.audioMuted {
-            .fa-microphone-slash {
-              color: #fff;
-              bottom: 20px;
-              position: absolute;
-              right: 20px;
-            }
-          }
-        }
-      }
-
-      &.videoCropped {
-        .row {
-          .video {
-            &.cameraVideoType.wideAspect {
-              video {
-                object-fit: cover;
-              }
-            }
-          }
         }
       }
     }

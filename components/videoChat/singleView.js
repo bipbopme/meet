@@ -33,7 +33,7 @@ export default class SingleView extends React.Component {
   getCssClassNames () {
     let classNames = ['singleView']
 
-    classNames.push(this.props.videoZoomed ? 'videoCropped' : 'videoOriginal')
+    classNames.push(this.props.crop ? 'cropped' : 'uncropped')
 
     return classNames.join(' ')
   }
@@ -42,7 +42,7 @@ export default class SingleView extends React.Component {
     const { participants, localParticipant } = this.props.conference
 
     const speakingParticipant = participants.filter(p => p.isDominantSpeaker)[0] || participants[0] || localParticipant
-    const nonSpeakingParticipants = [...participants.filter(p => p.isVideoTagActive), localParticipant].filter(p => p !== speakingParticipant)
+    const nonSpeakingParticipants = [localParticipant, ...participants.filter(p => p.isVideoTagActive)].filter(p => p !== speakingParticipant)
     const disabledParticipants = participants.filter(p => !p.isVideoTagActive)
 
     console.warn('PARTICIPANTS', speakingParticipant, nonSpeakingParticipants, disabledParticipants)

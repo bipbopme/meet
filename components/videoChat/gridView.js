@@ -28,7 +28,7 @@ export default class GridView extends React.Component {
 
   handleGridResize () {
     if (this.videosRef.current && this.gridDimensions) {
-      this.updateVideoDimensions({ gridDimensions: this.gridDimensions, zoom: this.props.videoZoomed })
+      this.updateVideoDimensions({ gridDimensions: this.gridDimensions, crop: this.props.crop })
       this.calculateVideoConstraintDebounced()
     }
   }
@@ -68,7 +68,7 @@ export default class GridView extends React.Component {
     return { columns, rows }
   }
 
-  updateVideoDimensions ({ gridDimensions, zoom = false, aspectRatio = 16/9, minContainerWidth = 900, videoMargin = 5 }) {
+  updateVideoDimensions ({ gridDimensions, crop = false, aspectRatio = 16/9, minContainerWidth = 900, videoMargin = 5 }) {
     let containerHeight = this.videosRef.current.offsetHeight
     let containerWidth = this.videosRef.current.offsetWidth
     let combinedMargin = videoMargin * 2
@@ -77,7 +77,7 @@ export default class GridView extends React.Component {
     containerHeight = containerHeight - combinedMargin
     containerWidth = containerWidth - combinedMargin
 
-    let cover = zoom || containerWidth <= minContainerWidth
+    let cover = crop || containerWidth <= minContainerWidth
     let height, width
 
     // Fill all the available space
@@ -110,7 +110,7 @@ export default class GridView extends React.Component {
   getCssClassNames () {
     let classNames = ['gridView']
 
-    classNames.push(this.props.videoZoomed ? 'videoCropped' : 'videoOriginal')
+    classNames.push(this.props.crop ? 'cropped' : 'uncropped')
 
     return classNames.join(' ')
   }

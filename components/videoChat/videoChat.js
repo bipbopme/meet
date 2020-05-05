@@ -13,14 +13,21 @@ export default class VideoChat extends React.Component {
     super(props)
 
     this.handleViewChange = this.handleViewChange.bind(this)
+    this.handleCropChange = this.handleCropChange.bind(this)
 
     this.state = {
-      view: 'single'
+      view: 'single',
+      crop: true
     }
   }
 
   handleViewChange (view) {
     this.setState({ view: view })
+  }
+
+  handleCropChange (crop) {
+    console.warn('CROP CHANGE', crop)
+    this.setState({ crop: crop })
   }
 
   render () {
@@ -38,14 +45,12 @@ export default class VideoChat extends React.Component {
           </div>
         </header>
         {this.state.view === 'single' &&
-          <SingleView conference={this.props.conference} videoZoomed={this.state.videoZoomed} />
+          <SingleView conference={this.props.conference} crop={this.state.crop} />
         }
-
         {this.state.view === 'grid' &&
-          <GridView conference={this.props.conference} videoZoomed={this.state.videoZoomed} />
+          <GridView conference={this.props.conference} crop={this.state.crop} />
         }
-
-        <VideoChatControls conference={this.props.conference} localParticipant={localParticipant} onLeave={this.props.onLeave} onToggleChat={this.props.onToggleChat} />
+        <VideoChatControls conference={this.props.conference} localParticipant={localParticipant} onLeave={this.props.onLeave} onToggleChat={this.props.onToggleChat} onViewChange={this.handleViewChange} onCropChange={this.handleCropChange} />
       </div>
     ) : null
   }

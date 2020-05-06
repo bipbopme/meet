@@ -349,6 +349,14 @@ $transparent-white: rgba(255,255,255, 0.97);
       position: relative;
       transition: 250ms;
 
+      &.active {
+        opacity: 1;
+      }
+
+      &.inactive {
+        opacity: 0.2;
+      }
+
       video {
         height: 100%;
         width: 100%;

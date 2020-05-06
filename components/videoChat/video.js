@@ -84,7 +84,7 @@ export default class Video extends React.Component {
       prevProps.videoTrack.detach()
     }
 
-    this.detectAspectRatio()
+    this.updateAspectRatio()
   }
 
   // TODO: This is a hack to catch video disconnects faster.
@@ -105,7 +105,7 @@ export default class Video extends React.Component {
 
   handleVideoCanPlay () {
     this.updateVideoTagStaus(true)
-    this.detectAspectRatio()
+    this.updateAspectRatio()
   }
 
   handleVideoEmptied () {
@@ -119,7 +119,7 @@ export default class Video extends React.Component {
     }
   }
 
-  detectAspectRatio () {
+  updateAspectRatio () {
     let containerEl = this.videoContainerRef.current
     let videoEl = this.videoRef.current
 

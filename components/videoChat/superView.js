@@ -6,34 +6,42 @@ import { debounce } from 'lodash'
 import { observer } from 'mobx-react'
 
 @observer
-export default class GridView extends React.Component {
+export default class SuperView extends React.Component {
   constructor (props) {
     super(props)
 
     this.videosRef = React.createRef()
     this.conference = props.conference
-    this.handleGridResizeDebounced = debounce(this.handleGridResize.bind(this), 500)
-    this.calculateVideoConstraintDebounced = debounce(this.calculateVideoConstraint.bind(this), 1000)
+    this.handleViewResizeDebounced = debounce(this.handleViewResize.bind(this), 500)
+    this.updateGridVideoConstraintsDebounced = debounce(this.updateGridVideoConstraints.bind(this), 1000)
 
-    window.addEventListener('resize', this.handleGridResizeDebounced)
+    window.addEventListener('resize', this.handleViewResizeDebounced)
+  }
+
+  isGridView () {
+    return this.props.view === 'grid'
   }
 
   componentDidMount () {
-    this.handleGridResize()
+    this.handleViewResize()
   }
 
   componentDidUpdate () {
-    this.handleGridResize()
+    this.handleViewResize()
   }
 
-  handleGridResize () {
-    if (this.videosRef.current && this.gridDimensions) {
-      this.updateVideoDimensions({ gridDimensions: this.gridDimensions, crop: this.props.crop })
-      this.calculateVideoConstraintDebounced()
+  handleViewResize () {
+    if (this.isGridView()) {
+      if (this.videosRef.current && this.gridDimensions) {
+        this.updateGridVideoDimensions({ gridDimensions: this.gridDimensions, crop: this.props.crop })
+        this.updateGridVideoConstraintsDebounced()
+      }
+    } else {
+      this.updateSingleVideoConstraints()
     }
   }
 
-  calculateVideoConstraint () {
+  updateGridVideoConstraints () {
     if (this.videosRef.current) {
       const sampleVideoContainer = this.videosRef.current.getElementsByClassName('video')[0]
 
@@ -52,11 +60,18 @@ export default class GridView extends React.Component {
           videoConstraint = 1080
         }
 
-        console.log('calculateVideoConstraint', elementHeight, videoConstraint)
+        console.log('updateGridVideoConstraints', elementHeight, videoConstraint)
 
         this.conference.selectAllParticipants()
         this.conference.setReceiverVideoConstraint(videoConstraint)
       }
+    }
+  }
+
+  updateSingleVideoConstraints () {
+    if (this.speakingParticipant) {
+      this.conference.selectParticipants([this.speakingParticipant.id])
+      this.conference.setReceiverVideoConstraint(720)
     }
   }
 
@@ -68,7 +83,7 @@ export default class GridView extends React.Component {
     return { columns, rows }
   }
 
-  updateVideoDimensions ({ gridDimensions, crop = false, aspectRatio = 16/9, minContainerWidth = 900, videoMargin = 5 }) {
+  updateGridVideoDimensions ({ gridDimensions, crop = false, aspectRatio = 16/9, videoMargin = 5 }) {
     let containerHeight = this.videosRef.current.offsetHeight
     let containerWidth = this.videosRef.current.offsetWidth
     let combinedMargin = videoMargin * 2
@@ -77,11 +92,10 @@ export default class GridView extends React.Component {
     containerHeight = containerHeight - combinedMargin
     containerWidth = containerWidth - combinedMargin
 
-    let cover = crop || containerWidth <= minContainerWidth
     let height, width
 
     // Fill all the available space
-    if (cover) {
+    if (crop) {
       height = containerHeight / gridDimensions.rows
       width = containerWidth / gridDimensions.columns
     // Keep aspect ratio
@@ -104,18 +118,17 @@ export default class GridView extends React.Component {
     this.videosRef.current.style.setProperty('--video-height', `${height}px`)
     this.videosRef.current.style.setProperty('--video-width', `${width}px`)
     this.videosRef.current.style.setProperty('--video-margin', `${videoMargin}px`)
-    this.videosRef.current.style.setProperty('--video-cover', cover ? 'cover' : 'contain')
   }
 
-  getCssClassNames () {
-    let classNames = ['gridView']
+  getCssClassNames (view) {
+    let classNames = [`${view}View`]
 
     classNames.push(this.props.crop ? 'cropped' : 'uncropped')
 
     return classNames.join(' ')
   }
 
-  render () {
+  renderGrid () {
     const { participants, localParticipant, status } = this.props.conference
     const activeParticipants = [...participants.filter(p => p.isVideoTagActive), localParticipant]
     const disabledParticipants = participants.filter(p => !p.isVideoTagActive)
@@ -127,7 +140,7 @@ export default class GridView extends React.Component {
 
     return (
       <section className='videos' ref={this.videosRef}>
-        <div className={this.getCssClassNames()}>
+        <div className={this.getCssClassNames('grid')}>
           {participantChunks.map((participants, chunkIndex) => (
             <div key={`row-${chunkIndex}`}className='row'>
               {participants.map(participant => (
@@ -145,5 +158,46 @@ export default class GridView extends React.Component {
         </Portal>
       </section>
     )
+  }
+
+  renderSingle () {
+    const { participants, localParticipant } = this.props.conference
+
+    const activeParticipants = participants.filter(p => p.isVideoTagActive)
+    const disabledParticipants = participants.filter(p => !p.isVideoTagActive)
+    const sortedParticipants = activeParticipants.sort((a, b) => b.lastDominantSpeakerAt - a.lastDominantSpeakerAt)
+    const speakingParticipant = sortedParticipants.filter(p => p.isDominantSpeaker)[0] || sortedParticipants[0] || localParticipant
+    const nonSpeakingParticipants = [localParticipant, ...sortedParticipants].filter(p => p !== speakingParticipant)
+
+    // Save the speaking participant in order to update video contraints
+    this.speakingParticipant = speakingParticipant
+
+    return (
+      <section className='videos' ref={this.videosRef}>
+        <div className={this.getCssClassNames('single')}>
+          <div className='nonSpeakingParticipants'>
+            {nonSpeakingParticipants.map(participant => (
+              <Video key={participant.id} isLocal={participant.isLocal} participant={participant} audioTrack={participant.audioTrack} videoTrack={participant.videoTrack} isAudioMuted={participant.isAudioMuted} isVideoMuted={participant.isVideoMuted} isDominantSpeaker={participant.isDominantSpeaker} />
+            ))}
+          </div>
+          <div className='speakingParticipant'>
+            {speakingParticipant &&
+              <Video key={speakingParticipant.id} isLocal={speakingParticipant.isLocal} speakingParticipant={speakingParticipant} audioTrack={speakingParticipant.audioTrack} videoTrack={speakingParticipant.videoTrack} isAudioMuted={speakingParticipant.isAudioMuted} isVideoMuted={speakingParticipant.isVideoMuted} isDominantSpeaker={speakingParticipant.isDominantSpeaker} />
+            }
+          </div>
+        </div>
+        <Portal>
+          <div className='disabledVideos'>
+            {disabledParticipants.map(participant => (
+              <Video key={participant.id} participant={participant} audioTrack={participant.audioTrack} videoTrack={participant.videoTrack} isAudioMuted={participant.isAudioMuted} isVideoMuted={participant.isVideoMuted} isDominantSpeaker={participant.isDominantSpeaker} />
+            ))}
+          </div>
+        </Portal>
+      </section>
+    )
+  }
+
+  render () {
+    return this.props.view === 'grid' ? this.renderGrid() : this.renderSingle()
   }
 }

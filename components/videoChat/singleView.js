@@ -41,10 +41,13 @@ export default class SingleView extends React.Component {
   render () {
     const { participants, localParticipant } = this.props.conference
 
-    const speakingParticipant = participants.filter(p => p.isDominantSpeaker)[0] || participants[0] || localParticipant
-    const nonSpeakingParticipants = [localParticipant, ...participants.filter(p => p.isVideoTagActive)].filter(p => p !== speakingParticipant)
+    // TODO: Clean this up!
+    const sortedParticipants = participants.slice().sort((a, b) => b.lastDominantSpeakerAt - a.lastDominantSpeakerAt)
+    const speakingParticipant = sortedParticipants.filter(p => p.isDominantSpeaker)[0] || sortedParticipants[0] || localParticipant
+    const nonSpeakingParticipants = [localParticipant, ...sortedParticipants.filter(p => p.isVideoTagActive)].filter(p => p !== speakingParticipant)
     const disabledParticipants = participants.filter(p => !p.isVideoTagActive)
 
+    console.warn('SORTED', sortedParticipants)
     console.warn('PARTICIPANTS', speakingParticipant, nonSpeakingParticipants, disabledParticipants)
 
     // Save the speaking participant in order to update video contraints

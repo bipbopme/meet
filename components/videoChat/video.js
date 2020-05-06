@@ -14,13 +14,8 @@ export default class Video extends React.Component {
     this.videoContainerRef = React.createRef()
     this.videoRef = React.createRef()
     this.audioRef = React.createRef()
-    this.handleClick = this.handleClick.bind(this)
     this.handleVideoCanPlay = this.handleVideoCanPlay.bind(this)
     this.handleVideoEmptied = this.handleVideoEmptied.bind(this)
-
-    this.state = {
-      cover: false
-    }
   }
 
   componentDidMount () {
@@ -111,10 +106,6 @@ export default class Video extends React.Component {
     }
   }
 
-  handleClick () {
-    this.setState({ cover: !this.state.cover })
-  }
-
   handleVideoCanPlay () {
     this.updateVideoTagStaus(true)
     this.updateAspectRatio()
@@ -167,7 +158,6 @@ export default class Video extends React.Component {
     }
 
     classNames.push(isVideoActive ? 'active' : 'inactive')
-    classNames.push(this.state.cover ? 'coverVideo' : 'containVideo')
 
     return classNames.join(' ')
   }

@@ -30,8 +30,8 @@ export default class VideoChatControls extends React.Component {
           <VideoButton localParticipant={this.props.localParticipant} />
         </div>
         <div className='right'>
-          <ViewButton onToggle={this.props.onViewChange} />
-          <CropButton onToggle={this.props.onCropChange} />
+          <ViewButton view={this.props.view} onToggle={this.props.onViewChange} />
+          <CropButton crop={this.props.crop} onToggle={this.props.onCropChange} />
           {/* <TextChatButton conference={this.props.conference} onToggleChat={this.props.onToggleChat} /> */}
         </div>
       </footer>

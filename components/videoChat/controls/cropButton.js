@@ -9,20 +9,13 @@ export default class CropButton extends React.Component {
     super(props)
 
     this.handleClick = this.handleClick.bind(this)
-
-    this.state = {
-      cropped: true
-    }
   }
 
   handleClick () {
     // Toggle cropped
-    const cropped = !this.state.cropped
+    const crop = !this.props.crop
 
-    // Flip the state
-    this.setState({ cropped })
-
-    this.props.onToggle(cropped)
+    this.props.onToggle(crop)
 
     matopush(['trackEvent', 'videoChat', 'cropButton', 'toggle'])
   }
@@ -30,9 +23,9 @@ export default class CropButton extends React.Component {
   render () {
     return (
       <div className='button viewButton' title="Toggle video crop" onClick={this.handleClick}>
-        {this.state.cropped &&
+        {this.props.crop &&
           <FontAwesomeIcon icon={faCompressAlt} />}
-        {!this.state.cropped &&
+        {!this.props.crop &&
           <FontAwesomeIcon icon={faExpandAlt} />}
       </div>
     )

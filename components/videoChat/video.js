@@ -34,18 +34,30 @@ export default class Video extends React.Component {
     this.updateTrackAttachments(prevProps)
   }
 
+  componentWillUnmount () {
+    const { audioTrack, videoTrack } = this.props
+
+    if (audioTrack) {
+      audioTrack.detach()
+    }
+
+    if (videoTrack) {
+      audioTrack.detach()
+    }
+  }
+
   // TODO: This finally feels stable but needs to be simplified
   updateTrackAttachments (prevProps = {}) {
     // Add audio track
     if (!prevProps.audioTrack && this.props.audioTrack) {
-      console.debug('Add audio track')
+      console.info('Add audio track', prevProps, this.props)
       this.props.audioTrack.attach(this.audioRef.current)
     }
 
     // Update audio track
     if (prevProps.audioTrack && this.props.audioTrack) {
       if (prevProps.audioTrack.getId() !== this.props.audioTrack.getId()) {
-        console.debug('Replace audio track')
+        console.info('Replace audio track', prevProps, this.props)
         prevProps.audioTrack.detach()
         this.props.audioTrack.attach(this.audioRef.current)
       } else {
@@ -55,13 +67,13 @@ export default class Video extends React.Component {
 
     // Remove audio track
     if (prevProps.audioTrack && !this.props.audioTrack) {
-      console.debug('Remove audio track')
+      console.info('Remove audio track', prevProps, this.props)
       prevProps.audioTrack.detach()
     }
 
     // Add video track
     if (!prevProps.videoTrack && this.props.videoTrack) {
-      console.debug('Add video track')
+      console.info('Add video track', prevProps, this.props)
       this.props.videoTrack.attach(this.videoRef.current)
 
       this.watchTrackForDisconnect(this.props.videoTrack)
@@ -70,7 +82,7 @@ export default class Video extends React.Component {
     // Update video track
     if (prevProps.videoTrack && this.props.videoTrack) {
       if (prevProps.videoTrack.getId() !== this.props.videoTrack.getId()) {
-        console.debug('Replace video track')
+        console.info('Replace video track', prevProps, this.props)
         prevProps.videoTrack.detach()
         this.props.videoTrack.attach(this.videoRef.current)
       } else {
@@ -80,7 +92,7 @@ export default class Video extends React.Component {
 
     // Remove video track
     if (prevProps.videoTrack && !this.props.videoTrack) {
-      console.debug('Remove video track')
+      console.info('Remove video track', prevProps, this.props)
       prevProps.videoTrack.detach()
     }
 
@@ -133,7 +145,7 @@ export default class Video extends React.Component {
   }
 
   getClassNames () {
-    const { isLocal, isAudioMuted, isVideoMuted, isDominantSpeaker, videoTrack } = this.props
+    const { isLocal, isAudioMuted, isVideoMuted, isDominantSpeaker, videoTrack, isVideoActive } = this.props
     const classNames = ['video']
 
     classNames.push(isLocal ? 'local' : 'remote')
@@ -154,6 +166,7 @@ export default class Video extends React.Component {
       classNames.push(`${videoTrack.videoType}VideoType`)
     }
 
+    classNames.push(isVideoActive ? 'active' : 'inactive')
     classNames.push(this.state.cover ? 'coverVideo' : 'containVideo')
 
     return classNames.join(' ')

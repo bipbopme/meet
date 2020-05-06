@@ -1,4 +1,3 @@
-import { Portal } from 'react-portal'
 import React from 'react'
 import Video from './video'
 import _chunk from 'lodash/chunk'
@@ -12,7 +11,7 @@ export default class SuperView extends React.Component {
 
     this.videosRef = React.createRef()
     this.conference = props.conference
-    this.handleViewResizeDebounced = debounce(this.handleViewResize.bind(this), 500)
+    this.handleViewResizeDebounced = debounce(this.handleViewResize.bind(this), 250)
     this.updateGridVideoConstraintsDebounced = debounce(this.updateGridVideoConstraints.bind(this), 1000)
 
     window.addEventListener('resize', this.handleViewResizeDebounced)
@@ -130,13 +129,12 @@ export default class SuperView extends React.Component {
 
   renderGrid () {
     const { participants, localParticipant, status } = this.props.conference
-    const activeParticipants = [...participants.filter(p => p.isVideoTagActive), localParticipant]
-    const disabledParticipants = participants.filter(p => !p.isVideoTagActive)
+    const allParticipants = [...participants, localParticipant]
 
     // Save dimensions so we can calulate video dimensions after render
-    this.gridDimensions = this.getGridDimensions(activeParticipants.length)
+    this.gridDimensions = this.getGridDimensions(allParticipants.length)
 
-    const participantChunks = _chunk(activeParticipants, this.gridDimensions.columns)
+    const participantChunks = _chunk(allParticipants, this.gridDimensions.columns)
 
     return (
       <section className='videos' ref={this.videosRef}>
@@ -144,18 +142,11 @@ export default class SuperView extends React.Component {
           {participantChunks.map((participants, chunkIndex) => (
             <div key={`row-${chunkIndex}`}className='row'>
               {participants.map(participant => (
-                <Video key={participant.id} isLocal={participant.isLocal} participant={participant} audioTrack={participant.audioTrack} videoTrack={participant.videoTrack} isAudioMuted={participant.isAudioMuted} isVideoMuted={participant.isVideoMuted} isDominantSpeaker={participant.isDominantSpeaker} />
+                <Video key={participant.id} participant={participant} isLocal={participant.isLocal} audioTrack={participant.audioTrack} videoTrack={participant.videoTrack} isVideoActive={participant.isVideoTagActive} isAudioMuted={participant.isAudioMuted} isVideoMuted={participant.isVideoMuted} isDominantSpeaker={participant.isDominantSpeaker} />
               ))}
             </div>
           ))}
         </div>
-        <Portal>
-          <div className='disabledVideos'>
-            {disabledParticipants.map(participant => (
-              <Video key={participant.id} participant={participant} audioTrack={participant.audioTrack} videoTrack={participant.videoTrack} isAudioMuted={participant.isAudioMuted} isVideoMuted={participant.isVideoMuted} isDominantSpeaker={participant.isDominantSpeaker} />
-            ))}
-          </div>
-        </Portal>
       </section>
     )
   }
@@ -163,9 +154,7 @@ export default class SuperView extends React.Component {
   renderSingle () {
     const { participants, localParticipant } = this.props.conference
 
-    const activeParticipants = participants.filter(p => p.isVideoTagActive)
-    const disabledParticipants = participants.filter(p => !p.isVideoTagActive)
-    const sortedParticipants = activeParticipants.sort((a, b) => b.lastDominantSpeakerAt - a.lastDominantSpeakerAt)
+    const sortedParticipants = participants.slice().sort((a, b) => b.lastDominantSpeakerAt - a.lastDominantSpeakerAt)
     const speakingParticipant = sortedParticipants.filter(p => p.isDominantSpeaker)[0] || sortedParticipants[0] || localParticipant
     const nonSpeakingParticipants = [localParticipant, ...sortedParticipants].filter(p => p !== speakingParticipant)
 
@@ -177,22 +166,15 @@ export default class SuperView extends React.Component {
         <div className={this.getCssClassNames('single')}>
           <div className='nonSpeakingParticipants'>
             {nonSpeakingParticipants.map(participant => (
-              <Video key={participant.id} isLocal={participant.isLocal} participant={participant} audioTrack={participant.audioTrack} videoTrack={participant.videoTrack} isAudioMuted={participant.isAudioMuted} isVideoMuted={participant.isVideoMuted} isDominantSpeaker={participant.isDominantSpeaker} />
+              <Video key={participant.id} participant={participant} isLocal={participant.isLocal} isVideoActive={participant.isVideoTagActive} audioTrack={participant.audioTrack} videoTrack={participant.videoTrack} isAudioMuted={participant.isAudioMuted} isVideoMuted={participant.isVideoMuted} isDominantSpeaker={participant.isDominantSpeaker} />
             ))}
           </div>
           <div className='speakingParticipant'>
             {speakingParticipant &&
-              <Video key={speakingParticipant.id} isLocal={speakingParticipant.isLocal} speakingParticipant={speakingParticipant} audioTrack={speakingParticipant.audioTrack} videoTrack={speakingParticipant.videoTrack} isAudioMuted={speakingParticipant.isAudioMuted} isVideoMuted={speakingParticipant.isVideoMuted} isDominantSpeaker={speakingParticipant.isDominantSpeaker} />
+              <Video key={speakingParticipant.id} participant={speakingParticipant} isLocal={speakingParticipant.isLocal} isVideoActive={speakingParticipant.isVideoTagActive} audioTrack={speakingParticipant.audioTrack} videoTrack={speakingParticipant.videoTrack} isAudioMuted={speakingParticipant.isAudioMuted} isVideoMuted={speakingParticipant.isVideoMuted} isDominantSpeaker={speakingParticipant.isDominantSpeaker} />
             }
           </div>
         </div>
-        <Portal>
-          <div className='disabledVideos'>
-            {disabledParticipants.map(participant => (
-              <Video key={participant.id} participant={participant} audioTrack={participant.audioTrack} videoTrack={participant.videoTrack} isAudioMuted={participant.isAudioMuted} isVideoMuted={participant.isVideoMuted} isDominantSpeaker={participant.isDominantSpeaker} />
-            ))}
-          </div>
-        </Portal>
       </section>
     )
   }

@@ -431,14 +431,20 @@ $transparent-white: rgba(255,255,255, 0.97);
         top: 0;
         z-index: 10;
 
+        box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        border-bottom-left-radius: 10px;
+        overflow: hidden;
+
         .video {
-          height: calc(15 / (16/9))vh;
+          height: calc(15vw / (16/9));
           width: 15vw;
         }
 
         @include responsive($aspectBreakpoint) {
-          left: 0;
+          border-bottom-left-radius: 0;
+          border-bottom-right-radius: 10px;
           flex-direction: row;
+          left: 0;
           right: unset;
         }
       }
@@ -461,8 +467,8 @@ $transparent-white: rgba(255,255,255, 0.97);
         .nonSpeakingParticipants {
           @include responsive($aspectBreakpoint) {
             .video {
-              width: calc(15vh / (16/9)) !important;
-              height: 15vh !important;
+              width: calc(20vh / (16/9)) !important;
+              height: 20vh !important;
             }
           }
         }

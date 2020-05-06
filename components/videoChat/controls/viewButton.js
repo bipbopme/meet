@@ -13,7 +13,7 @@ export default class ViewButton extends React.Component {
 
   handleClick () {
     // Toggle view
-    const newView = this.props.view === 'grid' ? 'single' : 'grid'
+    const newView = this.props.view === 'grid' ? 'spotlight' : 'grid'
 
     this.props.onToggle(newView)
 
@@ -25,7 +25,7 @@ export default class ViewButton extends React.Component {
       <div className='button viewButton' title="Toggle grid view" onClick={this.handleClick}>
         {this.props.view === 'grid' &&
           <FontAwesomeIcon icon={faSmile} />}
-        {this.props.view === 'single' &&
+        {this.props.view === 'spotlight' &&
           <FontAwesomeIcon icon={faThLarge} />}
       </div>
     )

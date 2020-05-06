@@ -1,7 +1,8 @@
+import GridView from './gridView'
 import JitsiConferenceManager from '../../lib/jitsiManager/jitsiConferenceManager'
 import React from 'react'
 import SettingsButton from './controls/settingsButton'
-import SuperView from './superView'
+import SpotlightView from './spotlightView'
 import VideoChatControls from './controls/videoChatControls'
 import ViewButton from './controls/viewButton'
 import _chunk from 'lodash/chunk'
@@ -25,7 +26,7 @@ export default class VideoChat extends React.Component {
     window.addEventListener('resize', debounce(this.autoSwitchView, 50))
 
     this.state = {
-      view: 'single',
+      view: 'spotlight',
       crop: true,
       autoSwitchView: true
     }
@@ -44,7 +45,7 @@ export default class VideoChat extends React.Component {
       if (conference.participants.length >= 2) {
         view = 'grid'
       } else {
-        view = 'single'
+        view = 'spotlight'
       }
 
       this.setState({ view, crop })
@@ -73,7 +74,12 @@ export default class VideoChat extends React.Component {
             </div>
           </div>
         </header>
-        <SuperView conference={this.props.conference} view={this.state.view} crop={this.state.crop} />
+        {this.state.view === 'spotlight' &&
+          <SpotlightView conference={this.props.conference} crop={this.state.crop} />
+        }
+        {this.state.view === 'grid' &&
+          <GridView conference={this.props.conference} crop={this.state.crop} />
+        }
         <VideoChatControls
           conference={this.props.conference}
           localParticipant={localParticipant}

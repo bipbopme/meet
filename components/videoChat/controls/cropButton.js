@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
-import { faCropAlt } from '@fortawesome/free-solid-svg-icons'
-import { faVectorSquare } from '@fortawesome/free-solid-svg-icons'
+import { faCompressAlt } from '@fortawesome/free-solid-svg-icons'
+import { faExpandAlt } from '@fortawesome/free-solid-svg-icons'
 import { matopush } from '../../../lib/matomo'
 
 export default class CropButton extends React.Component {
@@ -31,9 +31,9 @@ export default class CropButton extends React.Component {
     return (
       <div className='button viewButton' title="Toggle video crop" onClick={this.handleClick}>
         {this.state.cropped &&
-          <FontAwesomeIcon icon={faVectorSquare} />}
+          <FontAwesomeIcon icon={faCompressAlt} />}
         {!this.state.cropped &&
-          <FontAwesomeIcon icon={faCropAlt} />}
+          <FontAwesomeIcon icon={faExpandAlt} />}
       </div>
     )
   }

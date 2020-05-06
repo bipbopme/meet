@@ -73,6 +73,7 @@ $transparent-white: rgba(255,255,255, 0.97);
   width: 100%;
   grid-template-columns: auto;
   grid-template-rows: auto;
+  overflow: hidden;
 
   &.showChat {
     grid-template-columns: auto 300px;
@@ -194,10 +195,6 @@ $transparent-white: rgba(255,255,255, 0.97);
       border-bottom: 1px solid rgba(0,0,0,0.1);
     }
 
-    > section {
-      overflow-y: auto;
-    }
-
     > footer {
       border-top: 1px solid rgba(0,0,0,0.1);
     }
@@ -206,6 +203,10 @@ $transparent-white: rgba(255,255,255, 0.97);
   .textChat {
     > * {
       border-left: 1px solid rgba(0,0,0,0.1);
+    }
+
+    > section {
+      overflow-y: auto;
     }
 
     display: none;
@@ -346,6 +347,7 @@ $transparent-white: rgba(255,255,255, 0.97);
     .video {
       overflow: hidden;
       position: relative;
+      transition: 250ms;
 
       video {
         height: 100%;

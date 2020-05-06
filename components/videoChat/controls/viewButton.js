@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
-import { faSquare } from '@fortawesome/free-regular-svg-icons'
+import { faSmile } from '@fortawesome/free-regular-svg-icons'
 import { faThLarge } from '@fortawesome/free-solid-svg-icons'
 import { matopush } from '../../../lib/matomo'
 
@@ -29,9 +29,9 @@ export default class ViewButton extends React.Component {
 
   render () {
     return (
-      <div className='button viewButton' title="Toggle video zoom" onClick={this.handleClick}>
+      <div className='button viewButton' title="Toggle grid view" onClick={this.handleClick}>
         {this.state.zoomed &&
-          <FontAwesomeIcon icon={faSquare} />}
+          <FontAwesomeIcon icon={faSmile} />}
         {!this.state.zoomed &&
           <FontAwesomeIcon icon={faThLarge} />}
       </div>

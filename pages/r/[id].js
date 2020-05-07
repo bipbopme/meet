@@ -39,7 +39,7 @@ export default class RoomPage extends React.Component {
   }
 
   componentDidMount () {
-    this.id = window.location.pathname.split('/').pop()
+    this.id = window.location.pathname.split('/').pop().toLowerCase()
 
     this.jitsi = new JitsiManager(JITSI_CONFIG.host, this.region)
     this.jitsi.once('CONNECTION_ESTABLISHED', this.handleJitsiConnected)

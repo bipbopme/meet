@@ -5,7 +5,7 @@
 $breakpoint: 'max-width: 960px';
 $aspectBreakpoint: 'max-aspect-ratio: 3/4';
 
-$transparent-white: rgba(255,255,255, 0.97);
+$transparent-white: #fff;
 
 .homePage {
   text-align: center;
@@ -87,18 +87,24 @@ $transparent-white: rgba(255,255,255, 0.97);
     position: relative;
 
     > header, > footer {
-      background-color: $transparent-white;
-      height: 70px;
+      height: 85px;
       position: absolute;
-      transition: 250ms ease-in;
+      transition: 200ms;
       width: 100%;
       z-index: 10;
     }
 
     > header {
+      border: 0;
+      height: 70px;
+      padding-left: 10px;
       top: 0;
 
-      display: none;
+      h1 {
+        color: #fff;
+        text-shadow: 0 0 5px rgba(0,0,0,0.6);
+        opacity: 0.9;
+      }
     }
 
     > section {
@@ -108,77 +114,16 @@ $transparent-white: rgba(255,255,255, 0.97);
     }
 
     > footer {
+      background-color: $transparent-white;
       bottom: 0;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
     }
   }
 
   &.hideControls {
     .videoChat {
-      > header {
-        background-color: transparent;
-        border: 0;
-
-        h1 {
-          color: #fff;
-          text-shadow: 0 0 5px rgba(0,0,0,0.6);
-          opacity: 0.9;
-        }
-
-        .controls {
-          opacity: 0;
-        }
-      }
-
-      > section {
-        &.videos-count-2 .video:nth-child(2) {
-          top: 0;
-        }
-      }
-
       > footer {
-        background-color: transparent;
-        border-color: transparent;
-
-        .left {
-          .screenShareButton {
-            color: #fff;
-            opacity: 0;
-
-            svg {
-              color: #fff;
-            }
-
-            &.shared {
-              opacity: 1;
-            }
-          }
-        }
-
-        .center {
-          .button {
-            background-color: rgba(255,255,255, 0.1);
-            border-color: rgba(255,255,255, 0.1);
-
-            svg {
-              color: rgba(255,255,255, 0.9);
-            }
-          }
-        }
-
-        .right {
-          .textChatButton {
-            color: #fff;
-            opacity: 0;
-
-            svg {
-              color: #fff;
-            }
-
-            &.hasHiddenMessages {
-              opacity: 1;
-            }
-          }
-        }
+        bottom: -85px;
       }
     }
   }
@@ -192,7 +137,7 @@ $transparent-white: rgba(255,255,255, 0.97);
 
   .videoChat, .textChat {
     > header {
-      border-bottom: 1px solid rgba(0,0,0,0.1);
+      //border-bottom: 1px solid rgba(0,0,0,0.1);
     }
 
     > footer {
@@ -322,9 +267,10 @@ $transparent-white: rgba(255,255,255, 0.97);
     display: flex;
 
     h1 {
-      font-size: 22px;
+      font-size: 26px;
       flex-grow: 1;
       margin-left: 15px;
+      display: none;
     }
 
     .controls {
@@ -338,7 +284,8 @@ $transparent-white: rgba(255,255,255, 0.97);
 
   .videos {
     align-items: center;
-    background: #111;
+    background-color: #000;
+    background-image: url('/images/cartographer.png');
     display: flex;
     justify-content: center;
     padding: 0;
@@ -375,6 +322,12 @@ $transparent-white: rgba(255,255,255, 0.97);
             // The container is the matching aspect ratio
             object-fit: cover;
           }
+        }
+      }
+
+      &.desktopVideoType {
+        video {
+          object-fit: scale-down !important;
         }
       }
 
@@ -515,6 +468,7 @@ $transparent-white: rgba(255,255,255, 0.97);
 
     > * {
       display: flex;
+      width: 33%;
     }
 
     .left {
@@ -527,10 +481,10 @@ $transparent-white: rgba(255,255,255, 0.97);
       justify-content: center;
 
       .button {
-        border: 1px solid rgba(0,0,0, 0.2);
+        border: 1px solid rgba(0,0,0, 0.15);
         border-radius: 100%;
-        height: 50px;
-        width: 50px;
+        height: 55px;
+        width: 55px;
 
         svg {
           color: #717171;
@@ -561,11 +515,12 @@ $transparent-white: rgba(255,255,255, 0.97);
 
     .button {
       align-items: center;
-      color: #555;
+      color: #777;
       cursor: default;
       display: flex;
       flex-direction: column;
       font-size: 14px;
+      font-weight: bold;
       justify-content: center;
       user-select: none;
 
@@ -578,18 +533,19 @@ $transparent-white: rgba(255,255,255, 0.97);
       }
 
       svg {
-        color: #999;
-        font-size: 18px;
+        color: #888;
+        font-size: 20px;
       }
     }
 
     .left, .right {
-      width: 150px;
       flex-shrink: 0;
 
       .button {
         height: 100%;
         padding: 0 20px;
+        width: 130px;
+        text-align: center;
 
         .label {
           display: block;
@@ -597,11 +553,7 @@ $transparent-white: rgba(255,255,255, 0.97);
         }
 
         svg {
-          font-size: 16px;
-        }
-
-        &.screenShareButton {
-          width: 125px;
+          font-size: 18px;
         }
 
         &.textChatButton {
@@ -729,9 +681,4 @@ $transparent-white: rgba(255,255,255, 0.97);
     color: #777;
     font-size: 14px;
   }
-}
-
-// .videos get stashed here until they start or if they end unexpectedly
-.disabledVideos {
-  display: none;
 }

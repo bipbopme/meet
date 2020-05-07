@@ -4,6 +4,7 @@ import LeaveButton from './leaveButton'
 import MicButton from './micButton'
 import React from 'react'
 import ScreenShareButton from './screenShareButton'
+import SettingsButton from './settingsButton'
 import TextChatButton from './textChatButton'
 import VideoButton from './videoButton'
 import ViewButton from './viewButton'
@@ -31,8 +32,7 @@ export default class VideoChatControls extends React.Component {
         </div>
         <div className='right'>
           <ViewButton view={this.props.view} onToggle={this.props.onViewChange} />
-          <CropButton crop={this.props.crop} onToggle={this.props.onCropChange} />
-          {/* <TextChatButton conference={this.props.conference} onToggleChat={this.props.onToggleChat} /> */}
+          <SettingsButton localParticipant={this.props.localParticipant} />
         </div>
       </footer>
     )

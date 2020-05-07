@@ -23,7 +23,7 @@ export default class VideoChat extends React.Component {
     this.conference.on(JitsiConferenceManager.events.PARTICIPANT_JOINED, this.autoSwitchView)
     this.conference.on(JitsiConferenceManager.events.PARTICIPANT_LEFT, this.autoSwitchView)
 
-    window.addEventListener('resize', debounce(this.autoSwitchView, 50))
+    window.addEventListener('resize', debounce(this.autoSwitchView, 250))
 
     this.state = {
       view: 'spotlight',
@@ -38,14 +38,12 @@ export default class VideoChat extends React.Component {
       let { view, crop } = this.state
       let width = document.documentElement.offsetWidth
 
-      if (width < 960) {
-        crop = true
-      }
-
       if (conference.participants.length >= 2) {
         view = 'grid'
+        crop = width < 960
       } else {
         view = 'spotlight'
+        crop = true
       }
 
       this.setState({ view, crop })
@@ -67,12 +65,6 @@ export default class VideoChat extends React.Component {
       <div className='videoChat'>
         <header>
           <h1>bipbop</h1>
-          <div className='controls'>
-            <div className='right'>
-              <ViewButton onToggle={this.handleViewChange} />
-              <SettingsButton localParticipant={localParticipant} />
-            </div>
-          </div>
         </header>
         {this.state.view === 'spotlight' &&
           <SpotlightView conference={this.props.conference} crop={this.state.crop} />

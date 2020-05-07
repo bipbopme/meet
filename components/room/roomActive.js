@@ -2,6 +2,7 @@ import Head from 'next/head'
 import React from 'react'
 import TextChat from '../textChat/textChat'
 import VideoChat from '../videoChat/videoChat'
+import debounce from 'lodash/debounce'
 import throttle from 'lodash/throttle'
 
 export default class RoomActive extends React.Component {
@@ -13,9 +14,13 @@ export default class RoomActive extends React.Component {
 
     this.handleToggleChat = this.handleToggleChat.bind(this)
     this.handleMouseMoveThrottled = throttle(this.handleMouseMove.bind(this), RoomActive.MOUSE_MOVE_THROTTLE_WAIT)
+    this.handleMouseOutDebounced = debounce(this.handleMouseOut.bind(this), RoomActive.MOUSE_MOVE_THROTTLE_WAIT)
+    this.handleClick = this.handleClick.bind(this)
     this.hideControls = this.hideControls.bind(this)
 
     window.addEventListener('mousemove', this.handleMouseMoveThrottled)
+    window.addEventListener('mouseout', this.handleMouseOutDebounced)
+    window.addEventListener('click', this.handleClick, true)
 
     this.state = {
       showChat: false,
@@ -32,8 +37,9 @@ export default class RoomActive extends React.Component {
     this.setState({ showChat: !this.state.showChat })
   }
 
-  startAutoHideControlsTimer () {
-    this.hideControlsTimer = setTimeout(this.hideControls, RoomActive.HIDE_CONTROLS_DELAY)
+  startAutoHideControlsTimer (delay = RoomActive.HIDE_CONTROLS_DELAY) {
+    this.clearAutoHideControlsTimer()
+    this.hideControlsTimer = setTimeout(this.hideControls, delay)
   }
 
   clearAutoHideControlsTimer () {
@@ -48,14 +54,32 @@ export default class RoomActive extends React.Component {
     this.setState({ showControls: true })
   }
 
-  handleMouseMove () {
-    this.clearAutoHideControlsTimer()
+  handleMouseMove (event) {
+    this.startAutoHideControlsTimer()
 
     if (!this.state.showControls) {
       this.showControls()
     }
+  }
 
-    this.startAutoHideControlsTimer()
+  handleMouseOut (event) {
+    if (!event.relatedTarget) {
+      this.startAutoHideControlsTimer(0)
+    }
+  }
+
+  // TODO: There's likely something more elegant and bulletproof
+  handleClick (event) {
+    // Ignore clicks that seem like they're for something else
+    const clickableElements = event.path.filter(element => {
+        return (element.classList && element.classList.contains('button')) ||
+          element.tagName === 'A' ||
+          element.tagName === 'BUTTON'
+      })
+
+    if (clickableElements.length === 0) {
+      this.startAutoHideControlsTimer(0)
+    }
   }
 
   render () {

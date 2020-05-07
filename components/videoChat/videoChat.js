@@ -51,7 +51,11 @@ export default class VideoChat extends React.Component {
   }
 
   handleViewChange (view) {
-    this.setState({ view: view, autoSwitchView: false })
+    // Always zoom spotlight view
+    const crop = view === 'spotlight'
+    const autoSwitchView = false
+
+    this.setState({ view: view, crop, autoSwitchView })
   }
 
   handleCropChange (crop) {

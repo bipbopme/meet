@@ -51,23 +51,9 @@ export default class Settings extends React.Component {
     }
 
     const options = {
-      devices: ['audio', 'video']
-    }
-
-    // TODO: Work around bug in JitsiMeetJS
-    if (DetectRTC.browser.isFirefox) {
-      options.constraints = {
-        audio: {
-          deviceId: this.state.selectedAudioInputID ? { exact: this.state.selectedAudioInputID } : undefined
-        },
-        video: {
-          deviceId: this.state.selectedVideoInputID ? { exact: this.state.selectedVideoInputID } : undefined,
-          height: { ideal: 720, max: 720, min: 240 }
-        }
-      }
-    } else {
-      options.cameraDeviceId = this.state.selectedVideoInputID
-      options.micDeviceId = this.state.selectedAudioInputID
+      devices: ['audio', 'video'],
+      cameraDeviceId: this.state.selectedVideoInputID,
+      micDeviceId: this.state.selectedAudioInputID
     }
 
     JitsiMeetJS.createLocalTracks(options).then(this.handleCreateLocalTracks).catch(this.onError)

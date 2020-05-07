@@ -66,36 +66,38 @@ export default class RoomActive extends React.Component {
     }
   }
 
-  // TODO: There's likely something more elegant and bulletproof
   handleClick (event) {
-    // Ignore clicks that seem like they're for something else
-    const clickableElements = event.path.filter(element => {
-        return (element.classList && element.classList.contains('button')) ||
-          element.tagName === 'A' ||
-          element.tagName === 'BUTTON'
-      })
-
-    if (clickableElements.length === 0) {
+    if (!this.hasClickableElements(event.path)) {
       this.startAutoHideControlsTimer(0)
     }
   }
 
   handleDoubleClick (event) {
-    // Invert fullscreen
-    const newIsFullscreen = !this.state.isFullscreen
+    if (!this.hasClickableElements(event.path)) {
+      // Invert fullscreen
+      const newIsFullscreen = !this.state.isFullscreen
 
-    if (newIsFullscreen) {
-      document.documentElement.requestFullscreen()
-        .then(()=> {
-          this.setState({ isFullscreen: newIsFullscreen })
-        })
-        .catch(e => console.error(e))
-    } else {
-      document.exitFullscreen()
-      this.setState({ isFullscreen: newIsFullscreen })
+      if (newIsFullscreen) {
+        document.documentElement.requestFullscreen()
+          .then(()=> {
+            this.setState({ isFullscreen: newIsFullscreen })
+          })
+          .catch(e => console.error(e))
+      } else {
+        document.exitFullscreen()
+        this.setState({ isFullscreen: newIsFullscreen })
+      }
+
+      this.clearAutoHideControlsTimer()
     }
+  }
 
-    this.clearAutoHideControlsTimer()
+  hasClickableElements(elements) {
+    return elements.filter(element => {
+      return (element.classList && element.classList.contains('button')) ||
+        element.tagName === 'A' ||
+        element.tagName === 'BUTTON'
+    }).length > 0
   }
 
   render () {

@@ -3,6 +3,7 @@ import React from 'react'
 import TextChat from '../textChat/textChat'
 import VideoChat from '../videoChat/videoChat'
 import debounce from 'lodash/debounce'
+import { eventPath } from '../../lib/utils'
 import throttle from 'lodash/throttle'
 
 export default class RoomActive extends React.Component {
@@ -67,13 +68,13 @@ export default class RoomActive extends React.Component {
   }
 
   handleClick (event) {
-    if (!this.hasClickableElements(event.path)) {
+    if (!this.hasClickableElements(event)) {
       this.startAutoHideControlsTimer(0)
     }
   }
 
   handleDoubleClick (event) {
-    if (!this.hasClickableElements(event.path)) {
+    if (!this.hasClickableElements(event)) {
       // Invert fullscreen
       const newIsFullscreen = !this.state.isFullscreen
 
@@ -92,12 +93,15 @@ export default class RoomActive extends React.Component {
     }
   }
 
-  hasClickableElements(elements) {
-    return elements.filter(element => {
+  hasClickableElements(event) {
+    const elements = eventPath(event)
+    const clickableElements = elements.filter(element => {
       return (element.classList && element.classList.contains('button')) ||
         element.tagName === 'A' ||
         element.tagName === 'BUTTON'
-    }).length > 0
+    })
+
+    return clickableElements.length > 0
   }
 
   render () {

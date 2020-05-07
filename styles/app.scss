@@ -362,8 +362,10 @@ $transparent-white: #fff;
       .video {
         // Cover all the things on narrow screens
         @include responsive($aspectBreakpoint) {
-          video {
-            object-fit: cover !important;
+          &.cameraVideoType {
+            video {
+              object-fit: cover !important;
+            }
           }
         }
       }
@@ -428,7 +430,7 @@ $transparent-white: #fff;
 
         .speakingParticipant {
           .video {
-            &.wideAspect {
+            &.cameraVideoType.wideAspect {
               video {
                 object-fit: cover;
               }

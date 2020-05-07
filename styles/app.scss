@@ -3,8 +3,9 @@
 @import 'mixins';
 
 $breakpoint: 'max-width: 960px';
+$aspectBreakpoint: 'max-aspect-ratio: 3/4';
 
-$transparent-white: rgba(255,255,255, 0.97);
+$transparent-white: #fff;
 
 .homePage {
   text-align: center;
@@ -72,6 +73,7 @@ $transparent-white: rgba(255,255,255, 0.97);
   width: 100%;
   grid-template-columns: auto;
   grid-template-rows: auto;
+  overflow: hidden;
 
   &.showChat {
     grid-template-columns: auto 300px;
@@ -85,16 +87,24 @@ $transparent-white: rgba(255,255,255, 0.97);
     position: relative;
 
     > header, > footer {
-      background-color: $transparent-white;
-      height: 70px;
+      height: 85px;
       position: absolute;
-      transition: 250ms ease-in;
+      transition: 300ms;
       width: 100%;
       z-index: 10;
     }
 
     > header {
+      border: 0;
+      height: 70px;
+      padding-left: 10px;
       top: 0;
+
+      h1 {
+        color: #fff;
+        text-shadow: 0 0 5px rgba(0,0,0,0.6);
+        opacity: 0.9;
+      }
     }
 
     > section {
@@ -104,77 +114,16 @@ $transparent-white: rgba(255,255,255, 0.97);
     }
 
     > footer {
+      background-color: $transparent-white;
       bottom: 0;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
     }
   }
 
   &.hideControls {
     .videoChat {
-      > header {
-        background-color: transparent;
-        border: 0;
-
-        h1 {
-          color: #fff;
-          text-shadow: 0 0 5px rgba(0,0,0,0.6);
-          opacity: 0.9;
-        }
-
-        .controls {
-          opacity: 0;
-        }
-      }
-
-      > section {
-        &.videos-count-2 .video:nth-child(2) {
-          top: 0;
-        }
-      }
-
       > footer {
-        background-color: transparent;
-        border-color: transparent;
-
-        .left {
-          .screenShareButton {
-            color: #fff;
-            opacity: 0;
-
-            svg {
-              color: #fff;
-            }
-
-            &.shared {
-              opacity: 1;
-            }
-          }
-        }
-
-        .center {
-          .button {
-            background-color: rgba(255,255,255, 0.1);
-            border-color: rgba(255,255,255, 0.1);
-
-            svg {
-              color: rgba(255,255,255, 0.9);
-            }
-          }
-        }
-
-        .right {
-          .textChatButton {
-            color: #fff;
-            opacity: 0;
-
-            svg {
-              color: #fff;
-            }
-
-            &.hasHiddenMessages {
-              opacity: 1;
-            }
-          }
-        }
+        bottom: -85px;
       }
     }
   }
@@ -188,11 +137,7 @@ $transparent-white: rgba(255,255,255, 0.97);
 
   .videoChat, .textChat {
     > header {
-      border-bottom: 1px solid rgba(0,0,0,0.1);
-    }
-
-    > section {
-      overflow-y: auto;
+      //border-bottom: 1px solid rgba(0,0,0,0.1);
     }
 
     > footer {
@@ -203,6 +148,10 @@ $transparent-white: rgba(255,255,255, 0.97);
   .textChat {
     > * {
       border-left: 1px solid rgba(0,0,0,0.1);
+    }
+
+    > section {
+      overflow-y: auto;
     }
 
     display: none;
@@ -311,14 +260,17 @@ $transparent-white: rgba(255,255,255, 0.97);
 }
 
 .videoChat {
+  overflow: hidden;
+
   header {
     align-items: center;
     display: flex;
 
     h1 {
-      font-size: 22px;
+      font-size: 26px;
       flex-grow: 1;
       margin-left: 15px;
+      display: none;
     }
 
     .controls {
@@ -331,19 +283,56 @@ $transparent-white: rgba(255,255,255, 0.97);
   }
 
   .videos {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    grid-template-rows: repeat(12, 1fr);
-    grid-gap: 2px;
+    align-items: center;
+    background-color: #000;
+    background-image: url('/images/cartographer.png');
+    display: flex;
+    justify-content: center;
     padding: 0;
     position: relative;
 
     .video {
       overflow: hidden;
       position: relative;
+      transition: 250ms;
+
+      // &.active {
+      //   opacity: 1;
+      // }
+
+      // &.inactive {
+      //   opacity: 0.2;
+      // }
+
+      video {
+        height: 100%;
+        width: 100%;
+        object-fit: contain;
+      }
+
+      &.cameraVideoType {
+        &.local video {
+          transform: scaleX(-1);
+        }
+
+        &.wideAspect {
+          background: transparent;
+
+          video {
+            // The container is the matching aspect ratio
+            object-fit: cover;
+          }
+        }
+      }
+
+      &.desktopVideoType {
+        video {
+          object-fit: scale-down !important;
+        }
+      }
 
       &.videoMuted {
-        background: #555;
+        background: #555 !important;
 
         .fa-video-slash {
           font-size: 36px;
@@ -355,7 +344,7 @@ $transparent-white: rgba(255,255,255, 0.97);
         }
 
         video {
-          display: none;
+          visibility: hidden;
         }
       }
 
@@ -364,170 +353,115 @@ $transparent-white: rgba(255,255,255, 0.97);
           color: #fff;
           bottom: 20px;
           position: absolute;
-          right: 20px;
-        }
-      }
-
-      video {
-        height: 100%;
-        width: 100%;
-      }
-
-      &.cameraVideoType {
-        &.local video {
-          transform: scaleX(-1);
-        }
-
-        &.coverVideo video {
-          object-fit: cover;
-        }
-
-        &.containVideo video {
-          object-fit: contain;
+          left: 20px;
         }
       }
     }
 
-    &.videos-count-3-or-more {
-      .dominantSpeaker {
-        border: 1px solid blue;
+    .cropped {
+      .video {
+        // Cover all the things on narrow screens
+        @include responsive($aspectBreakpoint) {
+          &.cameraVideoType {
+            video {
+              object-fit: cover !important;
+            }
+          }
+        }
       }
     }
 
-    // Grids and absolute positioning don't mix
-    &.videos-count-1, &.videos-count-2 {
-      display: block;
+    .spotlightView {
+      height: 100%;
+      width: 100%;
 
-      .video:nth-child(1) {
-        width: 100%;
-        height: 100%;
-      }
-    }
-
-    &.videos-count-2 {
-      display: block;
-
-      .video:nth-child(2) {
+      .nonSpeakingParticipants {
+        background: #000;
+        display: flex;
+        flex-direction: column;
+        max-width: 100%;
+        max-height: 100%;
         position: absolute;
-        top: 70px;
         right: 0;
+        top: 0;
+        z-index: 10;
 
-        video {
-          height: auto;
-          max-height: 150px;
-          width: auto;
+        box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        border-bottom-left-radius: 10px;
+        overflow: hidden;
+
+        .video {
+          height: calc(15vw / (16/9));
+          width: 15vw;
+        }
+
+        @include responsive($aspectBreakpoint) {
+          border-bottom-left-radius: 0;
+          border-bottom-right-radius: 10px;
+          flex-direction: row;
+          left: 0;
+          right: unset;
+        }
+      }
+
+      .speakingParticipant {
+        height: 100%;
+        width: 100%;
+
+        .video {
+          height: 100%;
+          width: 100%;
+
+          video {
+            object-fit: contain;
+          }
+        }
+      }
+
+      &.cropped {
+        .nonSpeakingParticipants {
+          @include responsive($aspectBreakpoint) {
+            .video {
+              width: calc(20vh / (16/9)) !important;
+              height: 20vh !important;
+            }
+          }
+        }
+
+        .speakingParticipant {
+          .video {
+            &.cameraVideoType.wideAspect {
+              video {
+                object-fit: cover;
+              }
+            }
+          }
         }
       }
     }
 
-    &.videos-count-3 {
-      .video:nth-child(1) {
-        grid-area: 1 / 1 / 7 / 7;
+    .gridView {
+      display: flex;
+      flex-direction: column;
+      margin: var(--video-margin);
+
+      .row {
+        display: flex;
+        justify-content: center;
+        flex-grow: 1;
+
+        .video {
+          border-radius: 15px;
+          background: #000;
+          height: var(--video-height);
+          margin: var(--video-margin);
+          width: var(--video-width);
+
+          &.dominantSpeaker {
+            box-shadow: 0 0 5px blue;
+          }
+        }
       }
-
-      .video:nth-child(2) {
-        grid-area: 1 / 7 / 7 / 13;
-      }
-
-      .video:nth-child(3) {
-        grid-area: 7 / 4 / 13 / 10;
-      }
-    }
-
-    &.videos-count-4 {
-      .video:nth-child(1) {
-        grid-area: 1 / 1 / 7 / 7;
-      }
-
-      .video:nth-child(2) {
-        grid-area: 1 / 7 / 7 / 13;
-      }
-
-      .video:nth-child(3) {
-        grid-area: 7 / 1 / 13 / 7;
-      }
-
-      .video:nth-child(4) {
-        grid-area: 7 / 7 / 13 / 13;
-      }
-    }
-
-    &.videos-count-5 {
-      .video:nth-child(1) {
-        grid-area: 1 / 1 / 5 / 7;
-      }
-
-      .video:nth-child(2) {
-        grid-area: 1 / 7 / 5 / 13;
-      }
-
-      .video:nth-child(3) {
-        grid-area: 5 / 1 / 9 / 7;
-      }
-
-      .video:nth-child(4) {
-        grid-area: 5 / 7 / 9 / 13;
-      }
-
-      .video:nth-child(5) {
-        grid-area: 9 / 4 / 13 / 10;
-      }
-    }
-
-    &.videos-count-6 {
-      .video:nth-child(1) {
-        grid-area: 1 / 1 / 5 / 7;
-      }
-
-      .video:nth-child(2) {
-        grid-area: 1 / 7 / 5 / 13;
-      }
-
-      .video:nth-child(3) {
-        grid-area: 5 / 1 / 9 / 7;
-      }
-
-      .video:nth-child(4) {
-        grid-area: 5 / 7 / 9 / 13;
-      }
-
-      .video:nth-child(5) {
-        grid-area: 9 / 1 / 13 / 7;
-      }
-
-      .video:nth-child(6) {
-        grid-area: 9 / 7 / 13 / 13;
-      }
-    }
-
-    // 3x3
-    &.videos-count-7,  &.videos-count-8, &.videos-count-9 {
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(3, 1fr);
-    }
-
-    // 3x4
-    &.videos-count-10,  &.videos-count-11, &.videos-count-12 {
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(4, 1fr);
-    }
-
-    // 4x4
-    &.videos-count-13,  &.videos-count-14, &.videos-count-15, &.videos-count-16 {
-      grid-template-columns: repeat(4, 1fr);
-      grid-template-rows: repeat(4, 1fr);
-    }
-
-    // 4x5
-    &.videos-count-17,  &.videos-count-18, &.videos-count-19, &.videos-count-20 {
-      grid-template-columns: repeat(4, 1fr);
-      grid-template-rows: repeat(4, 1fr);
-    }
-
-    // 5x5
-    &.videos-count-21,  &.videos-count-22, &.videos-count-23, &.videos-count-24, &.videos-count-25 {
-      grid-template-columns: repeat(5, 1fr);
-      grid-template-rows: repeat(5, 1fr);
     }
   }
 
@@ -536,6 +470,7 @@ $transparent-white: rgba(255,255,255, 0.97);
 
     > * {
       display: flex;
+      width: 33%;
     }
 
     .left {
@@ -548,10 +483,10 @@ $transparent-white: rgba(255,255,255, 0.97);
       justify-content: center;
 
       .button {
-        border: 1px solid rgba(0,0,0, 0.2);
+        border: 1px solid rgba(0,0,0, 0.15);
         border-radius: 100%;
-        height: 50px;
-        width: 50px;
+        height: 55px;
+        width: 55px;
 
         svg {
           color: #717171;
@@ -582,11 +517,12 @@ $transparent-white: rgba(255,255,255, 0.97);
 
     .button {
       align-items: center;
-      color: #555;
+      color: #777;
       cursor: default;
       display: flex;
       flex-direction: column;
       font-size: 14px;
+      font-weight: bold;
       justify-content: center;
       user-select: none;
 
@@ -599,18 +535,19 @@ $transparent-white: rgba(255,255,255, 0.97);
       }
 
       svg {
-        color: #999;
-        font-size: 18px;
+        color: #888;
+        font-size: 20px;
       }
     }
 
     .left, .right {
-      width: 150px;
       flex-shrink: 0;
 
       .button {
         height: 100%;
         padding: 0 20px;
+        width: 130px;
+        text-align: center;
 
         .label {
           display: block;
@@ -618,11 +555,7 @@ $transparent-white: rgba(255,255,255, 0.97);
         }
 
         svg {
-          font-size: 16px;
-        }
-
-        &.screenShareButton {
-          width: 125px;
+          font-size: 18px;
         }
 
         &.textChatButton {
@@ -750,9 +683,4 @@ $transparent-white: rgba(255,255,255, 0.97);
     color: #777;
     font-size: 14px;
   }
-}
-
-// .videos get stashed here until they start or if they end unexpectedly
-.disabledVideos {
-  display: none;
 }

@@ -1,25 +1,39 @@
+import { eventPath, isTouchEnabled } from '../../lib/utils'
+
 import Head from 'next/head'
 import React from 'react'
 import TextChat from '../textChat/textChat'
 import VideoChat from '../videoChat/videoChat'
+import debounce from 'lodash/debounce'
 import throttle from 'lodash/throttle'
 
 export default class RoomActive extends React.Component {
   static HIDE_CONTROLS_DELAY = 3500
-  static MOUSE_MOVE_THROTTLE_WAIT = 250
+  static MOUSE_EVENT_DELAY = 150
 
   constructor (props) {
     super(props)
 
     this.handleToggleChat = this.handleToggleChat.bind(this)
-    this.handleMouseMoveThrottled = throttle(this.handleMouseMove.bind(this), RoomActive.MOUSE_MOVE_THROTTLE_WAIT)
+    this.handleMouseMoveThrottled = throttle(this.handleMouseMove.bind(this), RoomActive.MOUSE_EVENT_DELAY)
+    this.handleMouseOutDebounced = debounce(this.handleMouseOut.bind(this), RoomActive.MOUSE_EVENT_DELAY)
+    this.handleClickDebounced = debounce(this.handleClick.bind(this), RoomActive.MOUSE_EVENT_DELAY)
+    this.handleDoubleClick = this.handleDoubleClick.bind(this)
     this.hideControls = this.hideControls.bind(this)
 
-    window.addEventListener('mousemove', this.handleMouseMoveThrottled)
+    // These events are usually emulated correctly but they conflict with the click events on touch devices
+    if (!isTouchEnabled()) {
+      window.addEventListener('mousemove', this.handleMouseMoveThrottled)
+      window.addEventListener('mouseout', this.handleMouseOutDebounced)
+    }
+
+    window.addEventListener('click', this.handleClickDebounced)
+    window.addEventListener('dblclick', this.handleDoubleClick)
 
     this.state = {
       showChat: false,
-      showControls: true
+      showControls: true,
+      isFullscreen: false
     }
   }
 
@@ -32,8 +46,9 @@ export default class RoomActive extends React.Component {
     this.setState({ showChat: !this.state.showChat })
   }
 
-  startAutoHideControlsTimer () {
-    this.hideControlsTimer = setTimeout(this.hideControls, RoomActive.HIDE_CONTROLS_DELAY)
+  startAutoHideControlsTimer (delay = RoomActive.HIDE_CONTROLS_DELAY) {
+    this.clearAutoHideControlsTimer()
+    this.hideControlsTimer = setTimeout(this.hideControls, delay)
   }
 
   clearAutoHideControlsTimer () {
@@ -48,14 +63,63 @@ export default class RoomActive extends React.Component {
     this.setState({ showControls: true })
   }
 
-  handleMouseMove () {
-    this.clearAutoHideControlsTimer()
+  handleMouseMove (event) {
+    this.startAutoHideControlsTimer()
 
     if (!this.state.showControls) {
       this.showControls()
     }
+  }
 
-    this.startAutoHideControlsTimer()
+  handleMouseOut (event) {
+    if (!event.relatedTarget) {
+      this.startAutoHideControlsTimer(0)
+    }
+  }
+
+  handleClick (event) {
+    if (!this.hasClickableElements(event)) {
+      if (this.state.showControls) {
+        this.startAutoHideControlsTimer(0)
+      } else {
+        this.showControls()
+      }
+    }
+  }
+
+  handleDoubleClick (event) {
+    if (!this.hasClickableElements(event)) {
+      // Invert fullscreen
+      const newIsFullscreen = !this.state.isFullscreen
+
+      if (newIsFullscreen) {
+        document.documentElement.requestFullscreen()
+          .then(()=> {
+            this.setState({ isFullscreen: newIsFullscreen })
+          })
+          .catch(e => console.error(e))
+      } else {
+        document.exitFullscreen()
+
+        // Fix scroll position on mobile
+        window.scrollTo(0,1)
+
+        this.setState({ isFullscreen: newIsFullscreen })
+      }
+
+      this.clearAutoHideControlsTimer()
+    }
+  }
+
+  hasClickableElements(event) {
+    const elements = eventPath(event)
+    const clickableElements = elements.filter(element => {
+      return (element.classList && element.classList.contains('button')) ||
+        element.tagName === 'A' ||
+        element.tagName === 'BUTTON'
+    })
+
+    return clickableElements.length > 0
   }
 
   render () {

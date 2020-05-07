@@ -1,9 +1,12 @@
-import { Portal } from 'react-portal'
+import GridView from './gridView'
+import JitsiConferenceManager from '../../lib/jitsiManager/jitsiConferenceManager'
 import React from 'react'
 import SettingsButton from './controls/settingsButton'
-import Video from './video'
+import SpotlightView from './spotlightView'
 import VideoChatControls from './controls/videoChatControls'
-import { debounce } from 'lodash'
+import ViewButton from './controls/viewButton'
+import _chunk from 'lodash/chunk'
+import debounce from 'lodash/debounce'
 import { observer } from 'mobx-react'
 
 @observer
@@ -11,85 +14,78 @@ export default class VideoChat extends React.Component {
   constructor (props) {
     super(props)
 
-    this.conference = props.conference
-    this.debouncedCalculateVideoContraint = debounce(this.calculateVideoConstraint.bind(this), 1000)
+    this.conference = this.props.conference
+    this.handleViewChange = this.handleViewChange.bind(this)
+    this.handleCropChange = this.handleCropChange.bind(this)
+    this.autoSwitchView = this.autoSwitchView.bind(this)
 
-    this.conference.on('CONFERENCE_JOINED', this.debouncedCalculateVideoContraint)
-    this.conference.on('PARTICIPANT_JOINED', this.debouncedCalculateVideoContraint)
-    this.conference.on('PARTICIPANT_LEFT', this.debouncedCalculateVideoContraint)
+    // these are dangerous because they trigger double renders
+    this.conference.on(JitsiConferenceManager.events.PARTICIPANT_JOINED, this.autoSwitchView)
+    this.conference.on(JitsiConferenceManager.events.PARTICIPANT_LEFT, this.autoSwitchView)
 
-    window.addEventListener('resize', this.debouncedCalculateVideoContraint)
+    window.addEventListener('resize', debounce(this.autoSwitchView, 250))
+
+    this.state = {
+      view: 'spotlight',
+      crop: true,
+      autoSwitchView: true
+    }
   }
 
-  calculateVideoConstraint () {
-    const sampleVideoContainer = document.getElementsByClassName('video')[0]
+  autoSwitchView () {
+    if (this.state.autoSwitchView) {
+      let { conference } = this.props
+      let { view, crop } = this.state
+      let width = document.documentElement.offsetWidth
 
-    if (sampleVideoContainer) {
-      let elementHeight = sampleVideoContainer.offsetHeight
-      let videoConstraint;
-
-      // TODO: these are okay values for wide video but not for cropped vertical video
-      if (elementHeight < 180) {
-        videoConstraint = 180
-      } else if (elementHeight < 500) {
-        videoConstraint = 360
-      } else if (elementHeight < 1000) {
-        videoConstraint = 720
+      if (conference.participants.length >= 2) {
+        view = 'grid'
+        crop = width < 960
       } else {
-        videoConstraint = 1080
+        view = 'spotlight'
+        crop = true
       }
 
-      console.log('calculateVideoConstraint', elementHeight, videoConstraint)
-
-      this.conference.selectAllParticipants()
-      this.conference.setReceiverVideoConstraint(videoConstraint)
+      this.setState({ view, crop })
     }
   }
 
-  getCssClasses (participants) {
-    const cssClasses = ['videos']
-    const videosCount = participants.length + 1
+  handleViewChange (view) {
+    // Always zoom spotlight view
+    const crop = view === 'spotlight'
+    const autoSwitchView = false
 
-    cssClasses.push(`videos-count-${videosCount}`)
+    this.setState({ view: view, crop, autoSwitchView })
+  }
 
-    if (videosCount > 2) {
-      cssClasses.push('videos-count-3-or-more')
-    } else {
-      cssClasses.push('videos-count-2-or-less')
-    }
-
-    return cssClasses.join(' ')
+  handleCropChange (crop) {
+    this.setState({ crop: crop, autoSwitchView: false })
   }
 
   render () {
-    const { participants, localParticipant, status } = this.props.conference
-    const activeParticipants = participants.filter(p => p.isVideoTagActive)
-    const disabledParticipants = participants.filter(p => !p.isVideoTagActive)
+    const { localParticipant, status } = this.props.conference
 
     return status === 'joined' ? (
       <div className='videoChat'>
         <header>
           <h1>bipbop</h1>
-          <div className='controls'>
-            <div className='right'>
-              <SettingsButton localParticipant={localParticipant} />
-            </div>
-          </div>
         </header>
-        <section className={this.getCssClasses(activeParticipants)}>
-          {activeParticipants.map(participant => (
-            <Video key={participant.id} participant={participant} audioTrack={participant.audioTrack} videoTrack={participant.videoTrack} isAudioMuted={participant.isAudioMuted} isVideoMuted={participant.isVideoMuted} isDominantSpeaker={participant.isDominantSpeaker} />
-          ))}
-          <Video key={localParticipant.id} isLocal audioTrack={localParticipant.audioTrack} videoTrack={localParticipant.videoTrack} isAudioMuted={localParticipant.isAudioMuted} isVideoMuted={localParticipant.isVideoMuted} isDominantSpeaker={localParticipant.isDominantSpeaker} />
-        </section>
-        <Portal>
-          <div className='disabledVideos'>
-            {disabledParticipants.map(participant => (
-              <Video key={participant.id} participant={participant} audioTrack={participant.audioTrack} videoTrack={participant.videoTrack} isAudioMuted={participant.isAudioMuted} isVideoMuted={participant.isVideoMuted} isDominantSpeaker={participant.isDominantSpeaker} />
-            ))}
-          </div>
-        </Portal>
-        <VideoChatControls conference={this.conference} localParticipant={localParticipant} onLeave={this.props.onLeave} onToggleChat={this.props.onToggleChat} />
+        {this.state.view === 'spotlight' &&
+          <SpotlightView conference={this.props.conference} crop={this.state.crop} />
+        }
+        {this.state.view === 'grid' &&
+          <GridView conference={this.props.conference} crop={this.state.crop} />
+        }
+        <VideoChatControls
+          conference={this.props.conference}
+          localParticipant={localParticipant}
+          view={this.state.view}
+          crop={this.state.crop}
+          onLeave={this.props.onLeave}
+          onToggleChat={this.props.onToggleChat}
+          onViewChange={this.handleViewChange}
+          onCropChange={this.handleCropChange}
+          />
       </div>
     ) : null
   }

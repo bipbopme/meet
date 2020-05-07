@@ -42,9 +42,12 @@ export default class Settings extends React.Component {
   async getUserMedia () {
     await this.loadSavedSettings()
 
-    // Prevents too many concurrent microphones
     if (this.state.audioTrack) {
       this.state.audioTrack.getTrack().stop()
+    }
+
+    if (this.state.videoTrack) {
+      this.state.videoTrack.getTrack().stop()
     }
 
     const options = {

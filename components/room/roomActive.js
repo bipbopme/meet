@@ -7,30 +7,28 @@ import throttle from 'lodash/throttle'
 
 export default class RoomActive extends React.Component {
   static HIDE_CONTROLS_DELAY = 3500
-  static MOUSE_MOVE_THROTTLE_WAIT = 250
+  static MOUSE_EVENT_DELAY = 150
 
   constructor (props) {
     super(props)
 
     this.handleToggleChat = this.handleToggleChat.bind(this)
-    this.handleMouseMoveThrottled = throttle(this.handleMouseMove.bind(this), RoomActive.MOUSE_MOVE_THROTTLE_WAIT)
-    this.handleMouseOutDebounced = debounce(this.handleMouseOut.bind(this), RoomActive.MOUSE_MOVE_THROTTLE_WAIT)
-    this.handleClick = this.handleClick.bind(this)
+    this.handleMouseMoveThrottled = throttle(this.handleMouseMove.bind(this), RoomActive.MOUSE_EVENT_DELAY)
+    this.handleMouseOutDebounced = debounce(this.handleMouseOut.bind(this), RoomActive.MOUSE_EVENT_DELAY)
+    this.handleClickDebounced = debounce(this.handleClick.bind(this), RoomActive.MOUSE_EVENT_DELAY)
+    this.handleDoubleClick = this.handleDoubleClick.bind(this)
     this.hideControls = this.hideControls.bind(this)
 
     window.addEventListener('mousemove', this.handleMouseMoveThrottled)
     window.addEventListener('mouseout', this.handleMouseOutDebounced)
-    window.addEventListener('click', this.handleClick, true)
+    window.addEventListener('click', this.handleClickDebounced)
+    window.addEventListener('dblclick', this.handleDoubleClick)
 
     this.state = {
       showChat: false,
-      showControls: true
+      showControls: true,
+      isFullscreen: false
     }
-  }
-
-  componentDidMount () {
-    // Kick off initial timer
-    this.startAutoHideControlsTimer()
   }
 
   handleToggleChat () {
@@ -80,6 +78,24 @@ export default class RoomActive extends React.Component {
     if (clickableElements.length === 0) {
       this.startAutoHideControlsTimer(0)
     }
+  }
+
+  handleDoubleClick (event) {
+    // Invert fullscreen
+    const newIsFullscreen = !this.state.isFullscreen
+
+    if (newIsFullscreen) {
+      document.documentElement.requestFullscreen()
+        .then(()=> {
+          this.setState({ isFullscreen: newIsFullscreen })
+        })
+        .catch(e => console.error(e))
+    } else {
+      document.exitFullscreen()
+      this.setState({ isFullscreen: newIsFullscreen })
+    }
+
+    this.clearAutoHideControlsTimer()
   }
 
   render () {

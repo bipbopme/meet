@@ -1,9 +1,10 @@
+import { eventPath, isTouchEnabled } from '../../lib/utils'
+
 import Head from 'next/head'
 import React from 'react'
 import TextChat from '../textChat/textChat'
 import VideoChat from '../videoChat/videoChat'
 import debounce from 'lodash/debounce'
-import { eventPath } from '../../lib/utils'
 import throttle from 'lodash/throttle'
 
 export default class RoomActive extends React.Component {
@@ -20,8 +21,12 @@ export default class RoomActive extends React.Component {
     this.handleDoubleClick = this.handleDoubleClick.bind(this)
     this.hideControls = this.hideControls.bind(this)
 
-    window.addEventListener('mousemove', this.handleMouseMoveThrottled)
-    window.addEventListener('mouseout', this.handleMouseOutDebounced)
+    // These events are usually emulated correctly but they conflict with the click events on touch devices
+    if (!isTouchEnabled()) {
+      window.addEventListener('mousemove', this.handleMouseMoveThrottled)
+      window.addEventListener('mouseout', this.handleMouseOutDebounced)
+    }
+
     window.addEventListener('click', this.handleClickDebounced)
     window.addEventListener('dblclick', this.handleDoubleClick)
 
@@ -30,6 +35,11 @@ export default class RoomActive extends React.Component {
       showControls: true,
       isFullscreen: false
     }
+  }
+
+  componentDidMount () {
+    // Kick off initial timer
+    this.startAutoHideControlsTimer()
   }
 
   handleToggleChat () {
@@ -69,7 +79,11 @@ export default class RoomActive extends React.Component {
 
   handleClick (event) {
     if (!this.hasClickableElements(event)) {
-      this.startAutoHideControlsTimer(0)
+      if (this.state.showControls) {
+        this.startAutoHideControlsTimer(0)
+      } else {
+        this.showControls()
+      }
     }
   }
 
@@ -86,6 +100,10 @@ export default class RoomActive extends React.Component {
           .catch(e => console.error(e))
       } else {
         document.exitFullscreen()
+
+        // Fix scroll position on mobile
+        window.scrollTo(0,1)
+
         this.setState({ isFullscreen: newIsFullscreen })
       }
 

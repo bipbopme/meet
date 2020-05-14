@@ -2,7 +2,6 @@ import { eventPath, isTouchEnabled } from '../../lib/utils'
 
 import Head from 'next/head'
 import React from 'react'
-import TextChat from '../textChat/textChat'
 import VideoChat from '../videoChat/videoChat'
 import debounce from 'lodash/debounce'
 import throttle from 'lodash/throttle'
@@ -130,7 +129,6 @@ export default class RoomActive extends React.Component {
           <meta key='viewport' name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1' />
         </Head>
         <VideoChat conference={this.props.conference} onLeave={this.props.onLeave} onToggleChat={this.handleToggleChat} />
-        <TextChat conference={this.props.conference} />
       </div>
     )
   }

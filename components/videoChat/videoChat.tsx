@@ -1,29 +1,30 @@
 import GridView from './gridView'
 import JitsiConferenceManager from '../../lib/jitsiManager/jitsiConferenceManager'
 import React from 'react'
-import SettingsButton from './controls/settingsButton'
 import SpotlightView from './spotlightView'
 import VideoChatControls from './controls/videoChatControls'
-import ViewButton from './controls/viewButton'
-import _chunk from 'lodash/chunk'
-import debounce from 'lodash/debounce'
 import { observer } from 'mobx-react'
+import { bind, debounce } from 'lodash-decorators'
+
+interface VideoChatProps {
+  conference: JitsiConferenceManager;
+  onLeave(): void;
+}
+
+interface VideoChatState {
+  view: string;
+  crop: boolean;
+  autoSwitchView: boolean;
+}
 
 @observer
-export default class VideoChat extends React.Component {
-  constructor (props) {
+export default class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
+  constructor (props: VideoChatProps) {
     super(props)
 
-    this.conference = this.props.conference
-    this.handleViewChange = this.handleViewChange.bind(this)
-    this.handleCropChange = this.handleCropChange.bind(this)
-    this.autoSwitchView = this.autoSwitchView.bind(this)
-
-    // these are dangerous because they trigger double renders
-    this.conference.on(JitsiConferenceManager.events.PARTICIPANT_JOINED, this.autoSwitchView)
-    this.conference.on(JitsiConferenceManager.events.PARTICIPANT_LEFT, this.autoSwitchView)
-
-    window.addEventListener('resize', debounce(this.autoSwitchView, 250))
+    // TODO: these are dangerous because they trigger double renders
+    this.props.conference.on(JitsiConferenceManager.events.PARTICIPANT_JOINED, this.autoSwitchView)
+    this.props.conference.on(JitsiConferenceManager.events.PARTICIPANT_LEFT, this.autoSwitchView)
 
     this.state = {
       view: 'spotlight',
@@ -32,11 +33,12 @@ export default class VideoChat extends React.Component {
     }
   }
 
+  @bind() @debounce(250)
   autoSwitchView () {
     if (this.state.autoSwitchView) {
-      let { conference } = this.props
+      const { conference } = this.props
       let { view, crop } = this.state
-      let width = document.documentElement.offsetWidth
+      const width = document.documentElement.offsetWidth
 
       if (conference.participants.length >= 2) {
         view = 'grid'
@@ -50,16 +52,13 @@ export default class VideoChat extends React.Component {
     }
   }
 
-  handleViewChange (view) {
+  @bind()
+  handleViewChange (view: string) {
     // Always zoom spotlight view
     const crop = view === 'spotlight'
     const autoSwitchView = false
 
     this.setState({ view: view, crop, autoSwitchView })
-  }
-
-  handleCropChange (crop) {
-    this.setState({ crop: crop, autoSwitchView: false })
   }
 
   render () {
@@ -77,14 +76,10 @@ export default class VideoChat extends React.Component {
           <GridView conference={this.props.conference} crop={this.state.crop} />
         }
         <VideoChatControls
-          conference={this.props.conference}
           localParticipant={localParticipant}
           view={this.state.view}
-          crop={this.state.crop}
           onLeave={this.props.onLeave}
-          onToggleChat={this.props.onToggleChat}
           onViewChange={this.handleViewChange}
-          onCropChange={this.handleCropChange}
           />
       </div>
     ) : null

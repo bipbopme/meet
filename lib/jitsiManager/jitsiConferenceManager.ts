@@ -1,11 +1,12 @@
 import { action, observable } from 'mobx'
 
-import EventEmitter from 'events'
+import events from 'events'
 import JitsiMessage from './jitsiMessage'
 import JitsiParticipant from './jitsiParticipant'
 import { bind } from 'decko'
+import JitsiManager from '../jitsiManager'
 
-export default class JitsiConferenceManager extends EventEmitter {
+export default class JitsiConferenceManager extends events.EventEmitter {
   static events = {
     CONFERENCE_JOINED: 'CONFERENCE_JOINED',
     MESSAGE_RECEIVED: 'MESSAGE_RECEIVED',
@@ -13,18 +14,19 @@ export default class JitsiConferenceManager extends EventEmitter {
     PARTICIPANT_LEFT: 'PARTICIPANT_LEFT'
   }
 
-  id = undefined
-  jitsiManager = undefined
+  id: string = undefined
+  jitsiManager: JitsiManager = undefined
+  localTracks: MediaStreamTrack[] = undefined
   conference = undefined
-  displayName = undefined
+  displayName: string = undefined
 
-  @observable status = undefined
-  @observable localParticipant = undefined
-  @observable subject = undefined
-  @observable participants = []
-  @observable messages = []
+  @observable status: string = undefined
+  @observable localParticipant: JitsiParticipant = undefined
+  @observable subject: string = undefined
+  @observable participants: JitsiParticipant[] = []
+  @observable messages: JitsiMessage[] = []
 
-  constructor (jitsiManager, id, localTracks, displayName) {
+  constructor (jitsiManager: JitsiManager, id: string, localTracks: MediaStreamTrack[], displayName: string) {
     super()
 
     this.id = id
@@ -57,19 +59,19 @@ export default class JitsiConferenceManager extends EventEmitter {
     this._disposeLocalTracks()
   }
 
-  sendTextMessage (text) {
+  sendTextMessage (text: string) {
     this.conference.sendTextMessage(text)
   }
 
-  selectParticipants(ids) {
+  selectParticipants(ids: string[]) {
     this.conference.selectParticipants(ids)
   }
 
-  selectAllParticipants () {
+  selectAllParticipants() {
     this.selectParticipants(this.participants.map(p => p.id))
   }
 
-  setReceiverVideoConstraint (resolution) {
+  setReceiverVideoConstraint(resolution: number) {
     this.conference.setReceiverVideoConstraint(resolution)
   }
 
@@ -110,17 +112,17 @@ export default class JitsiConferenceManager extends EventEmitter {
   }
 
   @action
-  _updateStatus (status) {
+  _updateStatus (status: string) {
     this.status = status
   }
 
   @action
-  _updateSubject (subject) {
+  _updateSubject (subject: string) {
     this.subject = subject
   }
 
   @action
-  _addParticipant (id, displayName) {
+  _addParticipant (id: string, displayName: string) {
     const participant = new JitsiParticipant(id, this.conference, displayName)
 
     this.participants.push(participant)
@@ -129,16 +131,16 @@ export default class JitsiConferenceManager extends EventEmitter {
   }
 
   @action
-  _removeParticipant (id) {
+  _removeParticipant (id: string) {
     this.participants.remove(this._getParticipant(id))
   }
 
-  _getParticipant(id) {
+  _getParticipant(id: string) {
     return [...this.participants, this.localParticipant].find(p => p.id === id)
   }
 
   @action
-  _addMessage(participant, text, createdAt) {
+  _addMessage(participant: JitsiParticipant, text: string, createdAt: Date) {
     const message = new JitsiMessage(participant, text, createdAt)
 
     this.messages.push(message)
@@ -147,7 +149,7 @@ export default class JitsiConferenceManager extends EventEmitter {
   }
 
   @action
-  _addLocalParticipant (id, displayName) {
+  _addLocalParticipant (id: string , displayName: string) {
     this.localParticipant = new JitsiParticipant(id, this.conference, displayName, true)
 
     // Setup local tracks
@@ -160,7 +162,7 @@ export default class JitsiConferenceManager extends EventEmitter {
   }
 
   @bind
-  _handleUserJoined (id, jitsiInternalParticipant) {
+  _handleUserJoined (id: string, jitsiInternalParticipant: { _displayName: string }) {
     console.debug('Implemented: UserJoined', id, jitsiInternalParticipant, this)
 
     const participant = this._addParticipant(id, jitsiInternalParticipant._displayName)
@@ -169,7 +171,7 @@ export default class JitsiConferenceManager extends EventEmitter {
   }
 
   @bind
-  _handleUserLeft (id, jitsiInternalParticipant) {
+  _handleUserLeft (id: string, jitsiInternalParticipant) {
     const participant = this._removeParticipant(id)
 
     this.emit(JitsiConferenceManager.events.PARTICIPANT_LEFT, participant)
@@ -178,7 +180,7 @@ export default class JitsiConferenceManager extends EventEmitter {
   }
 
   @bind
-  _handleMessageReceived (id, text, ts) {
+  _handleMessageReceived (id: string, text: string, ts: Date) {
     const participant = this._getParticipant(id)
 
     if (participant) {
@@ -191,15 +193,15 @@ export default class JitsiConferenceManager extends EventEmitter {
   }
 
   @bind
-  _handleSubjectChanged (subject) {
+  _handleSubjectChanged (subject: string) {
     console.warn('Not implemented: _handleSubjectChanged')
 
     this._updateSubject(subject)
   }
 
   @bind
-  _handleLastNEndpointsChanged (leavingEndpointIds, enteringEndpointIds) {
-    console.warn('Not implemented: _handleLastNEndpointsChanged')
+  _handleLastNEndpointsChanged (leavingEndpointIds: string[], enteringEndpointIds: string[]) {
+    console.warn('Not implemented: _handleLastNEndpointsChanged', leavingEndpointIds, enteringEndpointIds)
   }
 
   @bind
@@ -223,17 +225,17 @@ export default class JitsiConferenceManager extends EventEmitter {
 
   @bind
   _handleDtmfSupportChanged (supports) {
-    console.warn('Not implemented: _handleDtmfSupportChanged')
+    console.warn('Not implemented: _handleDtmfSupportChanged', supports)
   }
 
   @bind
   _handleConferenceFailed (errorCode) {
-    console.warn('Not implemented: _handleConferenceFailed')
+    console.warn('Not implemented: _handleConferenceFailed', errorCode)
   }
 
   @bind
   _handleConferenceError (errorCode) {
-    console.warn('Not implemented: _handleConferenceError')
+    console.warn('Not implemented: _handleConferenceError', errorCode)
   }
 
   @bind
@@ -258,7 +260,7 @@ export default class JitsiConferenceManager extends EventEmitter {
 
   @bind
   _handleAuthStatusChanged (isAuthEnabled, authIdentity) {
-    console.warn('Not implemented: _handleAuthStatusChanged')
+    console.warn('Not implemented: _handleAuthStatusChanged', isAuthEnabled, authIdentity)
   }
 
   @bind

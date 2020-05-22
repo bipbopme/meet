@@ -1,22 +1,30 @@
 /* global JitsiMeetJS */
 import { faDesktop, faStopCircle } from '@fortawesome/free-solid-svg-icons'
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 import localforage from 'localforage'
 import { matopush } from '../../../lib/matomo'
+import JitsiParticipant from '../../../lib/jitsiManager/jitsiParticipant'
+import { bind } from 'lodash-decorators'
 
-export default class ScreenShareButton extends React.Component {
-  constructor (props) {
+interface ScreenShareButtonProps {
+  localParticipant: JitsiParticipant;
+}
+
+interface ScreenShareButtonState {
+  shared: boolean;
+}
+
+export default class ScreenShareButton extends React.Component<ScreenShareButtonProps, ScreenShareButtonState> {
+  constructor (props: ScreenShareButtonProps) {
     super(props)
-
-    this.handleClick = this.handleClick.bind(this)
 
     this.state = {
       shared: false
     }
   }
 
+  @bind()
   async handleClick () {
     // Toggle muted
     const shared = !this.state.shared

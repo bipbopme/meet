@@ -1,5 +1,4 @@
 /* global JitsiMeetJS */
-import DetectRTC from 'detectrtc'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 import Video from '../videoChat/video'
@@ -8,8 +7,28 @@ import { faCog } from '@fortawesome/free-solid-svg-icons'
 import localforage from 'localforage'
 import { matopush } from '../../lib/matomo'
 
-export default class Settings extends React.Component {
-  constructor (props) {
+interface SettingsProps {
+  collapseAudioVideoSettings?: boolean;
+  titleText?: string;
+  buttonText: string;
+  onButtonClick(state: { name: string; audioTrack: MediaStreamTrack; videoTrack: MediaStreamTrack }): void;
+}
+
+interface SettingsState {
+  name?: string;
+  selectedAudioInputID?: string;
+  selectedAudioOutputID?: string;
+  selectedVideoInputID?: string;
+  audioTrack?: MediaStreamTrack;
+  videoTrack?: MediaStreamTrack;
+  collapseAudioVideoSettings?: boolean;
+  audioInputs?: MediaDeviceInfo[];
+  audioOutputs?: MediaDeviceInfo[];
+  videoInputs?: MediaDeviceInfo[];
+}
+
+export default class Settings extends React.Component<SettingsProps, SettingsState> {
+  constructor (props: SettingsProps) {
     super(props)
 
     this.handleNameChange = this.handleNameChange.bind(this)
@@ -73,8 +92,8 @@ export default class Settings extends React.Component {
     }
   }
 
-  handleCreateLocalTracks (tracks) {
-    let audioTrack, videoTrack
+  handleCreateLocalTracks (tracks: MediaStreamTrack[]) {
+    let audioTrack: MediaStreamTrack, videoTrack: MediaStreamTrack
 
     if (tracks) {
       audioTrack = tracks.find(t => t.getType() === 'audio')
@@ -87,10 +106,10 @@ export default class Settings extends React.Component {
   }
 
   async loadSavedSettings () {
-    const name = await localforage.getItem('name')
-    const selectedAudioInputID = await localforage.getItem('selectedAudioInputID')
-    const selectedAudioOutputID = await localforage.getItem('selectedAudioOutputID')
-    const selectedVideoInputID = await localforage.getItem('selectedVideoInputID')
+    const name = await localforage.getItem<string>('name')
+    const selectedAudioInputID = await localforage.getItem<string>('selectedAudioInputID')
+    const selectedAudioOutputID = await localforage.getItem<string>('selectedAudioOutputID')
+    const selectedVideoInputID = await localforage.getItem<string>('selectedVideoInputID')
 
     this.setState({
       name,
@@ -100,7 +119,7 @@ export default class Settings extends React.Component {
     })
   }
 
-  async handleEnumerateDevices (devices) {
+  async handleEnumerateDevices (devices: MediaDeviceInfo[]) {
     if (devices) {
       const audioInputs = _uniqBy(devices.filter(d => d.kind === 'audioinput'), 'deviceId')
       const audioOutputs = _uniqBy(devices.filter(d => d.kind === 'audiooutput'), 'deviceId')
@@ -116,7 +135,7 @@ export default class Settings extends React.Component {
     }
   }
 
-  handleDeviceListChanged (devices) {
+  handleDeviceListChanged (devices: MediaDeviceInfo[]) {
     console.log('Device list changed')
     this.handleEnumerateDevices(devices)
   }
@@ -164,8 +183,8 @@ export default class Settings extends React.Component {
   }
 
   // Handle device setting inconsistencies
-  syncAudioVideoDefaults (audioOutputs) {
-    const newState = {}
+  syncAudioVideoDefaults (audioOutputs: MediaDeviceInfo[]) {
+    const newState: SettingsState = {}
 
     const { audioTrack, videoTrack, selectedVideoInputID, selectedAudioInputID, selectedAudioOutputID } = this.state
 

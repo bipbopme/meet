@@ -1,5 +1,4 @@
-import { action, observable } from 'mobx'
-
+import { observable } from 'mobx'
 import { uuid } from '../utils'
 
 export default class JitsiMessage {

@@ -1,15 +1,23 @@
-import CropButton from './cropButton'
 import DetectRTC from 'detectrtc'
 import LeaveButton from './leaveButton'
 import MicButton from './micButton'
 import React from 'react'
 import ScreenShareButton from './screenShareButton'
 import SettingsButton from './settingsButton'
-import TextChatButton from './textChatButton'
 import VideoButton from './videoButton'
 import ViewButton from './viewButton'
+import JitsiParticipant from '../../../lib/jitsiManager/jitsiParticipant'
 
-export default class VideoChatControls extends React.Component {
+interface VideoChatControlsProps {
+  localParticipant: JitsiParticipant;
+  onLeave(): void;
+  onViewChange(view: string): void;
+  view: string;
+}
+
+export default class VideoChatControls extends React.Component<VideoChatControlsProps> {
+  private canScreenCapture: boolean
+  
   constructor (props) {
     super(props)
 
@@ -27,7 +35,7 @@ export default class VideoChatControls extends React.Component {
         </div>
         <div className='center'>
           <MicButton localParticipant={this.props.localParticipant} />
-          <LeaveButton localParticipant={this.props.localParticipant} onLeave={this.props.onLeave} />
+          <LeaveButton onLeave={this.props.onLeave} />
           <VideoButton localParticipant={this.props.localParticipant} />
         </div>
         <div className='right'>

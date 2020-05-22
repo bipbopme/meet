@@ -4,34 +4,42 @@ import React from 'react'
 import Settings from '../../settings/settings'
 import { faCog } from '@fortawesome/free-solid-svg-icons'
 import { matopush } from '../../../lib/matomo'
+import { bind } from 'lodash-decorators'
+import JitsiParticipant from '../../../lib/jitsiManager/jitsiParticipant'
 
-export default class SettingsButton extends React.Component {
-  constructor (props) {
+interface SettingsButtonProps {
+  localParticipant: JitsiParticipant;
+}
+
+interface SettingsButtonState {
+  showSettings: boolean;
+}
+
+export default class SettingsButton extends React.Component<SettingsButtonProps, SettingsButtonState> {
+  constructor (props: SettingsButtonProps) {
     super(props)
-
-    this.localParticipant = this.props.localParticipant
-    this.handleClick = this.handleClick.bind(this)
-    this.handleDone = this.handleDone.bind(this)
-    this.handleModalCancel = this.handleModalCancel.bind(this)
 
     this.state = {
       showSettings: false
     }
   }
 
+  @bind()
   handleClick () {
     this.setState({ showSettings: true })
 
     matopush(['trackEvent', 'videoChat', 'settingsButton', 'click'])
   }
 
+  @bind()
   async handleDone (result) {
-    await this.localParticipant.replaceAudioTrack(result.audioTrack)
-    await this.localParticipant.replaceVideoTrack(result.videoTrack)
+    await this.props.localParticipant.replaceAudioTrack(result.audioTrack)
+    await this.props.localParticipant.replaceVideoTrack(result.videoTrack)
 
     this.setState({ showSettings: false })
   }
 
+  @bind()
   handleModalCancel () {
     this.setState({ showSettings: false })
   }

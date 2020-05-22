@@ -1,21 +1,34 @@
 import { faMicrophoneSlash, faVideoSlash } from '@fortawesome/free-solid-svg-icons'
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React from 'react'
+import React, { RefObject } from 'react'
 import { action } from 'mobx'
 import { observer } from 'mobx-react'
+import { bind } from 'lodash-decorators'
+import JitsiParticipant from '../../lib/jitsiManager/jitsiParticipant'
+
+interface VideoProps {
+  participant?: JitsiParticipant;
+  isLocal: boolean;
+  audioTrack: MediaStreamTrack;
+  videoTrack: MediaStreamTrack;
+  isVideoActive: boolean;
+  isAudioMuted: boolean;
+  isVideoMuted: boolean;
+  isDominantSpeaker: boolean;
+}
 
 @observer
-export default class Video extends React.Component {
+export default class Video extends React.Component<VideoProps> {
+  private videoContainerRef: RefObject<HTMLDivElement>
+  private videoRef: RefObject<HTMLVideoElement>
+  private audioRef: RefObject<HTMLAudioElement>
+  
   constructor (props) {
     super(props)
 
-    this.participant = this.props.participant
     this.videoContainerRef = React.createRef()
     this.videoRef = React.createRef()
     this.audioRef = React.createRef()
-    this.handleVideoCanPlay = this.handleVideoCanPlay.bind(this)
-    this.handleVideoEmptied = this.handleVideoEmptied.bind(this)
   }
 
   componentDidMount () {
@@ -42,15 +55,16 @@ export default class Video extends React.Component {
   }
 
   // TODO: This finally feels stable but needs to be simplified
-  updateTrackAttachments (prevProps = {}) {
+  // TS: MAKE SURE THIS WORKS
+  updateTrackAttachments (prevProps?: VideoProps) {
     // Add audio track
-    if (!prevProps.audioTrack && this.props.audioTrack) {
+    if (!(prevProps && prevProps.audioTrack) && this.props.audioTrack) {
       console.info('Add audio track', prevProps, this.props)
       this.props.audioTrack.attach(this.audioRef.current)
     }
 
     // Update audio track
-    if (prevProps.audioTrack && this.props.audioTrack) {
+    if ((prevProps && prevProps.audioTrack) && this.props.audioTrack) {
       if (prevProps.audioTrack.getId() !== this.props.audioTrack.getId()) {
         console.info('Replace audio track', prevProps, this.props)
         prevProps.audioTrack.detach()
@@ -61,13 +75,13 @@ export default class Video extends React.Component {
     }
 
     // Remove audio track
-    if (prevProps.audioTrack && !this.props.audioTrack) {
+    if ((prevProps && prevProps.audioTrack) && !this.props.audioTrack) {
       console.info('Remove audio track', prevProps, this.props)
       prevProps.audioTrack.detach()
     }
 
     // Add video track
-    if (!prevProps.videoTrack && this.props.videoTrack) {
+    if (!(prevProps && prevProps.videoTrack) && this.props.videoTrack) {
       console.info('Add video track', prevProps, this.props)
       this.props.videoTrack.attach(this.videoRef.current)
 
@@ -75,7 +89,7 @@ export default class Video extends React.Component {
     }
 
     // Update video track
-    if (prevProps.videoTrack && this.props.videoTrack) {
+    if ((prevProps && prevProps.videoTrack) && this.props.videoTrack) {
       if (prevProps.videoTrack.getId() !== this.props.videoTrack.getId()) {
         console.info('Replace video track', prevProps, this.props)
         prevProps.videoTrack.detach()
@@ -86,7 +100,7 @@ export default class Video extends React.Component {
     }
 
     // Remove video track
-    if (prevProps.videoTrack && !this.props.videoTrack) {
+    if ((prevProps && prevProps.videoTrack) && !this.props.videoTrack) {
       console.info('Remove video track', prevProps, this.props)
       prevProps.videoTrack.detach()
     }
@@ -106,28 +120,30 @@ export default class Video extends React.Component {
     }
   }
 
+  @bind()
   handleVideoCanPlay () {
     this.updateVideoTagStaus(true)
     this.updateAspectRatio()
   }
 
+  @bind()
   handleVideoEmptied () {
     this.updateVideoTagStaus(false)
   }
 
   @action
   updateVideoTagStaus (active) {
-    if (this.participant) {
-      this.participant.isVideoTagActive = active
+    if (this.props.participant) {
+      this.props.participant.isVideoTagActive = active
     }
   }
 
   updateAspectRatio () {
-    let containerEl = this.videoContainerRef.current
-    let videoEl = this.videoRef.current
+    const containerEl = this.videoContainerRef.current
+    const videoEl = this.videoRef.current
 
     if (containerEl && videoEl) {
-      let className = (videoEl.videoWidth / videoEl.videoHeight) < (16 / 9) ?
+      const className = (videoEl.videoWidth / videoEl.videoHeight) < (16 / 9) ?
         'narrowAspect' : 'wideAspect'
 
         containerEl.classList.remove('narrowAspect', 'wideAspect')

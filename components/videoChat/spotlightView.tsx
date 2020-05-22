@@ -1,15 +1,23 @@
-import React from 'react'
+import React, { RefObject } from 'react'
 import Video from './video'
-import _chunk from 'lodash/chunk'
 import { observer } from 'mobx-react'
+import JitsiConferenceManager from '../../lib/jitsiManager/jitsiConferenceManager'
+import JitsiParticipant from '../../lib/jitsiManager/jitsiParticipant'
+
+interface SpotlightViewProps {
+  conference: JitsiConferenceManager;
+  crop: boolean;
+}
 
 @observer
-export default class SpotlightView extends React.Component {
-  constructor (props) {
+export default class SpotlightView extends React.Component<SpotlightViewProps> {
+  private videosRef: RefObject<HTMLDivElement>
+  private speakingParticipant: JitsiParticipant
+
+  constructor (props: SpotlightViewProps) {
     super(props)
 
     this.videosRef = React.createRef()
-    this.conference = props.conference
   }
 
   componentDidMount () {
@@ -22,13 +30,13 @@ export default class SpotlightView extends React.Component {
 
   updateVideoConstraints () {
     if (this.speakingParticipant) {
-      this.conference.selectParticipants([this.speakingParticipant.id])
-      this.conference.setReceiverVideoConstraint(720)
+      this.props.conference.selectParticipants([this.speakingParticipant.id])
+      this.props.conference.setReceiverVideoConstraint(720)
     }
   }
 
   getCssClassNames () {
-    let classNames = ['spotlightView']
+    const classNames = ['spotlightView']
 
     classNames.push(this.props.crop ? 'cropped' : 'uncropped')
 
@@ -38,7 +46,7 @@ export default class SpotlightView extends React.Component {
   render () {
     const { participants, localParticipant } = this.props.conference
 
-    const sortedParticipants = participants.slice().sort((a, b) => b.lastDominantSpeakerAt - a.lastDominantSpeakerAt)
+    const sortedParticipants = participants.slice().sort((a, b) => b.lastDominantSpeakerAt.valueOf() - a.lastDominantSpeakerAt.valueOf())
     const speakingParticipant = sortedParticipants.filter(p => p.isDominantSpeaker)[0] || sortedParticipants[0] || localParticipant
     const nonSpeakingParticipants = [localParticipant, ...sortedParticipants].filter(p => p !== speakingParticipant)
 

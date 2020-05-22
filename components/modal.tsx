@@ -1,25 +1,27 @@
 import { Portal } from 'react-portal'
 import React from 'react'
+import { bind } from 'lodash-decorators';
 
-export default class Modal extends React.Component {
-  constructor (props) {
+interface ModalProps {
+  onCancel(): void;
+}
+
+export default class Modal extends React.Component<ModalProps> {
+  constructor (props: ModalProps) {
     super(props)
-
-    this.handleKeyDown = this.handleKeyDown.bind(this)
 
     document.addEventListener('keydown', this.handleKeyDown);
   }
 
-  handleKeyDown (event) {
+  @bind()
+  handleKeyDown (event: KeyboardEvent) {
     if (event.key === 'Escape') {
       this.cancel()
     }
   }
 
   cancel () {
-    if (this.props.onCancel) {
-      this.props.onCancel()
-    }
+    this.props.onCancel()
   }
 
   render () {

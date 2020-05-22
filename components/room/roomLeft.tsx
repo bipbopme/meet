@@ -1,6 +1,10 @@
 import React from 'react'
 
-export default class RoomLeft extends React.Component {
+interface RoomLeftProps {
+  onRejoin(): void;
+}
+
+export default class RoomLeft extends React.Component<RoomLeftProps> {
   render () {
     return (
       <div className='leftRoom'>

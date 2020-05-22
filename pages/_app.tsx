@@ -4,6 +4,7 @@ import '../styles/app.scss'
 import App from 'next/app'
 import { config } from '@fortawesome/fontawesome-svg-core'
 import { initMatomo } from '../lib/matomo'
+import React from 'react'
 
 config.autoAddCss = false // Tell Font Awesome to skip adding the CSS automatically since it's being imported above
 

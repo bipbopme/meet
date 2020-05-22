@@ -5,31 +5,38 @@ import RoomActive from '../../components/room/roomActive'
 import RoomLeft from '../../components/room/roomLeft'
 import RoomSetup from '../../components/room/roomSetup'
 import RoomStatus from '../../components/room/roomStatus'
-import _debounce from 'lodash/debounce'
 import { nowTraceToRegion } from '../../lib/utils'
 import { observer } from 'mobx-react'
+import { debounce, bindAll } from 'lodash-decorators'
+import JitsiConferenceManager from '../../lib/jitsiManager/jitsiConferenceManager'
+import { GetServerSideProps } from 'next'
 
 const JITSI_CONFIG = JSON.parse(process.env.JITSI_CONFIG)
 
-export async function getServerSideProps({ req, query }) {
-  return {
-    props: {
-      // Allows override from the query string
-      region: query.region || nowTraceToRegion(req.headers['x-now-trace'])
-    }
-  }
+interface RoomPageProps {
+  id: string;
+  region: string;
 }
 
-@observer
-export default class RoomPage extends React.Component {
-  constructor (props) {
+interface RoomPageState {
+  setupComplete: boolean;
+  conferenceInitialized: boolean;
+  left: boolean;
+  name?: string;
+  audioTrack?: MediaStreamTrack;
+  videoTrack?: MediaStreamTrack;
+}
+
+@observer @bindAll()
+export default class RoomPage extends React.Component<RoomPageProps, RoomPageState> {
+  id: string
+  jitsi: JitsiManager
+  conference: JitsiConferenceManager
+
+  constructor (props: RoomPageProps) {
     super(props)
 
-    this.region = this.props.region
-    this.handleSetupComplete = this.handleSetupComplete.bind(this)
-    this.handleLeave = this.handleLeave.bind(this)
-    this.handleJitsiConnected = this.handleJitsiConnected.bind(this)
-    this.updateMobileViewportHeightDebounced = _debounce(this.updateMobileViewportHeight, 50)
+    this.id = this.props.id;
 
     this.state = {
       setupComplete: false,
@@ -38,29 +45,27 @@ export default class RoomPage extends React.Component {
     }
   }
 
-  componentDidMount () {
-    this.id = window.location.pathname.split('/').pop().toLowerCase()
-
-    this.jitsi = new JitsiManager(JITSI_CONFIG.host, this.region)
+  componentDidMount(): void {
+    this.jitsi = new JitsiManager(JITSI_CONFIG.host, this.props.region)
     this.jitsi.once('CONNECTION_ESTABLISHED', this.handleJitsiConnected)
     this.jitsi.connect()
 
     // Override mobile viewport height behavior
     // Also apply to Safari since iPad pretends to be desktop
     if (DetectRTC.isMobileDevice || DetectRTC.browser.isSafari) {
-      this.updateMobileViewportHeightDebounced()
-      window.addEventListener('resize', this.updateMobileViewportHeightDebounced)
+      this.updateMobileViewportHeight()
+      window.addEventListener('resize', this.updateMobileViewportHeight)
     }
   }
 
-  handleJitsiConnected () {
+  handleJitsiConnected(): void {
     // If setup is already complete, init the conference
     if (this.state.setupComplete) {
       this.initConference(this.state.name, this.state.audioTrack, this.state.videoTrack)
     }
   }
 
-  handleSetupComplete (result) {
+  handleSetupComplete(result): void {
     const { name, audioTrack, videoTrack } = result
 
     this.setState({ setupComplete: true })
@@ -77,18 +82,18 @@ export default class RoomPage extends React.Component {
     }
   }
 
-  handleLeave () {
+  handleLeave(): void {
     this.conference.leave()
     this.jitsi.disconnect()
 
     this.setState({ left: true })
   }
 
-  handleRejoin () {
+  handleRejoin(): void {
     window.location.reload()
   }
 
-  initConference (name, audioTrack, videoTrack) {
+  initConference(name: string, audioTrack: MediaStreamTrack, videoTrack: MediaStreamTrack): void {
     this.conference = this.jitsi.initConferenceManager(this.id, [audioTrack, videoTrack], name)
     this.conference.join()
 
@@ -96,7 +101,8 @@ export default class RoomPage extends React.Component {
   }
 
   // https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
-  updateMobileViewportHeight () {
+  @debounce(50)
+  updateMobileViewportHeight(): void {
     // First we get the viewport height and we multiply it by 1% to get a value for a vh unit
     const mvh = window.innerHeight * 0.01
 
@@ -109,7 +115,7 @@ export default class RoomPage extends React.Component {
     }
   }
 
-  render () {
+  render(): JSX.Element {
     if (this.state.setupComplete) {
       if (this.state.conferenceInitialized) {
         if (this.state.left) {
@@ -126,6 +132,16 @@ export default class RoomPage extends React.Component {
       }
     } else {
       return <RoomSetup onComplete={this.handleSetupComplete} />
+    }
+  }
+}
+
+export const getServerSideProps: GetServerSideProps<RoomPageProps, {}> = async ({ req, query}) => {
+  return {
+    props: {
+      id: query.id.toString(),
+      // Allows override from the query string
+      region: query.region || nowTraceToRegion(req.headers['x-now-trace'])
     }
   }
 }

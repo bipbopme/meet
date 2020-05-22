@@ -1,20 +1,28 @@
 import { faVideo, faVideoSlash } from '@fortawesome/free-solid-svg-icons'
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 import { matopush } from '../../../lib/matomo'
+import { bind } from 'lodash-decorators'
+import JitsiParticipant from '../../../lib/jitsiManager/jitsiParticipant'
 
-export default class VideoButton extends React.Component {
-  constructor (props) {
+interface VideoButtonProps {
+  localParticipant: JitsiParticipant;
+}
+
+interface VideoButtonState {
+  muted: boolean;
+}
+
+export default class VideoButton extends React.Component<VideoButtonProps, VideoButtonState> {
+  constructor (props: VideoButtonProps) {
     super(props)
-
-    this.handleClick = this.handleClick.bind(this)
 
     this.state = {
       muted: this.props.localParticipant.isVideoMuted
     }
   }
 
+  @bind()
   handleClick () {
     // Toggle muted
     const muted = !this.state.muted

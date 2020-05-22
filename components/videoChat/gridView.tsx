@@ -1,20 +1,26 @@
-import React from 'react'
+import React, { RefObject } from 'react'
 import Video from './video'
 import _chunk from 'lodash/chunk'
-import { debounce } from 'lodash'
 import { observer } from 'mobx-react'
+import JitsiConferenceManager from '../../lib/jitsiManager/jitsiConferenceManager'
+import { bind, debounce } from 'lodash-decorators'
+
+interface GridViewProps {
+  conference: JitsiConferenceManager;
+  crop: boolean;
+}
 
 @observer
-export default class GridView extends React.Component {
+export default class GridView extends React.Component<GridViewProps> {
+  private gridDimensions?: { columns: number; rows: number }
+  private videosRef: RefObject<HTMLDivElement>
+
   constructor (props) {
     super(props)
 
     this.videosRef = React.createRef()
-    this.conference = props.conference
-    this.handleGridResizeDebounced = debounce(this.handleGridResize.bind(this), 250)
-    this.calculateVideoConstraintDebounced = debounce(this.calculateVideoConstraint.bind(this), 1000)
 
-    window.addEventListener('resize', this.handleGridResizeDebounced)
+    window.addEventListener('resize', this.handleGridResize)
   }
 
   componentDidMount () {
@@ -25,19 +31,21 @@ export default class GridView extends React.Component {
     this.handleGridResize()
   }
 
+  @bind() @debounce(250)
   handleGridResize () {
     if (this.videosRef.current && this.gridDimensions) {
       this.updateVideoDimensions({ gridDimensions: this.gridDimensions, crop: this.props.crop })
-      this.calculateVideoConstraintDebounced()
+      this.calculateVideoConstraint()
     }
   }
 
+  @bind() @debounce(1000)
   calculateVideoConstraint () {
     if (this.videosRef.current) {
       const sampleVideoContainer = this.videosRef.current.getElementsByClassName('video')[0]
 
       if (sampleVideoContainer) {
-        let elementHeight = sampleVideoContainer.offsetHeight
+        const elementHeight = sampleVideoContainer.offsetHeight
         let videoConstraint;
 
         // TODO: these are okay values for wide video but not for cropped vertical video
@@ -53,16 +61,16 @@ export default class GridView extends React.Component {
 
         console.log('calculateVideoConstraint', elementHeight, videoConstraint)
 
-        this.conference.selectAllParticipants()
-        this.conference.setReceiverVideoConstraint(videoConstraint)
+        this.props.conference.selectAllParticipants()
+        this.props.conference.setReceiverVideoConstraint(videoConstraint)
       }
     }
   }
 
-  getGridDimensions (count) {
-    let sqrt = Math.sqrt(count)
-    let rows = Math.ceil(sqrt)
-    let columns = sqrt === rows || (sqrt - Math.floor(sqrt)) >= 0.5 ?  rows : rows - 1
+  getGridDimensions (count: number) {
+    const sqrt = Math.sqrt(count)
+    const rows = Math.ceil(sqrt)
+    const columns = sqrt === rows || (sqrt - Math.floor(sqrt)) >= 0.5 ?  rows : rows - 1
 
     return { columns, rows }
   }
@@ -70,13 +78,13 @@ export default class GridView extends React.Component {
   updateVideoDimensions ({ gridDimensions, crop = false, aspectRatio = 16/9, videoMargin = 5 }) {
     let containerHeight = this.videosRef.current.offsetHeight
     let containerWidth = this.videosRef.current.offsetWidth
-    let combinedMargin = videoMargin * 2
+    const combinedMargin = videoMargin * 2
 
     // Remove margin from the container calculation
     containerHeight = containerHeight - combinedMargin
     containerWidth = containerWidth - combinedMargin
 
-    let height, width
+    let height: number, width: number
 
     // Fill all the available space
     if (crop) {
@@ -105,7 +113,7 @@ export default class GridView extends React.Component {
   }
 
   getCssClassNames () {
-    let classNames = ['gridView']
+    const classNames = ['gridView']
 
     classNames.push(this.props.crop ? 'cropped' : 'uncropped')
 
@@ -113,7 +121,7 @@ export default class GridView extends React.Component {
   }
 
   render () {
-    const { participants, localParticipant, status } = this.props.conference
+    const { participants, localParticipant } = this.props.conference
     const allParticipants = [...participants, localParticipant]
 
     // Save dimensions so we can calulate video dimensions after render
@@ -127,7 +135,17 @@ export default class GridView extends React.Component {
           {participantChunks.map((participants, chunkIndex) => (
             <div key={`row-${chunkIndex}`}className='row'>
               {participants.map(participant => (
-                <Video key={participant.id} participant={participant} isLocal={participant.isLocal} audioTrack={participant.audioTrack} videoTrack={participant.videoTrack} isVideoActive={participant.isVideoTagActive} isAudioMuted={participant.isAudioMuted} isVideoMuted={participant.isVideoMuted} isDominantSpeaker={participant.isDominantSpeaker} />
+                <Video 
+                  key={participant.id} 
+                  participant={participant}
+                  isLocal={participant.isLocal}
+                  audioTrack={participant.audioTrack}
+                  videoTrack={participant.videoTrack}
+                  isVideoActive={participant.isVideoTagActive}
+                  isAudioMuted={participant.isAudioMuted}
+                  isVideoMuted={participant.isVideoMuted}
+                  isDominantSpeaker={participant.isDominantSpeaker} 
+                />
               ))}
             </div>
           ))}

@@ -2,19 +2,17 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 import { faThLarge } from '@fortawesome/free-solid-svg-icons'
 import { matopush } from '../../../lib/matomo'
+import { bind } from 'lodash-decorators'
 
-export default class ViewButton extends React.Component {
-  constructor (props) {
-    super(props)
+interface ViewButtonProps {
+  onToggle(view: string): void;
+  view: string;
+}
 
-    this.handleClick = this.handleClick.bind(this)
-  }
-
+export default class ViewButton extends React.Component<ViewButtonProps> {
+  @bind()
   handleClick () {
-    // Toggle view
-    const newView = this.props.view === 'grid' ? 'spotlight' : 'grid'
-
-    this.props.onToggle(newView)
+    this.props.onToggle(this.props.view === 'grid' ? 'spotlight' : 'grid')
 
     matopush(['trackEvent', 'videoChat', 'viewButton', 'toggle'])
   }

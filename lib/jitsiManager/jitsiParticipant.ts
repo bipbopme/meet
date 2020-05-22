@@ -1,9 +1,9 @@
 import { action, observable } from 'mobx'
 
-import EventEmitter from 'events'
+import events from 'events'
 import { bind } from 'decko'
 
-export default class JitsiParticipant extends EventEmitter {
+export default class JitsiParticipant extends events.EventEmitter {
   static events = {
     DISPLAY_NAME_CHANGED: 'DISPLAY_NAME_CHANGED',
     DOMINANT_SPEAKER_CHANGED: 'DOMINANT_SPEAKER_CHANGED',

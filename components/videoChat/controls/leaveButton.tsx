@@ -2,14 +2,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { matopush } from '../../../lib/matomo'
+import { bind } from 'lodash-decorators'
 
-export default class LeaveButton extends React.Component {
-  constructor (props) {
-    super(props)
+interface LeaveButtonProps {
+  onLeave(): void;
+}
 
-    this.handleClick = this.handleClick.bind(this)
-  }
-
+export default class LeaveButton extends React.Component<LeaveButtonProps> {
+  @bind()
   handleClick () {
     this.props.onLeave()
 

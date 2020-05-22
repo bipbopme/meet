@@ -46,11 +46,11 @@ export function nowTraceToRegion(trace) {
   return regionMap[trace] || defaultRegion
 }
 
-export function eventPath(evt) {
+export function eventPath(evt: MouseEvent) {
   // This should check composedPath but it wasn't working in Firefox
   // (evt.composedPath && evt.composedPath()) || evt.path
-  let path = evt.path
-  let target = evt.target
+  let path = evt['path']
+  const target = evt.target
 
   if (path != null) {
     // Safari doesn't include Window, and it should.
@@ -62,9 +62,9 @@ export function eventPath(evt) {
     return [window]
   }
 
-  function getParents(node, memo) {
+  function getParents(node: Node, memo?: Node[]) {
     memo = memo || []
-    var parentNode = node.parentNode
+    const parentNode = node.parentNode
 
     if (!parentNode) {
       return memo

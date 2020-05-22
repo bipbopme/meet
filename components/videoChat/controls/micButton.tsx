@@ -1,20 +1,28 @@
 import { faMicrophone, faMicrophoneSlash } from '@fortawesome/free-solid-svg-icons'
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 import { matopush } from '../../../lib/matomo'
+import { bind } from 'lodash-decorators'
+import JitsiParticipant from '../../../lib/jitsiManager/jitsiParticipant'
 
-export default class MicButton extends React.Component {
-  constructor (props) {
+interface MicButtonProps {
+  localParticipant: JitsiParticipant;
+}
+
+interface MicButtonState {
+  muted: boolean;
+}
+
+export default class MicButton extends React.Component<MicButtonProps, MicButtonState> {
+  constructor (props: MicButtonProps) {
     super(props)
-
-    this.handleClick = this.handleClick.bind(this)
 
     this.state = {
       muted: this.props.localParticipant.isAudioMuted
     }
   }
 
+  @bind()
   handleClick () {
     // Toggle muted
     const muted = !this.state.muted

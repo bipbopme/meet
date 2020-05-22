@@ -1,16 +1,24 @@
 import React from 'react'
 import { nowTraceToRegion } from '../../lib/utils'
+import { GetServerSideProps } from 'next'
 
-export async function getServerSideProps({ req }) {
+type DebugPageProps = {
+  trace: string;
+  region: string;
+}
+
+export const getServerSideProps: GetServerSideProps<DebugPageProps, {}> = async ({ req }) => {
+  const trace = req.headers['x-now-trace'] ? req.headers['x-now-trace'].toString() : null
+
   return {
     props: {
-      trace: req.headers['x-now-trace'] || null,
-      region: nowTraceToRegion(req.headers['x-now-trace'])
+      trace: trace,
+      region: nowTraceToRegion(trace)
     }
   }
 }
 
-export default class DebugPage extends React.Component {
+export default class DebugPage extends React.Component<DebugPageProps> {
   render () {
     const { trace, region } = this.props
 

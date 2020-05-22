@@ -1,32 +1,38 @@
 import { eventPath, isTouchEnabled } from '../../lib/utils'
-
 import Head from 'next/head'
 import React from 'react'
 import VideoChat from '../videoChat/videoChat'
-import debounce from 'lodash/debounce'
-import throttle from 'lodash/throttle'
+import { debounce, throttle, bind } from 'lodash-decorators'
+import JitsiConferenceManager from '../../lib/jitsiManager/jitsiConferenceManager'
 
-export default class RoomActive extends React.Component {
-  static HIDE_CONTROLS_DELAY = 3500
-  static MOUSE_EVENT_DELAY = 150
+const HIDE_CONTROLS_DELAY = 3500
+const MOUSE_EVENT_DELAY = 150
 
-  constructor (props) {
+interface RoomActiveProps {
+  conference: JitsiConferenceManager;
+  onLeave(): void;
+}
+
+interface RoomActiveState {
+  showChat: boolean;
+  showControls: boolean;
+  isFullscreen: boolean;
+}
+
+export default class RoomActive extends React.Component<RoomActiveProps, RoomActiveState> {
+  // TODO: this doesn't seem right
+  hideControlsTimer: NodeJS.Timeout
+
+  constructor (props: RoomActiveProps) {
     super(props)
-
-    this.handleToggleChat = this.handleToggleChat.bind(this)
-    this.handleMouseMoveThrottled = throttle(this.handleMouseMove.bind(this), RoomActive.MOUSE_EVENT_DELAY)
-    this.handleMouseOutDebounced = debounce(this.handleMouseOut.bind(this), RoomActive.MOUSE_EVENT_DELAY)
-    this.handleClickDebounced = debounce(this.handleClick.bind(this), RoomActive.MOUSE_EVENT_DELAY)
-    this.handleDoubleClick = this.handleDoubleClick.bind(this)
-    this.hideControls = this.hideControls.bind(this)
 
     // These events are usually emulated correctly but they conflict with the click events on touch devices
     if (!isTouchEnabled()) {
-      window.addEventListener('mousemove', this.handleMouseMoveThrottled)
-      window.addEventListener('mouseout', this.handleMouseOutDebounced)
+      window.addEventListener('mousemove', this.handleMouseMove)
+      window.addEventListener('mouseout', this.handleMouseOut)
     }
 
-    window.addEventListener('click', this.handleClickDebounced)
+    window.addEventListener('click', this.handleClick)
     window.addEventListener('dblclick', this.handleDoubleClick)
 
     this.state = {
@@ -41,11 +47,12 @@ export default class RoomActive extends React.Component {
     this.startAutoHideControlsTimer()
   }
 
+  @bind()
   handleToggleChat () {
     this.setState({ showChat: !this.state.showChat })
   }
 
-  startAutoHideControlsTimer (delay = RoomActive.HIDE_CONTROLS_DELAY) {
+  startAutoHideControlsTimer (delay = HIDE_CONTROLS_DELAY) {
     this.clearAutoHideControlsTimer()
     this.hideControlsTimer = setTimeout(this.hideControls, delay)
   }
@@ -54,6 +61,7 @@ export default class RoomActive extends React.Component {
     clearTimeout(this.hideControlsTimer)
   }
 
+  @bind()
   hideControls () {
     this.setState({ showControls: false })
   }
@@ -62,7 +70,8 @@ export default class RoomActive extends React.Component {
     this.setState({ showControls: true })
   }
 
-  handleMouseMove (event) {
+  @bind() @throttle(MOUSE_EVENT_DELAY)
+  handleMouseMove () {
     this.startAutoHideControlsTimer()
 
     if (!this.state.showControls) {
@@ -70,13 +79,15 @@ export default class RoomActive extends React.Component {
     }
   }
 
-  handleMouseOut (event) {
+  @bind() @debounce(MOUSE_EVENT_DELAY)
+  handleMouseOut (event: MouseEvent) {
     if (!event.relatedTarget) {
       this.startAutoHideControlsTimer(0)
     }
   }
 
-  handleClick (event) {
+  @bind() @debounce(MOUSE_EVENT_DELAY)
+  handleClick (event: MouseEvent) {
     if (!this.hasClickableElements(event)) {
       if (this.state.showControls) {
         this.startAutoHideControlsTimer(0)
@@ -86,7 +97,8 @@ export default class RoomActive extends React.Component {
     }
   }
 
-  handleDoubleClick (event) {
+  @bind()
+  handleDoubleClick (event: MouseEvent) {
     if (!this.hasClickableElements(event)) {
       // Invert fullscreen
       const newIsFullscreen = !this.state.isFullscreen
@@ -110,7 +122,7 @@ export default class RoomActive extends React.Component {
     }
   }
 
-  hasClickableElements(event) {
+  hasClickableElements(event: MouseEvent) {
     const elements = eventPath(event)
     const clickableElements = elements.filter(element => {
       return (element.classList && element.classList.contains('button')) ||

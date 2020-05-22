@@ -2,7 +2,11 @@ import Head from 'next/head'
 import React from 'react'
 import Settings from '../settings/settings'
 
-export default class RoomStatus extends React.Component {
+interface RoomSetupProps {
+  onComplete(state: { name: string; audioTrack: MediaStreamTrack; videoTrack: MediaStreamTrack }): void;
+}
+
+export default class RoomSetup extends React.Component<RoomSetupProps> {
   render () {
     return (
       <div className='roomPage roomSetup'>
@@ -13,11 +17,10 @@ export default class RoomStatus extends React.Component {
         <div className='videoChat'>
           <header><h1>bipbop</h1></header>
           <section className='videosPreview'>
-            <div className='statusMessage'>
-              {this.props.children}
+            <div className='preview'>
+              <Settings titleText='Ready to join?' buttonText='Join' onButtonClick={this.props.onComplete} collapseAudioVideoSettings='true' />
             </div>
           </section>
-          <footer className='controls' />
         </div>
         <div className='textChat'>
           <header />

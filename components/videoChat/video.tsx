@@ -9,8 +9,8 @@ import JitsiParticipant from '../../lib/jitsiManager/jitsiParticipant'
 interface VideoProps {
   participant?: JitsiParticipant;
   isLocal: boolean;
-  audioTrack: MediaStreamTrack;
-  videoTrack: MediaStreamTrack;
+  audioTrack: JitsiMeetJS.JitsiTrack;
+  videoTrack: JitsiMeetJS.JitsiTrack;
   isVideoActive: boolean;
   isAudioMuted: boolean;
   isVideoMuted: boolean;

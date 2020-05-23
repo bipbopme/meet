@@ -11,7 +11,7 @@ interface SettingsProps {
   collapseAudioVideoSettings?: boolean;
   titleText?: string;
   buttonText: string;
-  onButtonClick(state: { name: string; audioTrack: MediaStreamTrack; videoTrack: MediaStreamTrack }): void;
+  onButtonClick(state: { name: string; audioTrack: JitsiMeetJS.JitsiTrack; videoTrack: JitsiMeetJS.JitsiTrack }): void;
 }
 
 interface SettingsState {
@@ -19,8 +19,8 @@ interface SettingsState {
   selectedAudioInputID?: string;
   selectedAudioOutputID?: string;
   selectedVideoInputID?: string;
-  audioTrack?: MediaStreamTrack;
-  videoTrack?: MediaStreamTrack;
+  audioTrack?: JitsiMeetJS.JitsiTrack;
+  videoTrack?: JitsiMeetJS.JitsiTrack;
   collapseAudioVideoSettings?: boolean;
   audioInputs?: MediaDeviceInfo[];
   audioOutputs?: MediaDeviceInfo[];
@@ -92,8 +92,8 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
     }
   }
 
-  handleCreateLocalTracks (tracks: MediaStreamTrack[]) {
-    let audioTrack: MediaStreamTrack, videoTrack: MediaStreamTrack
+  handleCreateLocalTracks (tracks: JitsiMeetJS.JitsiTrack[]) {
+    let audioTrack: JitsiMeetJS.JitsiTrack, videoTrack: JitsiMeetJS.JitsiTrack
 
     if (tracks) {
       audioTrack = tracks.find(t => t.getType() === 'audio')

@@ -23,8 +23,8 @@ interface RoomPageState {
   conferenceInitialized: boolean;
   left: boolean;
   name?: string;
-  audioTrack?: MediaStreamTrack;
-  videoTrack?: MediaStreamTrack;
+  audioTrack?: JitsiMeetJS.JitsiTrack;
+  videoTrack?: JitsiMeetJS.JitsiTrack;
 }
 
 @observer @bindAll()
@@ -93,7 +93,7 @@ export default class RoomPage extends React.Component<RoomPageProps, RoomPageSta
     window.location.reload()
   }
 
-  initConference(name: string, audioTrack: MediaStreamTrack, videoTrack: MediaStreamTrack): void {
+  initConference(name: string, audioTrack: JitsiMeetJS.JitsiTrack, videoTrack: JitsiMeetJS.JitsiTrack): void {
     this.conference = this.jitsi.initConferenceManager(this.id, [audioTrack, videoTrack], name)
     this.conference.join()
 

@@ -1,5 +1,4 @@
 import { action, observable } from 'mobx'
-
 import events from 'events'
 import JitsiMessage from './jitsiMessage'
 import JitsiParticipant from './jitsiParticipant'
@@ -16,8 +15,8 @@ export default class JitsiConferenceManager extends events.EventEmitter {
 
   id: string = undefined
   jitsiManager: JitsiManager = undefined
-  localTracks: MediaStreamTrack[] = undefined
-  conference = undefined
+  localTracks: JitsiMeetJS.JitsiTrack[] = undefined
+  conference: JitsiMeetJS.JitsiConference = undefined
   displayName: string = undefined
 
   @observable status: string = undefined
@@ -26,7 +25,7 @@ export default class JitsiConferenceManager extends events.EventEmitter {
   @observable participants: JitsiParticipant[] = []
   @observable messages: JitsiMessage[] = []
 
-  constructor (jitsiManager: JitsiManager, id: string, localTracks: MediaStreamTrack[], displayName: string) {
+  constructor (jitsiManager: JitsiManager, id: string, localTracks: JitsiMeetJS.JitsiTrack[], displayName: string) {
     super()
 
     this.id = id

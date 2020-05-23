@@ -3,7 +3,7 @@ import React from 'react'
 import Settings from '../settings/settings'
 
 interface RoomSetupProps {
-  onComplete(state: { name: string; audioTrack: MediaStreamTrack; videoTrack: MediaStreamTrack }): void;
+  onComplete(state: { name: string; audioTrack: JitsiMeetJS.JitsiTrack; videoTrack: JitsiMeetJS.JitsiTrack }): void;
 }
 
 export default class RoomSetup extends React.Component<RoomSetupProps> {

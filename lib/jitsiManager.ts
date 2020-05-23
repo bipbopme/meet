@@ -12,10 +12,10 @@ export default class JitsiManager extends events.EventEmitter {
     CONNECTION_FAILED: 'CONNECTION_FAILED'
   }
 
-  domain = undefined
-  region = undefined
+  domain: string = undefined
+  region: string = undefined
   conferenceManagers = []
-  connection = undefined
+  connection: JitsiMeetJS.JitsiConnection = undefined
   @observable status = 'disconnected'
 
   constructor(domain: string, region: string) {
@@ -48,7 +48,7 @@ export default class JitsiManager extends events.EventEmitter {
     this.connection.disconnect()
   }
 
-  initConferenceManager(id: string, localTracks: MediaStreamTrack[], displayName: string) {
+  initConferenceManager(id: string, localTracks: JitsiMeetJS.JitsiTrack[], displayName: string) {
     const conferenceManager = new JitsiConferenceManager(this, id, localTracks, displayName)
     this.conferenceManagers.push(conferenceManager)
 

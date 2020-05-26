@@ -3,7 +3,8 @@ import Video from './video'
 import _chunk from 'lodash/chunk'
 import { observer } from 'mobx-react'
 import JitsiConferenceManager from '../../lib/jitsiManager/jitsiConferenceManager'
-import { bind, debounce } from 'lodash-decorators'
+import { bind } from 'lodash-decorators'
+import debounce from 'lodash/debounce'
 import JitsiParticipant from '../../lib/jitsiManager/jitsiParticipant'
 
 interface GridViewProps {
@@ -17,13 +18,15 @@ interface GridViewProps {
 export default class GridView extends React.Component<GridViewProps> {
   private gridDimensions?: { columns: number; rows: number }
   private videosRef: RefObject<HTMLDivElement>
+  private handleGrideResizeDebounced: () => void
 
   constructor (props: GridViewProps) {
     super(props)
 
     this.videosRef = React.createRef()
+    this.handleGrideResizeDebounced = debounce(this.handleGridResize, 250)
 
-    window.addEventListener('resize', this.handleGridResize)
+    window.addEventListener('resize', this.handleGrideResizeDebounced)
   }
 
   componentDidMount () {
@@ -34,7 +37,11 @@ export default class GridView extends React.Component<GridViewProps> {
     this.handleGridResize()
   }
 
-  @bind() @debounce(250)
+  componentWillUnmount () {
+    window.removeEventListener('resize', this.handleGrideResizeDebounced)
+  }
+
+  @bind()
   handleGridResize () {
     if (this.videosRef.current && this.gridDimensions) {
       this.updateVideoDimensions(this.gridDimensions, this.props.crop)
@@ -42,7 +49,7 @@ export default class GridView extends React.Component<GridViewProps> {
     }
   }
 
-  @bind() @debounce(1000)
+  @bind()
   calculateVideoConstraint () {
     if (this.videosRef.current) {
       const sampleVideoContainer = this.videosRef.current.getElementsByClassName('video')[0] as HTMLVideoElement

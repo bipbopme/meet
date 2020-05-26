@@ -4,7 +4,8 @@ import React from 'react'
 import SpotlightView from './spotlightView'
 import VideoChatControls from './controls/videoChatControls'
 import { observer } from 'mobx-react'
-import { bind, debounce } from 'lodash-decorators'
+import { bind } from 'lodash-decorators'
+import debounce from 'lodash/debounce'
 
 interface VideoChatProps {
   conference: JitsiConferenceManager;
@@ -19,12 +20,18 @@ interface VideoChatState {
 
 @observer
 export default class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
+  private autoSwitchViewDebounced: () => void
+
   constructor (props: VideoChatProps) {
     super(props)
+
+    this.autoSwitchViewDebounced = debounce(this.autoSwitchView, 200)
 
     // TODO: these are dangerous because they trigger double renders
     this.props.conference.on(JitsiConferenceManager.events.PARTICIPANT_JOINED, this.autoSwitchView)
     this.props.conference.on(JitsiConferenceManager.events.PARTICIPANT_LEFT, this.autoSwitchView)
+
+    window.addEventListener('resize', this.autoSwitchViewDebounced)
 
     this.state = {
       view: 'spotlight',
@@ -33,7 +40,13 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
     }
   }
 
-  @bind() @debounce(250)
+  componentWillUnmount () {
+    this.props.conference.off(JitsiConferenceManager.events.PARTICIPANT_JOINED, this.autoSwitchView)
+    this.props.conference.off(JitsiConferenceManager.events.PARTICIPANT_LEFT, this.autoSwitchView)
+    window.removeEventListener('resize', this.autoSwitchViewDebounced)
+  }
+
+  @bind()
   autoSwitchView () {
     if (this.state.autoSwitchView) {
       const { conference } = this.props

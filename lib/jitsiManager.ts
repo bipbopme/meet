@@ -12,10 +12,10 @@ export default class JitsiManager extends events.EventEmitter {
     CONNECTION_FAILED: 'CONNECTION_FAILED'
   }
 
-  domain: string = undefined
-  region: string = undefined
-  conferenceManagers = []
-  connection: JitsiMeetJS.JitsiConnection = undefined
+  domain: string
+  region: string
+  conferenceManagers: JitsiConferenceManager[] = []
+  connection: JitsiMeetJS.JitsiConnection
   @observable status = 'disconnected'
 
   constructor(domain: string, region: string) {
@@ -24,7 +24,7 @@ export default class JitsiManager extends events.EventEmitter {
     this.domain = domain
     this.region = region
 
-    this._initJitsiMeetJS()
+    this.initJitsiMeetJS()
 
     this.connection = new JitsiMeetJS.JitsiConnection(null, null, {
       hosts: {
@@ -35,7 +35,7 @@ export default class JitsiManager extends events.EventEmitter {
       clientNode: 'https://bipbop.me/JitsiMeetJS'
     })
 
-    this._addEventListeners()
+    this.addEventListeners()
   }
 
   connect(): void {
@@ -55,38 +55,38 @@ export default class JitsiManager extends events.EventEmitter {
     return conferenceManager
   }
 
-  _initJitsiMeetJS() {
+  private initJitsiMeetJS() {
     JitsiMeetJS.init({ useIPv6: true, disableAudioLevels: true, disableThirdPartyRequests: true })
     JitsiMeetJS.setLogLevel(JitsiMeetJS.logLevels.INFO)
   }
 
-  _addEventListeners() {
-    this.connection.addEventListener(JitsiMeetJS.events.connection.CONNECTION_FAILED, this._handleConnectionFailed)
-    this.connection.addEventListener(JitsiMeetJS.events.connection.CONNECTION_ESTABLISHED, this._handleConnectionEstablished)
-    this.connection.addEventListener(JitsiMeetJS.events.connection.CONNECTION_DISCONNECTED, this._handleConnectionDisconnected)
-    this.connection.addEventListener(JitsiMeetJS.events.connection.WRONG_STATE, this._handleWrongState)
+  private addEventListeners() {
+    this.connection.addEventListener(JitsiMeetJS.events.connection.CONNECTION_FAILED, this.handleConnectionFailed)
+    this.connection.addEventListener(JitsiMeetJS.events.connection.CONNECTION_ESTABLISHED, this.handleConnectionEstablished)
+    this.connection.addEventListener(JitsiMeetJS.events.connection.CONNECTION_DISCONNECTED, this.handleConnectionDisconnected)
+    this.connection.addEventListener(JitsiMeetJS.events.connection.WRONG_STATE, this.handleWrongState)
   }
 
   @bind
-  _handleConnectionFailed() {
+  private handleConnectionFailed() {
     this.status = 'failed'
     this.emit(JitsiManager.events.CONNECTION_FAILED)
   }
 
   @bind
-  _handleConnectionEstablished() {
+  private handleConnectionEstablished() {
     this.status = 'connected'
     this.emit(JitsiManager.events.CONNECTION_ESTABLISHED)
   }
 
   @bind
-  _handleConnectionDisconnected() {
+  private handleConnectionDisconnected() {
     this.status = 'disconnected'
     this.emit(JitsiManager.events.CONNECTION_DISCONNECTED)
   }
 
   @bind
-  _handleWrongState() {
+  private handleWrongState() {
     console.warn("Action can't be executed because the connection is in wrong state.")
   }
 }

@@ -14,22 +14,22 @@ export default class JitsiParticipant extends events.EventEmitter {
     TRACK_REMOVED: 'TRACK_REMOVED'
   }
 
-  id: string = undefined
-  conference: JitsiMeetJS.JitsiConference = undefined
+  id: string
   isLocal = false
+  private conference: JitsiMeetJS.JitsiConference
 
-  @observable displayName: string = undefined
-  @observable audioTrack: JitsiMeetJS.JitsiTrack = undefined
-  @observable videoTrack: JitsiMeetJS.JitsiTrack = undefined
+  @observable displayName: string | undefined
+  @observable audioTrack: JitsiMeetJS.JitsiTrack | undefined = undefined
+  @observable videoTrack: JitsiMeetJS.JitsiTrack | undefined = undefined
   @observable isDominantSpeaker = false
   @observable lastDominantSpeakerAt = new Date(0)
-  @observable role: string = undefined
-  @observable status: string = undefined
+  @observable role: string | undefined = undefined
+  @observable status: string | undefined = undefined
   @observable isAudioMuted = false
   @observable isVideoMuted = false
   @observable isVideoTagActive = false
 
-  constructor (id: string, conference: JitsiMeetJS.JitsiConference, displayName: string = undefined, isLocal = false) {
+  constructor (id: string, conference: JitsiMeetJS.JitsiConference, displayName: string | undefined = undefined, isLocal = false) {
     super()
 
     this.id = id
@@ -65,7 +65,7 @@ export default class JitsiParticipant extends events.EventEmitter {
   }
 
   async replaceAudioTrack (track: JitsiMeetJS.JitsiTrack) {
-    if (track.getId() !== this.audioTrack.getId()) {
+    if (this.audioTrack && this.audioTrack && track.getId() !== this.audioTrack.getId()) {
       await this.conference.removeTrack(this.audioTrack)
       this.audioTrack.dispose()
 
@@ -75,7 +75,7 @@ export default class JitsiParticipant extends events.EventEmitter {
   }
 
   async replaceVideoTrack (track: JitsiMeetJS.JitsiTrack) {
-    if (track.getId() !== this.videoTrack.getId()) {
+    if (this.videoTrack && track.getId() !== this.videoTrack.getId()) {
       await this.conference.removeTrack(this.videoTrack)
       this.videoTrack.dispose()
 
@@ -85,18 +85,18 @@ export default class JitsiParticipant extends events.EventEmitter {
   }
 
   addEventListeners () {
-    this.conference.addEventListener(JitsiMeetJS.events.conference.TRACK_ADDED, this._handleTrackAdded)
-    this.conference.addEventListener(JitsiMeetJS.events.conference.TRACK_REMOVED, this._handleTrackRemoved)
-    this.conference.addEventListener(JitsiMeetJS.events.conference.TRACK_MUTE_CHANGED, this._handleTrackMuteChanged)
-    this.conference.addEventListener(JitsiMeetJS.events.conference.TRACK_AUDIO_LEVEL_CHANGED, this._handleTrackAudioLevelChanged)
-    this.conference.addEventListener(JitsiMeetJS.events.conference.DOMINANT_SPEAKER_CHANGED, this._handleDominantSpeakerChanged)
-    this.conference.addEventListener(JitsiMeetJS.events.conference.DISPLAY_NAME_CHANGED, this._handleDisplayNameChanged)
-    this.conference.addEventListener(JitsiMeetJS.events.conference.USER_ROLE_CHANGED, this._handleUserRoleChanged)
-    this.conference.addEventListener(JitsiMeetJS.events.conference.USER_STATUS_CHANGED, this._handleUserStatusChanged)
+    this.conference.addEventListener(JitsiMeetJS.events.conference.TRACK_ADDED, this.handleTrackAdded)
+    this.conference.addEventListener(JitsiMeetJS.events.conference.TRACK_REMOVED, this.handleTrackRemoved)
+    this.conference.addEventListener(JitsiMeetJS.events.conference.TRACK_MUTE_CHANGED, this.handleTrackMuteChanged)
+    this.conference.addEventListener(JitsiMeetJS.events.conference.TRACK_AUDIO_LEVEL_CHANGED, this.handleTrackAudioLevelChanged)
+    this.conference.addEventListener(JitsiMeetJS.events.conference.DOMINANT_SPEAKER_CHANGED, this.handleDominantSpeakerChanged)
+    this.conference.addEventListener(JitsiMeetJS.events.conference.DISPLAY_NAME_CHANGED, this.handleDisplayNameChanged)
+    this.conference.addEventListener(JitsiMeetJS.events.conference.USER_ROLE_CHANGED, this.handleUserRoleChanged)
+    this.conference.addEventListener(JitsiMeetJS.events.conference.USER_STATUS_CHANGED, this.handleUserStatusChanged)
   }
 
   @action
-  addTrack (track) {
+  addTrack (track: JitsiMeetJS.JitsiTrack) {
     const trackType = track.getType()
     const isMuted = track.isMuted()
 
@@ -135,7 +135,7 @@ export default class JitsiParticipant extends events.EventEmitter {
         this.audioTrack.dispose()
       }
 
-      this.audioTrack = null
+      this.audioTrack = undefined
       this.isAudioMuted = isMuted
     }
 
@@ -144,13 +144,13 @@ export default class JitsiParticipant extends events.EventEmitter {
         this.videoTrack.dispose()
       }
 
-      this.videoTrack = null
+      this.videoTrack = undefined
       this.isVideoMuted = isMuted
     }
   }
 
   @action
-  _updateTrackMute (track: JitsiMeetJS.JitsiTrack) {
+  private updateTrackMute (track: JitsiMeetJS.JitsiTrack) {
     const trackType = track.getType()
 
     if (trackType === 'audio') {
@@ -163,7 +163,7 @@ export default class JitsiParticipant extends events.EventEmitter {
   }
 
   @action
-  _updateIsDominantSpeaker (isDominantSpeaker: boolean) {
+  private updateIsDominantSpeaker (isDominantSpeaker: boolean) {
     this.isDominantSpeaker = isDominantSpeaker
 
     if (isDominantSpeaker) {
@@ -172,22 +172,22 @@ export default class JitsiParticipant extends events.EventEmitter {
   }
 
   @action
-  _updateDisplayName (displayName: string) {
+  private updateDisplayName (displayName: string) {
     this.displayName = displayName
   }
 
   @action
-  _updateRole (role: string) {
+  private updateRole (role: string) {
     this.role = role
   }
 
   @action
-  _updateStatus (status: string) {
+  private updateStatus (status: string) {
     this.status = status
   }
 
   @bind
-  _handleTrackAdded (track: JitsiMeetJS.JitsiTrack) {
+  private handleTrackAdded (track: JitsiMeetJS.JitsiTrack) {
     if (this.id === track.getParticipantId() && !this.isLocal) {
       this.addTrack(track)
       this.emit(JitsiParticipant.events.TRACK_ADDED, track)
@@ -197,7 +197,7 @@ export default class JitsiParticipant extends events.EventEmitter {
   }
 
   @bind
-  _handleTrackRemoved (track: JitsiMeetJS.JitsiTrack) {
+  private handleTrackRemoved (track: JitsiMeetJS.JitsiTrack) {
     if (this.id === track.getParticipantId() && !this.isLocal) {
       this.removeTrack(track)
       this.emit(JitsiParticipant.events.TRACK_REMOVED, track)
@@ -207,9 +207,9 @@ export default class JitsiParticipant extends events.EventEmitter {
   }
 
   @bind
-  _handleTrackMuteChanged (track: JitsiMeetJS.JitsiTrack) {
+  private handleTrackMuteChanged (track: JitsiMeetJS.JitsiTrack) {
     if (this.id === track.getParticipantId()) {
-      this._updateTrackMute(track)
+      this.updateTrackMute(track)
       this.emit(JitsiParticipant.events.TRACK_MUTE_CHANGED, track)
 
       console.warn('Implemented: TrackMuteChanged', track, this)
@@ -217,22 +217,22 @@ export default class JitsiParticipant extends events.EventEmitter {
   }
 
   @bind
-  _handleTrackAudioLevelChanged (track: JitsiMeetJS.JitsiTrack) {
+  private handleTrackAudioLevelChanged (track: JitsiMeetJS.JitsiTrack) {
     console.warn('Not implemented: _handleTrackAudioLevelChanged', track)
   }
 
   @bind
-  _handleDominantSpeakerChanged (id: string) {
-    this._updateIsDominantSpeaker(id === this.id)
+  private handleDominantSpeakerChanged (id: string) {
+    this.updateIsDominantSpeaker(id === this.id)
     this.emit(JitsiParticipant.events.DOMINANT_SPEAKER_CHANGED)
 
     console.debug('Implemented: DominantSpeakerChanged', id, this)
   }
 
   @bind
-  _handleDisplayNameChanged (id: string, displayName: string) {
+  private handleDisplayNameChanged (id: string, displayName: string) {
     if (this.id === id) {
-      this._updateDisplayName(displayName)
+      this.updateDisplayName(displayName)
       this.emit(JitsiParticipant.events.DISPLAY_NAME_CHANGED, displayName)
 
       console.debug('Implemented: DisplayNameChanged', id, displayName, this)
@@ -240,21 +240,19 @@ export default class JitsiParticipant extends events.EventEmitter {
   }
 
   @bind
-  _handleUserRoleChanged (id: string, role: string) {
+  private handleUserRoleChanged (id: string, role: string) {
     if (this.id === id) {
-      this._updateRole(role)
+      this.updateRole(role)
       this.emit(JitsiParticipant.events.ROLE_CHANGED, role)
 
       console.debug('Implemented: UserRoleChanged', id, role, this)
     }
-
-
   }
 
   @bind
-  _handleUserStatusChanged (id: string, status: string) {
+  private handleUserStatusChanged (id: string, status: string) {
     if (this.id === id) {
-      this._updateStatus(status)
+      this.updateStatus(status)
       this.emit(JitsiParticipant.events.STATUS_CHANGED, status)
 
       console.debug('Implemented: UserStatusChanged', id, status, this)

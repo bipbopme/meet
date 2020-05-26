@@ -19,7 +19,30 @@ declare namespace JitsiMeetJS {
   }
 
   function init(options?: InitOptions);
+
   function setLogLevel(level: string);
+
+  interface CreateLocalTracksOptions {
+    devices: string[];
+    resolution?: number;
+    constraints?: MediaTrackConstraints;
+    cameraDeviceId?: string;
+    micDeviceId?: string;
+    minFps?: number;
+    maxFps?: number;
+    facingMode?: string;
+  }
+
+  function createLocalTracks(options: CreateLocalTracksOptions, firePermissionPromptIsShownEvent?: boolean)
+
+  // TODO: Had to guess on return types
+  interface VadProcessor {
+    getSampleLength(): number;
+    getRequiredPCMFrequency(): string;
+    calculateAudioFrameVAD(pcmSample): number;
+  }
+
+  function createTrackVADEmitter(localAudioDeviceId: string, sampleRate: number, vadProcessor: VadProcessor)
 
   // Is there a better way to represent these?
   declare namespace logLevels {
@@ -131,11 +154,33 @@ declare namespace JitsiMeetJS {
     }
   }
 
+  declare namespace mediaDevices {
+    interface EnumerateDevicesCallback {
+      (devices: MediaDeviceInfo[]): void;
+    }
+
+    function isDeviceListAvailable(): boolean;
+
+    function isDeviceChangeAvailable(deviceType: string);
+
+    function enumerateDevices(callback: EnumerateDevicesCallback);
+
+    function setAudioOutputDevice(deviceId: string): void;
+
+    function getAudioOutputDevice(): string;
+
+    function isDevicePermissionGranted(type: string): Promise;
+
+    function addEventListener(event: string, listener): void;
+
+    function removeEventListener(event: string, listener): void;
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   class JitsiConnection {
     constructor(
-      appID: string, 
-      token: string, 
+      appID: string | undefined, 
+      token: string | undefined, 
       options: {
         serviceUrl: string;
         hosts: {
@@ -166,11 +211,11 @@ declare namespace JitsiMeetJS {
         confID?: string;
         statisticsId?: string;
         statisticsDisplayName?: string;
-        // Not in the docs
+        // Undocumented
         deploymentInfo: {
           userRegion: string;
         };
-        // Not in the docs
+        // Undocumented
         testing: {
           octo: {
             probability: number;
@@ -224,7 +269,7 @@ declare namespace JitsiMeetJS {
 
     selectParticipant(participantId: string): void;
 
-    // Not in the docs
+    // Undocumented
     selectParticipants(participantId: string[]): void;
 
     sendCommand(name: string, values: JitsiConferenceCommand): void;
@@ -279,6 +324,12 @@ declare namespace JitsiMeetJS {
   }
 
   class JitsiTrack {
+    conference;
+    stream: MediaStream;
+    track: MediaStreamTrack;
+    trackMediaType: string;
+    videoType: string;
+
     getType(): string;
 
     mute(): void;
@@ -289,7 +340,7 @@ declare namespace JitsiMeetJS {
 
     attach(container: Element): void;
 
-    detach(container: Element): void;
+    detach(container?: Element): void;
 
     dispose(): void;
 
@@ -304,5 +355,15 @@ declare namespace JitsiMeetJS {
     isEnded(): boolean;
 
     //setEffect(effect)
+
+    // This is undocumented. Private?
+    getTrack(): MediaStreamTrack
+  }
+
+  // This seems to be for private use
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  class JitsiParticipant {
+    _jid: string;
+    _displayName: string;
   }
 }

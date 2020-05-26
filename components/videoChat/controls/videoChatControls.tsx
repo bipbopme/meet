@@ -18,7 +18,7 @@ interface VideoChatControlsProps {
 export default class VideoChatControls extends React.Component<VideoChatControlsProps> {
   private canScreenCapture: boolean
   
-  constructor (props) {
+  constructor (props: VideoChatControlsProps) {
     super(props)
 
     // TODO: Safari should work but it's failing right now so disable it

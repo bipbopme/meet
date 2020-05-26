@@ -32,9 +32,9 @@ export default class SettingsButton extends React.Component<SettingsButtonProps,
   }
 
   @bind()
-  async handleDone (result) {
-    await this.props.localParticipant.replaceAudioTrack(result.audioTrack)
-    await this.props.localParticipant.replaceVideoTrack(result.videoTrack)
+  async handleDone (name: string | undefined, audioTrack: JitsiMeetJS.JitsiTrack, videoTrack: JitsiMeetJS.JitsiTrack) {
+    await this.props.localParticipant.replaceAudioTrack(audioTrack)
+    await this.props.localParticipant.replaceVideoTrack(videoTrack)
 
     this.setState({ showSettings: false })
   }

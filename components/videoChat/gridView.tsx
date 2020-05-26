@@ -4,9 +4,12 @@ import _chunk from 'lodash/chunk'
 import { observer } from 'mobx-react'
 import JitsiConferenceManager from '../../lib/jitsiManager/jitsiConferenceManager'
 import { bind, debounce } from 'lodash-decorators'
+import JitsiParticipant from '../../lib/jitsiManager/jitsiParticipant'
 
 interface GridViewProps {
   conference: JitsiConferenceManager;
+  localParticipant: JitsiParticipant;
+  participants: JitsiParticipant[];
   crop: boolean;
 }
 
@@ -15,7 +18,7 @@ export default class GridView extends React.Component<GridViewProps> {
   private gridDimensions?: { columns: number; rows: number }
   private videosRef: RefObject<HTMLDivElement>
 
-  constructor (props) {
+  constructor (props: GridViewProps) {
     super(props)
 
     this.videosRef = React.createRef()
@@ -34,7 +37,7 @@ export default class GridView extends React.Component<GridViewProps> {
   @bind() @debounce(250)
   handleGridResize () {
     if (this.videosRef.current && this.gridDimensions) {
-      this.updateVideoDimensions({ gridDimensions: this.gridDimensions, crop: this.props.crop })
+      this.updateVideoDimensions(this.gridDimensions, this.props.crop)
       this.calculateVideoConstraint()
     }
   }
@@ -42,7 +45,7 @@ export default class GridView extends React.Component<GridViewProps> {
   @bind() @debounce(1000)
   calculateVideoConstraint () {
     if (this.videosRef.current) {
-      const sampleVideoContainer = this.videosRef.current.getElementsByClassName('video')[0]
+      const sampleVideoContainer = this.videosRef.current.getElementsByClassName('video')[0] as HTMLVideoElement
 
       if (sampleVideoContainer) {
         const elementHeight = sampleVideoContainer.offsetHeight
@@ -64,6 +67,8 @@ export default class GridView extends React.Component<GridViewProps> {
         this.props.conference.selectAllParticipants()
         this.props.conference.setReceiverVideoConstraint(videoConstraint)
       }
+    } else {
+      console.warn("Can't update videoContraint. VideosRef is undefined.")
     }
   }
 
@@ -75,41 +80,45 @@ export default class GridView extends React.Component<GridViewProps> {
     return { columns, rows }
   }
 
-  updateVideoDimensions ({ gridDimensions, crop = false, aspectRatio = 16/9, videoMargin = 5 }) {
-    let containerHeight = this.videosRef.current.offsetHeight
-    let containerWidth = this.videosRef.current.offsetWidth
-    const combinedMargin = videoMargin * 2
+  updateVideoDimensions (gridDimensions: { columns: number; rows: number }, crop = false, aspectRatio = 16/9, videoMargin = 5) {
+    if (this.videosRef.current) {
+      let containerHeight = this.videosRef.current.offsetHeight
+      let containerWidth = this.videosRef.current.offsetWidth
+      const combinedMargin = videoMargin * 2
 
-    // Remove margin from the container calculation
-    containerHeight = containerHeight - combinedMargin
-    containerWidth = containerWidth - combinedMargin
+      // Remove margin from the container calculation
+      containerHeight = containerHeight - combinedMargin
+      containerWidth = containerWidth - combinedMargin
 
-    let height: number, width: number
+      let height: number, width: number
 
-    // Fill all the available space
-    if (crop) {
-      height = containerHeight / gridDimensions.rows
-      width = containerWidth / gridDimensions.columns
-    // Keep aspect ratio
-    } else {
-      // Try landscape first
-      width = containerWidth / gridDimensions.columns
-      height = width / aspectRatio
-
-      // If it's too tall then use portrait orientation
-      if ((height * gridDimensions.rows) > containerHeight) {
+      // Fill all the available space
+      if (crop) {
         height = containerHeight / gridDimensions.rows
-        width = height * aspectRatio
+        width = containerWidth / gridDimensions.columns
+      // Keep aspect ratio
+      } else {
+        // Try landscape first
+        width = containerWidth / gridDimensions.columns
+        height = width / aspectRatio
+
+        // If it's too tall then use portrait orientation
+        if ((height * gridDimensions.rows) > containerHeight) {
+          height = containerHeight / gridDimensions.rows
+          width = height * aspectRatio
+        }
       }
+
+      // Adjust video size to account for margin
+      height = height - combinedMargin
+      width = width - combinedMargin
+
+      this.videosRef.current.style.setProperty('--video-height', `${height}px`)
+      this.videosRef.current.style.setProperty('--video-width', `${width}px`)
+      this.videosRef.current.style.setProperty('--video-margin', `${videoMargin}px`)
+    } else {
+      console.warn("Can't update video dimensions. VideosRef is undefined.")
     }
-
-    // Adjust video size to account for margin
-    height = height - combinedMargin
-    width = width - combinedMargin
-
-    this.videosRef.current.style.setProperty('--video-height', `${height}px`)
-    this.videosRef.current.style.setProperty('--video-width', `${width}px`)
-    this.videosRef.current.style.setProperty('--video-margin', `${videoMargin}px`)
   }
 
   getCssClassNames () {
@@ -121,7 +130,7 @@ export default class GridView extends React.Component<GridViewProps> {
   }
 
   render () {
-    const { participants, localParticipant } = this.props.conference
+    const { participants, localParticipant } = this.props
     const allParticipants = [...participants, localParticipant]
 
     // Save dimensions so we can calulate video dimensions after render

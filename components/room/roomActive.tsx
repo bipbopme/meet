@@ -20,8 +20,7 @@ interface RoomActiveState {
 }
 
 export default class RoomActive extends React.Component<RoomActiveProps, RoomActiveState> {
-  // TODO: this doesn't seem right
-  hideControlsTimer: NodeJS.Timeout
+  hideControlsTimer: number | undefined = undefined
 
   constructor (props: RoomActiveProps) {
     super(props)
@@ -47,14 +46,9 @@ export default class RoomActive extends React.Component<RoomActiveProps, RoomAct
     this.startAutoHideControlsTimer()
   }
 
-  @bind()
-  handleToggleChat () {
-    this.setState({ showChat: !this.state.showChat })
-  }
-
   startAutoHideControlsTimer (delay = HIDE_CONTROLS_DELAY) {
     this.clearAutoHideControlsTimer()
-    this.hideControlsTimer = setTimeout(this.hideControls, delay)
+    this.hideControlsTimer = window.setTimeout(this.hideControls, delay)
   }
 
   clearAutoHideControlsTimer () {
@@ -124,7 +118,7 @@ export default class RoomActive extends React.Component<RoomActiveProps, RoomAct
 
   hasClickableElements(event: MouseEvent) {
     const elements = eventPath(event)
-    const clickableElements = elements.filter(element => {
+    const clickableElements = elements.filter((element: HTMLElement) => {
       return (element.classList && element.classList.contains('button')) ||
         element.tagName === 'A' ||
         element.tagName === 'BUTTON'
@@ -140,7 +134,7 @@ export default class RoomActive extends React.Component<RoomActiveProps, RoomAct
           <title>Video Chat | bipbop</title>
           <meta key='viewport' name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1' />
         </Head>
-        <VideoChat conference={this.props.conference} onLeave={this.props.onLeave} onToggleChat={this.handleToggleChat} />
+        <VideoChat conference={this.props.conference} onLeave={this.props.onLeave} />
       </div>
     )
   }

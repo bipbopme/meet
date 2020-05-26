@@ -11,7 +11,7 @@ interface SettingsProps {
   collapseAudioVideoSettings?: boolean;
   titleText?: string;
   buttonText: string;
-  onButtonClick(state: { name: string; audioTrack: JitsiMeetJS.JitsiTrack; videoTrack: JitsiMeetJS.JitsiTrack }): void;
+  onButtonClick(name: string | undefined, audioTrack: JitsiMeetJS.JitsiTrack, videoTrack: JitsiMeetJS.JitsiTrack): void;
 }
 
 interface SettingsState {
@@ -78,7 +78,7 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
     JitsiMeetJS.createLocalTracks(options).then(this.handleCreateLocalTracks).catch(this.onError)
   }
 
-  async onError (error) {
+  async onError (error: Error) {
     console.error(error)
 
     // TODO: brute force error handling. need something more nuanced.
@@ -93,16 +93,20 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
   }
 
   handleCreateLocalTracks (tracks: JitsiMeetJS.JitsiTrack[]) {
-    let audioTrack: JitsiMeetJS.JitsiTrack, videoTrack: JitsiMeetJS.JitsiTrack
+    let audioTrack: JitsiMeetJS.JitsiTrack | undefined
+    let videoTrack: JitsiMeetJS.JitsiTrack | undefined
 
     if (tracks) {
       audioTrack = tracks.find(t => t.getType() === 'audio')
       videoTrack = tracks.find(t => t.getType() === 'video')
     }
 
-    this.setState({ audioTrack: audioTrack, videoTrack: videoTrack })
-
-    JitsiMeetJS.mediaDevices.enumerateDevices(this.handleEnumerateDevices)
+    if (audioTrack && videoTrack) {
+      this.setState({ audioTrack: audioTrack, videoTrack: videoTrack })
+      JitsiMeetJS.mediaDevices.enumerateDevices(this.handleEnumerateDevices)
+    } else {
+      throw new Error("Missing expected media track")
+    }
   }
 
   async loadSavedSettings () {
@@ -140,7 +144,7 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
     this.handleEnumerateDevices(devices)
   }
 
-  handleNameChange (event) {
+  handleNameChange (event: React.ChangeEvent<HTMLInputElement>) {
     const name = event.target.value
 
     localforage.setItem('name', name)
@@ -149,7 +153,7 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
     matopush(['trackEvent', 'settings', 'name', 'update'])
   }
 
-  handleAudioInputChange (event) {
+  handleAudioInputChange (event: React.ChangeEvent<HTMLSelectElement>) {
     const selectedAudioInputID = event.target.value
 
     localforage.setItem('selectedAudioInputID', selectedAudioInputID)
@@ -160,7 +164,7 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
     matopush(['trackEvent', 'settings', 'audioInput', 'update'])
   }
 
-  handleAudioOutputChange (event) {
+  handleAudioOutputChange (event: React.ChangeEvent<HTMLSelectElement>) {
     const selectedAudioOutputID = event.target.value
 
     localforage.setItem('selectedAudioOutputID', selectedAudioOutputID)
@@ -171,7 +175,7 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
     matopush(['trackEvent', 'settings', 'audioOutput', 'update'])
   }
 
-  handleVideoInputChange (event) {
+  handleVideoInputChange (event: React.ChangeEvent<HTMLSelectElement>) {
     const selectedVideoInputID = event.target.value
 
     localforage.setItem('selectedVideoInputID', selectedVideoInputID)
@@ -218,7 +222,7 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
       } else {
         // Couldn't find previous device so clear it and rely on defaults
         localforage.removeItem('selectedAudioOutputID')
-        newState.selectedAudioOutputID = null
+        newState.selectedAudioOutputID = undefined
         console.log('Synced video output')
       }
     }
@@ -226,13 +230,17 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
     this.setState(newState)
   }
 
-  handleSubmit (event) {
+  handleSubmit (event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
     if (this.props.onButtonClick) {
       const { name, audioTrack, videoTrack } = this.state
 
-      this.props.onButtonClick({ name, audioTrack, videoTrack })
+      if (audioTrack && videoTrack) {
+        this.props.onButtonClick(name, audioTrack, videoTrack)
+      } else {
+        throw new Error('Missing media track')
+      }
     }
   }
 
@@ -297,7 +305,7 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
                 }
                 {this.props.buttonText &&
                   <div className='row buttonRow'>
-                    <button onClick={this.handleSubmit}>{this.props.buttonText}</button>
+                    <button type='submit'>{this.props.buttonText}</button>
                   </div>
                 }
               </form>

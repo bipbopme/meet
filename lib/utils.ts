@@ -7,7 +7,7 @@ export function uuid () {
 
   // We only want 11 characters to improve usability.
   // Select them randomly (may not be necessary).
-  uuid = _shuffle(uuid.split()).join().slice(0, 11)
+  uuid = _shuffle(uuid.split('')).join('').slice(0, 11)
 
   // Format the final UUID: xxxx-xxx-xxxx
   uuid = uuid.replace(/(.{4})(.{3})(.{4})/, '$1-$2-$3')
@@ -15,9 +15,9 @@ export function uuid () {
   return uuid
 }
 
-export function nowTraceToRegion(trace) {
+export function nowTraceToRegion(trace: string) {
   const defaultRegion = 'nyc'
-  const regionMap = {
+  const regionMap: {[key: string]: string} = {
     arn1: 'ams',
     bom1: 'ams',
     bru1: 'ams',
@@ -46,11 +46,11 @@ export function nowTraceToRegion(trace) {
   return regionMap[trace] || defaultRegion
 }
 
-export function eventPath(evt: MouseEvent) {
+export function eventPath(event: Event) {
   // This should check composedPath but it wasn't working in Firefox
-  // (evt.composedPath && evt.composedPath()) || evt.path
-  let path = evt['path']
-  const target = evt.target
+  // (event.composedPath && event.composedPath()) || event.path
+  let path = event.path
+  const target = event.target
 
   if (path != null) {
     // Safari doesn't include Window, and it should.

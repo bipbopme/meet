@@ -34,8 +34,8 @@ export default class ScreenShareButton extends React.Component<ScreenShareButton
     this.setState({ shared })
 
     // TODO: Update this after settings refactor
-    const selectedVideoInputID = await localforage.getItem('selectedVideoInputID')
-    const options = {}
+    const selectedVideoInputID: string | undefined = await localforage.getItem('selectedVideoInputID')
+    const options: JitsiMeetJS.CreateLocalTracksOptions = { devices: [] }
 
     if (shared) {
       options.devices = ['desktop']

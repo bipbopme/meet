@@ -65,7 +65,7 @@ export default class JitsiParticipant extends events.EventEmitter {
   }
 
   async replaceAudioTrack (track: JitsiMeetJS.JitsiTrack) {
-    if (this.audioTrack && this.audioTrack && track.getId() !== this.audioTrack.getId()) {
+    if (this.audioTrack && track.getId() !== this.audioTrack.getId()) {
       await this.conference.removeTrack(this.audioTrack)
       this.audioTrack.dispose()
 

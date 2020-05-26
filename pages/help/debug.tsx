@@ -8,7 +8,7 @@ type DebugPageProps = {
 }
 
 export const getServerSideProps: GetServerSideProps<DebugPageProps, {}> = async ({ req }) => {
-  const trace = req.headers['x-now-trace'] ? req.headers['x-now-trace'].toString() : null
+  const trace = req.headers['x-now-trace'] ? req.headers['x-now-trace'].toString() : ''
 
   return {
     props: {

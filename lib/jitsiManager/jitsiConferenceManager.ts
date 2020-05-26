@@ -17,7 +17,7 @@ export default class JitsiConferenceManager extends events.EventEmitter {
   private jitsiManager: JitsiManager
   private localTracks: JitsiMeetJS.JitsiTrack[]
   private conference: JitsiMeetJS.JitsiConference
-  private displayName: string
+  private displayName: string | undefined
 
   @observable status: string | undefined = undefined
   @observable localParticipant: JitsiParticipant | undefined = undefined
@@ -25,7 +25,7 @@ export default class JitsiConferenceManager extends events.EventEmitter {
   @observable participants: JitsiParticipant[] = []
   @observable messages: JitsiMessage[] = []
 
-  constructor (jitsiManager: JitsiManager, id: string, localTracks: JitsiMeetJS.JitsiTrack[], displayName: string) {
+  constructor (jitsiManager: JitsiManager, id: string, localTracks: JitsiMeetJS.JitsiTrack[], displayName: string | undefined) {
     super()
 
     this.id = id
@@ -131,11 +131,11 @@ export default class JitsiConferenceManager extends events.EventEmitter {
 
   @action
   private removeParticipant (id: string) {
-    this.participants.remove(this.getParticipant(id))
+    this.participants = this.participants.filter(p => p.id !== id)
   }
 
   private getParticipant(id: string) {
-    return [...this.participants, this.localParticipant].find(p => p.id === id)
+    return [...this.participants, this.localParticipant].find(p => p && p.id === id)
   }
 
   @action
@@ -149,19 +149,19 @@ export default class JitsiConferenceManager extends events.EventEmitter {
 
   @action
   private addLocalParticipant (id: string , displayName: string) {
-    this.localParticipant = new JitsiParticipant(id, this.conference, displayName, true)
+    const localParticipant = new JitsiParticipant(id, this.conference, displayName, true)
 
     // Setup local tracks
     this.localTracks.forEach(t => {
       this.conference.addTrack(t) // TODO: error handling
-      this.localParticipant.addTrack(t) // TODO: how to update these if they change?
+      localParticipant.addTrack(t)
     })
 
-    return this.localParticipant
+    this.localParticipant = localParticipant
   }
 
   @bind
-  private handleUserJoined (id: string, jitsiInternalParticipant: { _displayName: string }) {
+  private handleUserJoined (id: string, jitsiInternalParticipant: JitsiMeetJS.JitsiParticipant) {
     console.debug('Implemented: UserJoined', id, jitsiInternalParticipant, this)
 
     const participant = this.addParticipant(id, jitsiInternalParticipant._displayName)
@@ -170,7 +170,7 @@ export default class JitsiConferenceManager extends events.EventEmitter {
   }
 
   @bind
-  private handleUserLeft (id: string, jitsiInternalParticipant) {
+  private handleUserLeft (id: string, jitsiInternalParticipant: JitsiMeetJS.JitsiParticipant) {
     const participant = this.removeParticipant(id)
 
     this.emit(JitsiConferenceManager.events.PARTICIPANT_LEFT, participant)
@@ -223,17 +223,17 @@ export default class JitsiConferenceManager extends events.EventEmitter {
   }
 
   @bind
-  private handleDtmfSupportChanged (supports) {
+  private handleDtmfSupportChanged (supports: boolean) {
     console.warn('Not implemented: _handleDtmfSupportChanged', supports)
   }
 
   @bind
-  private handleConferenceFailed (errorCode) {
+  private handleConferenceFailed (errorCode: string) {
     console.warn('Not implemented: _handleConferenceFailed', errorCode)
   }
 
   @bind
-  private handleConferenceError (errorCode) {
+  private handleConferenceError (errorCode: string) {
     console.warn('Not implemented: _handleConferenceError', errorCode)
   }
 
@@ -258,7 +258,7 @@ export default class JitsiConferenceManager extends events.EventEmitter {
   }
 
   @bind
-  private handleAuthStatusChanged (isAuthEnabled, authIdentity) {
+  private handleAuthStatusChanged (isAuthEnabled: boolean, authIdentity: string) {
     console.warn('Not implemented: _handleAuthStatusChanged', isAuthEnabled, authIdentity)
   }
 

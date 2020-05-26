@@ -9,12 +9,12 @@ import JitsiParticipant from '../../lib/jitsiManager/jitsiParticipant'
 interface VideoProps {
   participant?: JitsiParticipant;
   isLocal: boolean;
-  audioTrack: JitsiMeetJS.JitsiTrack;
-  videoTrack: JitsiMeetJS.JitsiTrack;
-  isVideoActive: boolean;
-  isAudioMuted: boolean;
-  isVideoMuted: boolean;
-  isDominantSpeaker: boolean;
+  audioTrack: JitsiMeetJS.JitsiTrack | undefined;
+  videoTrack: JitsiMeetJS.JitsiTrack | undefined;
+  isVideoActive?: boolean;
+  isAudioMuted?: boolean;
+  isVideoMuted?: boolean;
+  isDominantSpeaker?: boolean;
 }
 
 @observer
@@ -23,7 +23,7 @@ export default class Video extends React.Component<VideoProps> {
   private videoRef: RefObject<HTMLVideoElement>
   private audioRef: RefObject<HTMLAudioElement>
   
-  constructor (props) {
+  constructor (props: VideoProps) {
     super(props)
 
     this.videoContainerRef = React.createRef()
@@ -34,11 +34,13 @@ export default class Video extends React.Component<VideoProps> {
   componentDidMount () {
     this.updateTrackAttachments()
 
-    this.videoRef.current.addEventListener('canplay', this.handleVideoCanPlay)
-    this.videoRef.current.addEventListener('emptied', this.handleVideoEmptied)
+    if (this.videoRef.current) {
+      this.videoRef.current.addEventListener('canplay', this.handleVideoCanPlay)
+      this.videoRef.current.addEventListener('emptied', this.handleVideoEmptied)
+    }
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate (prevProps: VideoProps) {
     this.updateTrackAttachments(prevProps)
   }
 
@@ -50,73 +52,67 @@ export default class Video extends React.Component<VideoProps> {
     }
 
     if (videoTrack) {
-      audioTrack.detach()
+      videoTrack.detach()
     }
   }
 
   // TODO: This finally feels stable but needs to be simplified
   // TS: MAKE SURE THIS WORKS
   updateTrackAttachments (prevProps?: VideoProps) {
-    // Add audio track
-    if (!(prevProps && prevProps.audioTrack) && this.props.audioTrack) {
-      console.info('Add audio track', prevProps, this.props)
-      this.props.audioTrack.attach(this.audioRef.current)
-    }
-
-    // Update audio track
-    if ((prevProps && prevProps.audioTrack) && this.props.audioTrack) {
-      if (prevProps.audioTrack.getId() !== this.props.audioTrack.getId()) {
-        console.info('Replace audio track', prevProps, this.props)
-        prevProps.audioTrack.detach()
+    if (this.audioRef.current) {
+      // Add audio track
+      if (!(prevProps && prevProps.audioTrack) && this.props.audioTrack) {
+        console.info('Add audio track', prevProps, this.props)
         this.props.audioTrack.attach(this.audioRef.current)
-      } else {
-        // They're the same so do nothing
       }
-    }
 
-    // Remove audio track
-    if ((prevProps && prevProps.audioTrack) && !this.props.audioTrack) {
-      console.info('Remove audio track', prevProps, this.props)
-      prevProps.audioTrack.detach()
-    }
-
-    // Add video track
-    if (!(prevProps && prevProps.videoTrack) && this.props.videoTrack) {
-      console.info('Add video track', prevProps, this.props)
-      this.props.videoTrack.attach(this.videoRef.current)
-
-      this.watchTrackForDisconnect(this.props.videoTrack)
-    }
-
-    // Update video track
-    if ((prevProps && prevProps.videoTrack) && this.props.videoTrack) {
-      if (prevProps.videoTrack.getId() !== this.props.videoTrack.getId()) {
-        console.info('Replace video track', prevProps, this.props)
-        prevProps.videoTrack.detach()
-        this.props.videoTrack.attach(this.videoRef.current)
-      } else {
-        // They're the same so do nothing
-      }
-    }
-
-    // Remove video track
-    if ((prevProps && prevProps.videoTrack) && !this.props.videoTrack) {
-      console.info('Remove video track', prevProps, this.props)
-      prevProps.videoTrack.detach()
-    }
-
-    this.updateAspectRatio()
-  }
-
-  // TODO: This is a hack to catch video disconnects faster.
-  //       The right solution here is to switch to websockets.
-  watchTrackForDisconnect (track) {
-    if (track.rtc) {
-      track.rtc.on('rtc.endpoint_conn_status_changed', (id, active) => {
-        if (!active) {
-          this.updateVideoTagStaus(false)
+      // Update audio track
+      if ((prevProps && prevProps.audioTrack) && this.props.audioTrack) {
+        if (prevProps.audioTrack.getId() !== this.props.audioTrack.getId()) {
+          console.info('Replace audio track', prevProps, this.props)
+          prevProps.audioTrack.detach()
+          this.props.audioTrack.attach(this.audioRef.current)
+        } else {
+          // They're the same so do nothing
         }
-      })
+      }
+
+      // Remove audio track
+      if ((prevProps && prevProps.audioTrack) && !this.props.audioTrack) {
+        console.info('Remove audio track', prevProps, this.props)
+        prevProps.audioTrack.detach()
+      }
+    } else {
+      console.warn("Can't update audio track. Audio ref undefined.")
+    }
+
+    if (this.videoRef.current) {
+      // Add video track
+      if (!(prevProps && prevProps.videoTrack) && this.props.videoTrack) {
+        console.info('Add video track', prevProps, this.props)
+        this.props.videoTrack.attach(this.videoRef.current)
+      }
+
+      // Update video track
+      if ((prevProps && prevProps.videoTrack) && this.props.videoTrack) {
+        if (prevProps.videoTrack.getId() !== this.props.videoTrack.getId()) {
+          console.info('Replace video track', prevProps, this.props)
+          prevProps.videoTrack.detach()
+          this.props.videoTrack.attach(this.videoRef.current)
+        } else {
+          // They're the same so do nothing
+        }
+      }
+
+      // Remove video track
+      if ((prevProps && prevProps.videoTrack) && !this.props.videoTrack) {
+        console.info('Remove video track', prevProps, this.props)
+        prevProps.videoTrack.detach()
+      }
+
+      this.updateAspectRatio()
+    } else {
+      console.warn("Can't update video track. Video ref undefined.")
     }
   }
 
@@ -132,7 +128,7 @@ export default class Video extends React.Component<VideoProps> {
   }
 
   @action
-  updateVideoTagStaus (active) {
+  updateVideoTagStaus (active: boolean) {
     if (this.props.participant) {
       this.props.participant.isVideoTagActive = active
     }

@@ -62,18 +62,29 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
   }
 
   render () {
-    const { localParticipant, status } = this.props.conference
+    const conference = this.props.conference
+    const { localParticipant, participants, status } = conference
 
-    return status === 'joined' ? (
+    return (status === 'joined' && localParticipant) ? (
       <div className='videoChat'>
         <header>
           <h1>bipbop</h1>
         </header>
         {this.state.view === 'spotlight' &&
-          <SpotlightView conference={this.props.conference} crop={this.state.crop} />
+          <SpotlightView 
+            conference={conference}
+            localParticipant={localParticipant}
+            participants={participants}
+            crop={this.state.crop}
+          />
         }
         {this.state.view === 'grid' &&
-          <GridView conference={this.props.conference} crop={this.state.crop} />
+          <GridView 
+            conference={this.props.conference} 
+            localParticipant={localParticipant}
+            participants={participants}
+            crop={this.state.crop} 
+          />
         }
         <VideoChatControls
           localParticipant={localParticipant}

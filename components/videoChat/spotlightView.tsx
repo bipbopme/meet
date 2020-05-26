@@ -6,13 +6,15 @@ import JitsiParticipant from '../../lib/jitsiManager/jitsiParticipant'
 
 interface SpotlightViewProps {
   conference: JitsiConferenceManager;
+  localParticipant: JitsiParticipant;
+  participants: JitsiParticipant[];
   crop: boolean;
 }
 
 @observer
 export default class SpotlightView extends React.Component<SpotlightViewProps> {
   private videosRef: RefObject<HTMLDivElement>
-  private speakingParticipant: JitsiParticipant
+  private speakingParticipant: JitsiParticipant | undefined = undefined
 
   constructor (props: SpotlightViewProps) {
     super(props)
@@ -44,7 +46,7 @@ export default class SpotlightView extends React.Component<SpotlightViewProps> {
   }
 
   render () {
-    const { participants, localParticipant } = this.props.conference
+    const { participants, localParticipant } = this.props
 
     const sortedParticipants = participants.slice().sort((a, b) => b.lastDominantSpeakerAt.valueOf() - a.lastDominantSpeakerAt.valueOf())
     const speakingParticipant = sortedParticipants.filter(p => p.isDominantSpeaker)[0] || sortedParticipants[0] || localParticipant

@@ -3,7 +3,7 @@ import React from 'react'
 import Settings from '../settings/settings'
 
 interface RoomSetupProps {
-  onComplete(state: { name: string; audioTrack: JitsiMeetJS.JitsiTrack; videoTrack: JitsiMeetJS.JitsiTrack }): void;
+  onComplete(name: string | undefined, audioTrack: JitsiMeetJS.JitsiTrack, videoTrack: JitsiMeetJS.JitsiTrack): void;
 }
 
 export default class RoomSetup extends React.Component<RoomSetupProps> {
@@ -18,7 +18,7 @@ export default class RoomSetup extends React.Component<RoomSetupProps> {
           <header><h1>bipbop</h1></header>
           <section className='videosPreview'>
             <div className='preview'>
-              <Settings titleText='Ready to join?' buttonText='Join' onButtonClick={this.props.onComplete} collapseAudioVideoSettings='true' />
+              <Settings titleText='Ready to join?' buttonText='Join' onButtonClick={this.props.onComplete} collapseAudioVideoSettings={true} />
             </div>
           </section>
         </div>

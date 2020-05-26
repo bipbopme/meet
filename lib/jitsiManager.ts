@@ -26,7 +26,7 @@ export default class JitsiManager extends events.EventEmitter {
 
     this.initJitsiMeetJS()
 
-    this.connection = new JitsiMeetJS.JitsiConnection(null, null, {
+    this.connection = new JitsiMeetJS.JitsiConnection(undefined, undefined, {
       hosts: {
         domain: domain,
         muc: `conference.${domain}`
@@ -48,7 +48,7 @@ export default class JitsiManager extends events.EventEmitter {
     this.connection.disconnect()
   }
 
-  initConferenceManager(id: string, localTracks: JitsiMeetJS.JitsiTrack[], displayName: string) {
+  initConferenceManager(id: string, localTracks: JitsiMeetJS.JitsiTrack[], displayName: string | undefined) {
     const conferenceManager = new JitsiConferenceManager(this, id, localTracks, displayName)
     this.conferenceManagers.push(conferenceManager)
 

@@ -6,7 +6,7 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint . --ext .ts,.tsx"
+    "lint": "eslint . --ext .ts,.tsx && tsc --noEmit"
   },
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.8.3",
@@ -15,6 +15,7 @@
     "@fortawesome/free-regular-svg-icons": "^5.13.0",
     "@fortawesome/free-solid-svg-icons": "^5.12.1",
     "@fortawesome/react-fontawesome": "^0.1.9",
+    "@types/react-portal": "^4.0.2",
     "decko": "^1.2.0",
     "detectrtc": "^1.4.0",
     "dotenv": "^8.2.0",

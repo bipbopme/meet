@@ -1,5 +1,5 @@
 import React from 'react'
-import { nowTraceToRegion } from '../../lib/utils'
+import { vercelTraceToRegion } from '../../lib/utils'
 import { GetServerSideProps } from 'next'
 import Room from '../../components/room/room'
 
@@ -16,9 +16,9 @@ interface RoomPageState {
 
 export const getServerSideProps: GetServerSideProps<RoomPageProps, {}> = async ({ req, query }) => {
   const id = query.id ? query.id.toString() : ''
-  const trace = req.headers['x-now-trace'] ? req.headers['x-now-trace'].toString() : ''
+  const trace = req.headers['x-vercel-trace'] ? req.headers['x-vercel-trace'].toString() : ''
   // Allows override from the query string
-  const region = query.region ? query.region.toString() : nowTraceToRegion(trace)
+  const region = query.region ? query.region.toString() : vercelTraceToRegion(trace)
 
   return {
     props: {

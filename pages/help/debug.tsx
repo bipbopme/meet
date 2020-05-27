@@ -1,5 +1,5 @@
 import React from 'react'
-import { nowTraceToRegion } from '../../lib/utils'
+import { vercelTraceToRegion } from '../../lib/utils'
 import { GetServerSideProps } from 'next'
 
 type DebugPageProps = {
@@ -8,12 +8,12 @@ type DebugPageProps = {
 }
 
 export const getServerSideProps: GetServerSideProps<DebugPageProps, {}> = async ({ req }) => {
-  const trace = req.headers['x-now-trace'] ? req.headers['x-now-trace'].toString() : ''
+  const trace = req.headers['x-vercel-trace'] ? req.headers['x-vercel-trace'].toString() : 'none'
 
   return {
     props: {
       trace: trace,
-      region: nowTraceToRegion(trace)
+      region: vercelTraceToRegion(trace)
     }
   }
 }

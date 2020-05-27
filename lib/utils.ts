@@ -15,7 +15,7 @@ export function uuid (): string {
   return uuid
 }
 
-export function nowTraceToRegion(trace: string): string {
+export function vercelTraceToRegion(trace: string): string {
   const defaultRegion = 'nyc'
   const regionMap: {[key: string]: string} = {
     arn1: 'ams',

@@ -75,14 +75,6 @@ $transparent-white: #fff;
   grid-template-rows: auto;
   overflow: hidden;
 
-  &.showChat {
-    grid-template-columns: auto 300px;
-
-    .textChat {
-      display: grid;
-    }
-  }
-
   .videoChat {
     position: relative;
 
@@ -128,14 +120,7 @@ $transparent-white: #fff;
     }
   }
 
-  .textChat {
-    display: grid;
-    grid-template-columns: auto;
-    grid-template-rows: 70px auto 70px;
-    overflow: auto; // this hack makes children scrollable
-  }
-
-  .videoChat, .textChat {
+  .videoChat {
     > header {
       //border-bottom: 1px solid rgba(0,0,0,0.1);
     }
@@ -143,18 +128,6 @@ $transparent-white: #fff;
     > footer {
       border-top: 1px solid rgba(0,0,0,0.1);
     }
-  }
-
-  .textChat {
-    > * {
-      border-left: 1px solid rgba(0,0,0,0.1);
-    }
-
-    > section {
-      overflow-y: auto;
-    }
-
-    display: none;
   }
 
   &.roomSetup {
@@ -187,76 +160,6 @@ $transparent-white: #fff;
 
 .roster {
   display: none;
-}
-
-.textChat {
-  .messages {
-    background: #f7f7f7;
-    padding: 10px;
-
-    .message {
-      margin-bottom: 10px;
-      margin-left: 40px;
-      position: relative;
-
-      .avatar {
-        border-radius: 50%;
-        height: 35px;
-        width: 35px;
-
-        position: absolute;
-        left: -40px;
-        bottom: 0;
-      }
-
-      .name {
-        // TODO: bring these back with message collapsing.
-        display: none;
-        color: #555;
-        font-size: 12px;
-        margin-bottom: 2px;
-        margin-left: 10px;
-      }
-
-      .text {
-        background: #fff;
-        border-radius: 18px;
-        font-size: 13px;
-        line-height: 1.2em;
-        padding: 10px;
-      }
-    }
-  }
-
-  .chatBox {
-    align-items: center;
-    display: flex;
-    overflow: hidden;
-
-    input {
-      border: 0;
-      flex-grow: 1;
-      height: 60px;
-      outline: 0;
-      padding: 10px;
-      // TODO: make this flex
-      width: 240px;
-    }
-
-    button {
-      background: #bbb;
-      border: 0;
-      border-radius: 50%;
-      flex-basis: auto;
-      height: 42px;
-      outline: 0;
-      width: 42px;
-
-      svg {
-        color: #fff;
-      }
-    }
-  }
 }
 
 .videoChat {
@@ -468,6 +371,10 @@ $transparent-white: #fff;
   .controls {
     display: flex;
 
+    svg {
+      pointer-events: none;
+    }
+
     > * {
       display: flex;
       width: 33%;
@@ -556,23 +463,6 @@ $transparent-white: #fff;
 
         svg {
           font-size: 18px;
-        }
-
-        &.textChatButton {
-          width: 110px;
-          position: relative;
-
-          .count {
-            background: red;
-            border-radius: 10px;
-            color: #fff;
-            font-size: 10px;
-            font-weight: bold;
-            right: 35%;
-            padding: 3px 5px;
-            position: absolute;
-            top: 8px;
-          }
         }
       }
 

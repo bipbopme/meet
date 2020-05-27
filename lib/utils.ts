@@ -46,35 +46,10 @@ export function nowTraceToRegion(trace: string) {
   return regionMap[trace] || defaultRegion
 }
 
-export function eventPath(event: Event) {
-  // This should check composedPath but it wasn't working in Firefox
-  // (event.composedPath && event.composedPath()) || event.path
-  let path = event.path
-  const target = event.target
+export function getElementPath(element: Element, parentElements: Element[] = []): Element[] {
+    parentElements.push(element)
 
-  if (path != null) {
-    // Safari doesn't include Window, and it should.
-    path = (path.indexOf(window) < 0) ? path.concat([window]) : path
-    return path
-  }
-
-  if (target === window) {
-    return [window]
-  }
-
-  function getParents(node: Node, memo?: Node[]) {
-    memo = memo || []
-    const parentNode = node.parentNode
-
-    if (!parentNode) {
-      return memo
-    }
-    else {
-      return getParents(parentNode, memo.concat([parentNode]))
-    }
-  }
-
-  return [target].concat(getParents(target)).concat([window])
+    return element.parentElement ? getElementPath(element.parentElement, parentElements) : parentElements
 }
 
 export function isTouchEnabled () {

@@ -371,6 +371,10 @@ $transparent-white: #fff;
   .controls {
     display: flex;
 
+    svg {
+      pointer-events: none;
+    }
+
     > * {
       display: flex;
       width: 33%;

@@ -148,7 +148,7 @@ export default class JitsiConferenceManager extends events.EventEmitter {
   }
 
   @action
-  private addLocalParticipant (id: string , displayName: string) {
+  private addLocalParticipant (id: string , displayName?: string) {
     const localParticipant = new JitsiParticipant(id, this.conference, displayName, true)
 
     // Setup local tracks

@@ -1,4 +1,4 @@
-import { eventPath, isTouchEnabled } from '../../lib/utils'
+import { getElementPath, isTouchEnabled } from '../../lib/utils'
 import Head from 'next/head'
 import React from 'react'
 import VideoChat from '../videoChat/videoChat'
@@ -117,8 +117,9 @@ export default class RoomActive extends React.Component<RoomActiveProps, RoomAct
   }
 
   hasClickableElements(event: MouseEvent) {
-    const elements = eventPath(event)
-    const clickableElements = elements.filter((element: HTMLElement) => {
+    const target = event.target as Element
+    const elements = getElementPath(target)
+    const clickableElements = elements.filter((element) => {
       return (element.classList && element.classList.contains('button')) ||
         element.tagName === 'A' ||
         element.tagName === 'BUTTON'

@@ -29,20 +29,20 @@ export default class GridView extends React.Component<GridViewProps> {
     window.addEventListener('resize', this.handleGrideResizeDebounced)
   }
 
-  componentDidMount () {
+  componentDidMount (): void {
     this.handleGridResize()
   }
 
-  componentDidUpdate () {
+  componentDidUpdate (): void {
     this.handleGridResize()
   }
 
-  componentWillUnmount () {
+  componentWillUnmount (): void {
     window.removeEventListener('resize', this.handleGrideResizeDebounced)
   }
 
   @bind()
-  handleGridResize () {
+  handleGridResize (): void {
     if (this.videosRef.current && this.gridDimensions) {
       this.updateVideoDimensions(this.gridDimensions, this.props.crop)
       this.calculateVideoConstraint()
@@ -50,7 +50,7 @@ export default class GridView extends React.Component<GridViewProps> {
   }
 
   @bind()
-  calculateVideoConstraint () {
+  calculateVideoConstraint (): void {
     if (this.videosRef.current) {
       const sampleVideoContainer = this.videosRef.current.getElementsByClassName('video')[0] as HTMLVideoElement
 
@@ -79,7 +79,7 @@ export default class GridView extends React.Component<GridViewProps> {
     }
   }
 
-  getGridDimensions (count: number) {
+  getGridDimensions (count: number): { columns: number; rows: number } {
     const sqrt = Math.sqrt(count)
     const rows = Math.ceil(sqrt)
     const columns = sqrt === rows || (sqrt - Math.floor(sqrt)) >= 0.5 ?  rows : rows - 1
@@ -87,7 +87,7 @@ export default class GridView extends React.Component<GridViewProps> {
     return { columns, rows }
   }
 
-  updateVideoDimensions (gridDimensions: { columns: number; rows: number }, crop = false, aspectRatio = 16/9, videoMargin = 5) {
+  updateVideoDimensions (gridDimensions: { columns: number; rows: number }, crop = false, aspectRatio = 16/9, videoMargin = 5): void {
     if (this.videosRef.current) {
       let containerHeight = this.videosRef.current.offsetHeight
       let containerWidth = this.videosRef.current.offsetWidth
@@ -128,7 +128,7 @@ export default class GridView extends React.Component<GridViewProps> {
     }
   }
 
-  getCssClassNames () {
+  getCssClassNames (): string {
     const classNames = ['gridView']
 
     classNames.push(this.props.crop ? 'cropped' : 'uncropped')
@@ -136,7 +136,7 @@ export default class GridView extends React.Component<GridViewProps> {
     return classNames.join(' ')
   }
 
-  render () {
+  render (): JSX.Element {
     const { participants, localParticipant } = this.props
     const allParticipants = [...participants, localParticipant]
 

@@ -11,13 +11,13 @@ interface ViewButtonProps {
 
 export default class ViewButton extends React.Component<ViewButtonProps> {
   @bind()
-  handleClick () {
+  handleClick (): void {
     this.props.onToggle(this.props.view === 'grid' ? 'spotlight' : 'grid')
 
     matopush(['trackEvent', 'videoChat', 'viewButton', 'toggle'])
   }
 
-  render () {
+  render (): JSX.Element {
     return (
       <div className='button viewButton' title="Toggle grid view" onClick={this.handleClick}>
           <FontAwesomeIcon icon={faThLarge} />  <span className='label'>Toggle view</span>

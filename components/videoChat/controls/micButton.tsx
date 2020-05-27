@@ -23,7 +23,7 @@ export default class MicButton extends React.Component<MicButtonProps, MicButton
   }
 
   @bind()
-  handleClick () {
+  handleClick (): void {
     // Toggle muted
     const muted = !this.state.muted
 
@@ -39,7 +39,7 @@ export default class MicButton extends React.Component<MicButtonProps, MicButton
     matopush(['trackEvent', 'videoChat', 'micButton', 'toggle'])
   }
 
-  render () {
+  render (): JSX.Element {
     return (
       <div className='button micButton' onClick={this.handleClick}>
         {this.state.muted &&

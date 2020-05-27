@@ -31,7 +31,7 @@ export default class Video extends React.Component<VideoProps> {
     this.audioRef = React.createRef()
   }
 
-  componentDidMount () {
+  componentDidMount (): void {
     this.updateTrackAttachments()
 
     if (this.videoRef.current) {
@@ -40,11 +40,11 @@ export default class Video extends React.Component<VideoProps> {
     }
   }
 
-  componentDidUpdate (prevProps: VideoProps) {
+  componentDidUpdate (prevProps: VideoProps): void {
     this.updateTrackAttachments(prevProps)
   }
 
-  componentWillUnmount () {
+  componentWillUnmount (): void {
     const { audioTrack, videoTrack } = this.props
 
     if (audioTrack) {
@@ -63,7 +63,7 @@ export default class Video extends React.Component<VideoProps> {
 
   // TODO: This finally feels stable but needs to be simplified
   // TS: MAKE SURE THIS WORKS
-  updateTrackAttachments (prevProps?: VideoProps) {
+  updateTrackAttachments (prevProps?: VideoProps): void {
     if (this.audioRef.current) {
       // Add audio track
       if (!(prevProps && prevProps.audioTrack) && this.props.audioTrack) {
@@ -122,24 +122,24 @@ export default class Video extends React.Component<VideoProps> {
   }
 
   @bind()
-  handleVideoCanPlay () {
+  handleVideoCanPlay (): void {
     this.updateVideoTagStaus(true)
     this.updateAspectRatio()
   }
 
   @bind()
-  handleVideoEmptied () {
+  handleVideoEmptied (): void {
     this.updateVideoTagStaus(false)
   }
 
   @action
-  updateVideoTagStaus (active: boolean) {
+  updateVideoTagStaus (active: boolean): void {
     if (this.props.participant) {
       this.props.participant.isVideoTagActive = active
     }
   }
 
-  updateAspectRatio () {
+  updateAspectRatio (): void {
     const containerEl = this.videoContainerRef.current
     const videoEl = this.videoRef.current
 
@@ -152,7 +152,7 @@ export default class Video extends React.Component<VideoProps> {
     }
   }
 
-  getClassNames () {
+  getClassNames (): string {
     const { isLocal, isAudioMuted, isVideoMuted, isDominantSpeaker, videoTrack, isVideoActive } = this.props
     const classNames = ['video']
 
@@ -179,7 +179,7 @@ export default class Video extends React.Component<VideoProps> {
     return classNames.join(' ')
   }
 
-  render () {
+  render (): JSX.Element {
     return (
       <div className={this.getClassNames()} ref={this.videoContainerRef}>
         <video ref={this.videoRef} autoPlay playsInline />

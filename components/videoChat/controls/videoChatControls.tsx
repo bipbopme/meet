@@ -25,7 +25,7 @@ export default class VideoChatControls extends React.Component<VideoChatControls
     this.canScreenCapture = DetectRTC.isScreenCapturingSupported && !DetectRTC.isMobileDevice && !DetectRTC.browser.isSafari
   }
 
-  render () {
+  render (): JSX.Element {
     return (
       <footer className='controls'>
         <div className='left'>

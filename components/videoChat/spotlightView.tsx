@@ -22,22 +22,22 @@ export default class SpotlightView extends React.Component<SpotlightViewProps> {
     this.videosRef = React.createRef()
   }
 
-  componentDidMount () {
+  componentDidMount (): void {
     this.updateVideoConstraints()
   }
 
-  componentDidUpdate () {
+  componentDidUpdate (): void {
     this.updateVideoConstraints()
   }
 
-  updateVideoConstraints () {
+  updateVideoConstraints (): void {
     if (this.speakingParticipant) {
       this.props.conference.selectParticipants([this.speakingParticipant.id])
       this.props.conference.setReceiverVideoConstraint(720)
     }
   }
 
-  getCssClassNames () {
+  getCssClassNames (): string {
     const classNames = ['spotlightView']
 
     classNames.push(this.props.crop ? 'cropped' : 'uncropped')
@@ -45,7 +45,7 @@ export default class SpotlightView extends React.Component<SpotlightViewProps> {
     return classNames.join(' ')
   }
 
-  render () {
+  render (): JSX.Element {
     const { participants, localParticipant } = this.props
 
     const sortedParticipants = participants.slice().sort((a, b) => b.lastDominantSpeakerAt.valueOf() - a.lastDominantSpeakerAt.valueOf())

@@ -1,7 +1,7 @@
 import _shuffle from 'lodash/shuffle'
 import shortuuid from 'short-uuid'
 
-export function uuid () {
+export function uuid (): string {
   // Get a UUID encoded with an unambiguous character set
   let uuid = shortuuid('123456789abcdefghijkmnopqrstuvwxyz').generate()
 
@@ -15,7 +15,7 @@ export function uuid () {
   return uuid
 }
 
-export function nowTraceToRegion(trace: string) {
+export function nowTraceToRegion(trace: string): string {
   const defaultRegion = 'nyc'
   const regionMap: {[key: string]: string} = {
     arn1: 'ams',
@@ -52,6 +52,6 @@ export function getElementPath(element: Element, parentElements: Element[] = [])
     return element.parentElement ? getElementPath(element.parentElement, parentElements) : parentElements
 }
 
-export function isTouchEnabled () {
+export function isTouchEnabled (): boolean {
   return 'ontouchstart' in window || navigator.msMaxTouchPoints > 0
 }

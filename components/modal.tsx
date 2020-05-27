@@ -2,6 +2,7 @@ import { Portal } from 'react-portal'
 import React from 'react'
 import { bind } from 'lodash-decorators';
 
+
 interface ModalProps {
   onCancel(): void;
 }
@@ -13,22 +14,22 @@ export default class Modal extends React.Component<ModalProps> {
     document.addEventListener('keydown', this.handleKeyDown);
   }
 
-  componentWillUnmount () {
+  componentWillUnmount (): void {
     document.removeEventListener('keydown', this.handleKeyDown);
   }
 
   @bind()
-  handleKeyDown (event: KeyboardEvent) {
+  handleKeyDown (event: KeyboardEvent): void {
     if (event.key === 'Escape') {
       this.cancel()
     }
   }
 
-  cancel () {
+  cancel (): void {
     this.props.onCancel()
   }
 
-  render () {
+  render (): JSX.Element {
     return (
       <Portal>
         <div className='modal'>

@@ -23,7 +23,7 @@ export default class VideoButton extends React.Component<VideoButtonProps, Video
   }
 
   @bind()
-  handleClick () {
+  handleClick (): void {
     // Toggle muted
     const muted = !this.state.muted
 
@@ -39,7 +39,7 @@ export default class VideoButton extends React.Component<VideoButtonProps, Video
     matopush(['trackEvent', 'videoChat', 'videoButton', 'toggle'])
   }
 
-  render () {
+  render (): JSX.Element {
     return (
       <div className='button videoButton' onClick={this.handleClick}>
         {this.state.muted &&

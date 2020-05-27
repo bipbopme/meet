@@ -41,12 +41,12 @@ export default class RoomActive extends React.Component<RoomActiveProps, RoomAct
     }
   }
 
-  componentDidMount () {
+  componentDidMount (): void {
     // Kick off initial timer
     this.startAutoHideControlsTimer()
   }
 
-  componentWillUnmount () {
+  componentWillUnmount (): void {
     if (!isTouchEnabled()) {
       window.removeEventListener('mousemove', this.handleMouseMove)
       window.removeEventListener('mouseout', this.handleMouseOut)
@@ -58,26 +58,26 @@ export default class RoomActive extends React.Component<RoomActiveProps, RoomAct
     this.clearAutoHideControlsTimer()
   }
 
-  startAutoHideControlsTimer (delay = HIDE_CONTROLS_DELAY) {
+  startAutoHideControlsTimer (delay = HIDE_CONTROLS_DELAY): void {
     this.clearAutoHideControlsTimer()
     this.hideControlsTimer = window.setTimeout(this.hideControls, delay)
   }
 
-  clearAutoHideControlsTimer () {
+  clearAutoHideControlsTimer (): void {
     clearTimeout(this.hideControlsTimer)
   }
 
   @bind()
-  hideControls () {
+  hideControls (): void {
     this.setState({ showControls: false })
   }
 
-  showControls () {
+  showControls (): void {
     this.setState({ showControls: true })
   }
 
   @bind() @throttle(MOUSE_EVENT_DELAY)
-  handleMouseMove () {
+  handleMouseMove (): void {
     this.startAutoHideControlsTimer()
 
     if (!this.state.showControls) {
@@ -86,14 +86,14 @@ export default class RoomActive extends React.Component<RoomActiveProps, RoomAct
   }
 
   @bind() @debounce(MOUSE_EVENT_DELAY)
-  handleMouseOut (event: MouseEvent) {
+  handleMouseOut (event: MouseEvent): void {
     if (!event.relatedTarget) {
       this.startAutoHideControlsTimer(0)
     }
   }
 
   @bind() @debounce(MOUSE_EVENT_DELAY)
-  handleClick (event: MouseEvent) {
+  handleClick (event: MouseEvent): void {
     if (!this.hasClickableElements(event)) {
       if (this.state.showControls) {
         this.startAutoHideControlsTimer(0)
@@ -104,7 +104,7 @@ export default class RoomActive extends React.Component<RoomActiveProps, RoomAct
   }
 
   @bind()
-  handleDoubleClick (event: MouseEvent) {
+  handleDoubleClick (event: MouseEvent): void {
     if (!this.hasClickableElements(event)) {
       // Invert fullscreen
       const newIsFullscreen = !this.state.isFullscreen
@@ -128,7 +128,7 @@ export default class RoomActive extends React.Component<RoomActiveProps, RoomAct
     }
   }
 
-  hasClickableElements(event: MouseEvent) {
+  hasClickableElements(event: MouseEvent): boolean {
     const target = event.target as Element
     const elements = getElementPath(target)
     const clickableElements = elements.filter((element) => {
@@ -140,7 +140,7 @@ export default class RoomActive extends React.Component<RoomActiveProps, RoomAct
     return clickableElements.length > 0
   }
 
-  render () {
+  render (): JSX.Element {
     return (
       <div className={`roomPage roomActive ${this.state.showChat ? 'showChat' : 'hideChat'} ${this.state.showControls ? 'showControls' : 'hideControls'}`}>
         <Head>

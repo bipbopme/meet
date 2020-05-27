@@ -10,13 +10,13 @@ interface LeaveButtonProps {
 
 export default class LeaveButton extends React.Component<LeaveButtonProps> {
   @bind()
-  handleClick () {
+  handleClick (): void {
     this.props.onLeave()
 
     matopush(['trackEvent', 'videoChat', 'leaveButton', 'click'])
   }
 
-  render () {
+  render (): JSX.Element {
     return (
       <div className='button leaveButton' onClick={this.handleClick}>
         <span title="Leave Video Chat"><FontAwesomeIcon icon={faTimes} /></span>

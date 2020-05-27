@@ -7,7 +7,7 @@ interface RoomSetupProps {
 }
 
 export default class RoomSetup extends React.Component<RoomSetupProps> {
-  render () {
+  render (): JSX.Element {
     return (
       <div className='roomPage roomSetup'>
         <Head>

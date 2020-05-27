@@ -25,14 +25,14 @@ export default class SettingsButton extends React.Component<SettingsButtonProps,
   }
 
   @bind()
-  handleClick () {
+  handleClick (): void {
     this.setState({ showSettings: true })
 
     matopush(['trackEvent', 'videoChat', 'settingsButton', 'click'])
   }
 
   @bind()
-  async handleDone (name: string | undefined, audioTrack: JitsiMeetJS.JitsiTrack, videoTrack: JitsiMeetJS.JitsiTrack) {
+  async handleDone (name: string | undefined, audioTrack: JitsiMeetJS.JitsiTrack, videoTrack: JitsiMeetJS.JitsiTrack): Promise<void> {
     await this.props.localParticipant.replaceAudioTrack(audioTrack)
     await this.props.localParticipant.replaceVideoTrack(videoTrack)
 
@@ -40,11 +40,11 @@ export default class SettingsButton extends React.Component<SettingsButtonProps,
   }
 
   @bind()
-  handleModalCancel () {
+  handleModalCancel (): void {
     this.setState({ showSettings: false })
   }
 
-  render () {
+  render (): JSX.Element {
     return (
       <>
         <div className='button settingsButton' title='Settings for camera and microphone' onClick={this.handleClick}>

@@ -43,7 +43,7 @@ export default class Room extends React.Component<RoomProps, RoomState> {
     }
   }
 
-  componentDidMount () {
+  componentDidMount (): void {
     // Override mobile viewport height behavior
     // Also apply to Safari since iPad pretends to be desktop
     if (DetectRTC.isMobileDevice || DetectRTC.browser.isSafari) {
@@ -52,13 +52,13 @@ export default class Room extends React.Component<RoomProps, RoomState> {
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount (): void {
     window.removeEventListener('resize', this.updateMobileViewportHeight)
     this.jitsi.disconnect()
   }
 
   @bind()
-  handleJitsiConnected () {
+  handleJitsiConnected (): void {
     // If setup is already complete, init the conference
     if (this.state.setupComplete && this.state.audioTrack && this.state.videoTrack) {
       this.initConference(this.state.name, this.state.audioTrack, this.state.videoTrack)
@@ -82,7 +82,7 @@ export default class Room extends React.Component<RoomProps, RoomState> {
   }
 
   @bind()
-  handleLeave () {
+  handleLeave (): void {
     if (this.conference) {
       this.conference.leave()
       this.jitsi.disconnect()
@@ -91,7 +91,7 @@ export default class Room extends React.Component<RoomProps, RoomState> {
     }
   }
 
-  handleRejoin () {
+  handleRejoin (): void {
     window.location.reload()
   }
 
@@ -104,7 +104,7 @@ export default class Room extends React.Component<RoomProps, RoomState> {
 
   // https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
   @bind() @debounce(50)
-  updateMobileViewportHeight () {
+  updateMobileViewportHeight (): void {
     // First we get the viewport height and we multiply it by 1% to get a value for a vh unit
     const mvh = window.innerHeight * 0.01
 
@@ -117,7 +117,7 @@ export default class Room extends React.Component<RoomProps, RoomState> {
     }
   }
 
-  render () {
+  render (): JSX.Element {
     if (this.state.setupComplete) {
       if (this.state.conferenceInitialized && this.conference) {
         if (this.state.left) {

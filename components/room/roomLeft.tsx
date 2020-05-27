@@ -5,7 +5,7 @@ interface RoomLeftProps {
 }
 
 export default class RoomLeft extends React.Component<RoomLeftProps> {
-  render () {
+  render (): JSX.Element {
     return (
       <div className='leftRoom'>
         <h1>👋You left the chat.</h1>

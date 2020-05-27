@@ -25,7 +25,7 @@ export default class ScreenShareButton extends React.Component<ScreenShareButton
   }
 
   @bind()
-  async handleClick () {
+  async handleClick (): Promise<void> {
     // Toggle muted
     const shared = !this.state.shared
     const { localParticipant } = this.props
@@ -59,7 +59,7 @@ export default class ScreenShareButton extends React.Component<ScreenShareButton
     matopush(['trackEvent', 'videoChat', 'screenShareButton', 'toggle'])
   }
 
-  render () {
+  render (): JSX.Element {
     return (
       <div className={`button screenShareButton ${this.state.shared ? 'shared' : ''}`} onClick={this.handleClick}>
         {!this.state.shared &&

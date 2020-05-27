@@ -6,7 +6,7 @@ interface RoomStatusProps {
 }
 
 export default class RoomStatus extends React.Component<RoomStatusProps> {
-  render () {
+  render (): JSX.Element {
     return (
       <div className='roomPage roomSetup'>
         <Head>

@@ -43,17 +43,17 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
     }
   }
 
-  componentDidMount () {
+  componentDidMount (): void {
     this.getUserMedia()
 
     JitsiMeetJS.mediaDevices.addEventListener(JitsiMeetJS.events.mediaDevices.DEVICE_LIST_CHANGED, this.handleDeviceListChanged)
   }
 
-  componentWillUnmount () {
+  componentWillUnmount (): void {
     JitsiMeetJS.mediaDevices.removeEventListener(JitsiMeetJS.events.mediaDevices.DEVICE_LIST_CHANGED, this.handleDeviceListChanged)
   }
 
-  async getUserMedia () {
+  async getUserMedia (): Promise<void> {
     await this.loadSavedSettings()
 
     if (this.state.audioTrack) {
@@ -74,7 +74,7 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
   }
 
   @bind()
-  async onError (error: Error) {
+  async onError (error: Error): Promise<void> {
     console.error(error)
 
     // TODO: brute force error handling. need something more nuanced.
@@ -89,7 +89,7 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
   }
 
   @bind()
-  handleCreateLocalTracks (tracks: JitsiMeetJS.JitsiTrack[]) {
+  handleCreateLocalTracks (tracks: JitsiMeetJS.JitsiTrack[]): void {
     let audioTrack: JitsiMeetJS.JitsiTrack | undefined
     let videoTrack: JitsiMeetJS.JitsiTrack | undefined
 
@@ -106,7 +106,7 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
     }
   }
 
-  async loadSavedSettings () {
+  async loadSavedSettings (): Promise<void> {
     const name = await localforage.getItem<string>('name')
     const selectedAudioInputID = await localforage.getItem<string>('selectedAudioInputID')
     const selectedAudioOutputID = await localforage.getItem<string>('selectedAudioOutputID')
@@ -121,7 +121,7 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
   }
 
   @bind()
-  async handleEnumerateDevices (devices: MediaDeviceInfo[]) {
+  async handleEnumerateDevices (devices: MediaDeviceInfo[]): Promise<void> {
     if (devices) {
       const audioInputs = _uniqBy(devices.filter(d => d.kind === 'audioinput'), 'deviceId')
       const audioOutputs = _uniqBy(devices.filter(d => d.kind === 'audiooutput'), 'deviceId')
@@ -138,13 +138,13 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
   }
 
   @bind()
-  handleDeviceListChanged (devices: MediaDeviceInfo[]) {
+  handleDeviceListChanged (devices: MediaDeviceInfo[]): void {
     console.log('Device list changed')
     this.handleEnumerateDevices(devices)
   }
 
   @bind()
-  handleNameChange (event: React.ChangeEvent<HTMLInputElement>) {
+  handleNameChange (event: React.ChangeEvent<HTMLInputElement>): void {
     const name = event.target.value
 
     localforage.setItem('name', name)
@@ -154,7 +154,7 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
   }
 
   @bind()
-  handleAudioInputChange (event: React.ChangeEvent<HTMLSelectElement>) {
+  handleAudioInputChange (event: React.ChangeEvent<HTMLSelectElement>): void {
     const selectedAudioInputID = event.target.value
 
     localforage.setItem('selectedAudioInputID', selectedAudioInputID)
@@ -166,7 +166,7 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
   }
 
   @bind()
-  handleAudioOutputChange (event: React.ChangeEvent<HTMLSelectElement>) {
+  handleAudioOutputChange (event: React.ChangeEvent<HTMLSelectElement>): void {
     const selectedAudioOutputID = event.target.value
 
     localforage.setItem('selectedAudioOutputID', selectedAudioOutputID)
@@ -178,7 +178,7 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
   }
 
   @bind()
-  handleVideoInputChange (event: React.ChangeEvent<HTMLSelectElement>) {
+  handleVideoInputChange (event: React.ChangeEvent<HTMLSelectElement>): void {
     const selectedVideoInputID = event.target.value
 
     localforage.setItem('selectedVideoInputID', selectedVideoInputID)
@@ -190,7 +190,7 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
   }
 
   // Handle device setting inconsistencies
-  syncAudioVideoDefaults (audioOutputs: MediaDeviceInfo[]) {
+  syncAudioVideoDefaults (audioOutputs: MediaDeviceInfo[]): void {
     const newState: SettingsState = {}
 
     const { audioTrack, videoTrack, selectedVideoInputID, selectedAudioInputID, selectedAudioOutputID } = this.state
@@ -234,7 +234,7 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
   }
 
   @bind()
-  handleSubmit (event: React.FormEvent<HTMLFormElement>) {
+  handleSubmit (event: React.FormEvent<HTMLFormElement>): void {
     event.preventDefault()
 
     if (this.props.onButtonClick) {
@@ -249,11 +249,11 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
   }
 
   @bind()
-  handleShowAudioVideoSettings () {
+  handleShowAudioVideoSettings (): void {
     this.setState({ collapseAudioVideoSettings: false })
   }
 
-  render () {
+  render (): JSX.Element {
     return (
       <div className='settings'>
         {this.state.videoTrack &&

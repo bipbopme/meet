@@ -41,7 +41,7 @@ export default class RoomPage extends React.Component<RoomPageProps, RoomPageSta
     this.setState({ mounted: true })
   }
 
-  render () {
+  render (): JSX.Element | null {
     if (this.state.mounted) {
       return <Room id={this.props.id} region={this.props.region} host={JITSI_CONFIG.host} />
     } else {

@@ -4,11 +4,11 @@ import Router from 'next/router'
 import { uuid } from '../lib/utils'
 
 export default class HomePage extends React.Component {
-  handleClick () {
+  handleClick (): void {
     Router.push(`/r/${uuid()}`)
   }
 
-  render () {
+  render (): JSX.Element {
     return (
       <div className='homePage'>
         <Head>

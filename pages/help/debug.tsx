@@ -19,7 +19,7 @@ export const getServerSideProps: GetServerSideProps<DebugPageProps, {}> = async 
 }
 
 export default class DebugPage extends React.Component<DebugPageProps> {
-  render () {
+  render (): JSX.Element {
     const { trace, region } = this.props
 
     return (

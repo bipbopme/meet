@@ -45,32 +45,32 @@ export default class JitsiConferenceManager extends events.EventEmitter {
     })
   }
 
-  join () {
+  join (): void {
     this.addEventListeners()
     this.conference.join()
   }
 
-  leave () {
-    return this.conference.leave()
+  leave (): void {
+    this.conference.leave()
   }
 
-  sendTextMessage (text: string) {
+  sendTextMessage (text: string): void {
     this.conference.sendTextMessage(text)
   }
 
-  selectParticipants(ids: string[]) {
+  selectParticipants(ids: string[]): void {
     this.conference.selectParticipants(ids)
   }
 
-  selectAllParticipants() {
+  selectAllParticipants(): void {
     this.selectParticipants(this.participants.map(p => p.id))
   }
 
-  setReceiverVideoConstraint(resolution: number) {
+  setReceiverVideoConstraint(resolution: number): void {
     this.conference.setReceiverVideoConstraint(resolution)
   }
 
-  private addEventListeners () {
+  private addEventListeners (): void {
     // Events from https://github.com/jitsi/lib-jitsi-meet/blob/master/doc/API.md
     this.conference.addEventListener(JitsiMeetJS.events.conference.USER_JOINED, this.handleUserJoined)
     this.conference.addEventListener(JitsiMeetJS.events.conference.USER_LEFT, this.handleUserLeft)
@@ -94,7 +94,7 @@ export default class JitsiConferenceManager extends events.EventEmitter {
     this.conference.addEventListener(JitsiMeetJS.events.conference.NOISY_MIC, this.handleNoisyMic)
   }
 
-    private removeEventListeners () {
+    private removeEventListeners (): void {
     // Events from https://github.com/jitsi/lib-jitsi-meet/blob/master/doc/API.md
     this.conference.removeEventListener(JitsiMeetJS.events.conference.USER_JOINED, this.handleUserJoined)
     this.conference.removeEventListener(JitsiMeetJS.events.conference.USER_LEFT, this.handleUserLeft)
@@ -118,7 +118,7 @@ export default class JitsiConferenceManager extends events.EventEmitter {
     this.conference.removeEventListener(JitsiMeetJS.events.conference.NOISY_MIC, this.handleNoisyMic)
   }
 
-  private disposeLocalTracks () {
+  private disposeLocalTracks (): void {
     if (this.localParticipant) {
       if (this.localParticipant.audioTrack) {
         this.localParticipant.audioTrack.dispose()
@@ -131,17 +131,17 @@ export default class JitsiConferenceManager extends events.EventEmitter {
   }
 
   @action
-  private updateStatus (status: string) {
+  private updateStatus (status: string): void {
     this.status = status
   }
 
   @action
-  private updateSubject (subject: string) {
+  private updateSubject (subject: string): void {
     this.subject = subject
   }
 
   @action
-  private addParticipant (id: string, displayName: string) {
+  private addParticipant (id: string, displayName: string): JitsiParticipant {
     const participant = new JitsiParticipant(id, this.conference, displayName)
 
     this.participants.push(participant)
@@ -150,7 +150,7 @@ export default class JitsiConferenceManager extends events.EventEmitter {
   }
 
   @action
-  private removeParticipant (id: string) {
+  private removeParticipant (id: string): void {
     const participant = this.getParticipant(id)
 
     if (participant) {
@@ -159,12 +159,12 @@ export default class JitsiConferenceManager extends events.EventEmitter {
     }
   }
 
-  private getParticipant(id: string) {
+  private getParticipant(id: string): JitsiParticipant | undefined {
     return [...this.participants, this.localParticipant].find(p => p && p.id === id)
   }
 
   @action
-  private addMessage(participant: JitsiParticipant, text: string, createdAt: Date) {
+  private addMessage(participant: JitsiParticipant, text: string, createdAt: Date): JitsiMessage {
     const message = new JitsiMessage(participant, text, createdAt)
 
     this.messages.push(message)
@@ -173,7 +173,7 @@ export default class JitsiConferenceManager extends events.EventEmitter {
   }
 
   @action
-  private addLocalParticipant (id: string , displayName?: string) {
+  private addLocalParticipant (id: string , displayName?: string): void {
     const localParticipant = new JitsiParticipant(id, this.conference, displayName, true)
 
     // Setup local tracks
@@ -186,7 +186,7 @@ export default class JitsiConferenceManager extends events.EventEmitter {
   }
 
   @bind
-  private handleUserJoined (id: string, jitsiInternalParticipant: JitsiMeetJS.JitsiParticipant) {
+  private handleUserJoined (id: string, jitsiInternalParticipant: JitsiMeetJS.JitsiParticipant): void {
     console.debug('Implemented: UserJoined', id, jitsiInternalParticipant, this)
 
     const participant = this.addParticipant(id, jitsiInternalParticipant._displayName)
@@ -195,7 +195,7 @@ export default class JitsiConferenceManager extends events.EventEmitter {
   }
 
   @bind
-  private handleUserLeft (id: string, jitsiInternalParticipant: JitsiMeetJS.JitsiParticipant) {
+  private handleUserLeft (id: string, jitsiInternalParticipant: JitsiMeetJS.JitsiParticipant): void {
     const participant = this.removeParticipant(id)
 
     this.emit(JitsiConferenceManager.events.PARTICIPANT_LEFT, participant)
@@ -204,7 +204,7 @@ export default class JitsiConferenceManager extends events.EventEmitter {
   }
 
   @bind
-  private handleMessageReceived (id: string, text: string, ts: Date) {
+  private handleMessageReceived (id: string, text: string, ts: Date): void {
     const participant = this.getParticipant(id)
 
     if (participant) {
@@ -217,19 +217,19 @@ export default class JitsiConferenceManager extends events.EventEmitter {
   }
 
   @bind
-  private handleSubjectChanged (subject: string) {
+  private handleSubjectChanged (subject: string): void {
     console.warn('Not implemented: _handleSubjectChanged')
 
     this.updateSubject(subject)
   }
 
   @bind
-  private handleLastNEndpointsChanged (leavingEndpointIds: string[], enteringEndpointIds: string[]) {
+  private handleLastNEndpointsChanged (leavingEndpointIds: string[], enteringEndpointIds: string[]): void {
     console.warn('Not implemented: _handleLastNEndpointsChanged', leavingEndpointIds, enteringEndpointIds)
   }
 
   @bind
-  private handleConferenceJoined () {
+  private handleConferenceJoined (): void {
     this.addLocalParticipant(this.conference.myUserId(), this.displayName)
     this.updateStatus('joined')
 
@@ -243,7 +243,7 @@ export default class JitsiConferenceManager extends events.EventEmitter {
   }
 
   @bind
-  private handleConferenceLeft () {
+  private handleConferenceLeft (): void {
     this.removeEventListeners()
     // TODO: this should probably be handled somewhere else
     this.disposeLocalTracks()
@@ -251,67 +251,67 @@ export default class JitsiConferenceManager extends events.EventEmitter {
   }
 
   @bind
-  private handleDtmfSupportChanged (supports: boolean) {
+  private handleDtmfSupportChanged (supports: boolean): void {
     console.warn('Not implemented: _handleDtmfSupportChanged', supports)
   }
 
   @bind
-  private handleConferenceFailed (errorCode: string) {
+  private handleConferenceFailed (errorCode: string): void {
     console.warn('Not implemented: _handleConferenceFailed', errorCode)
   }
 
   @bind
-  private handleConferenceError (errorCode: string) {
+  private handleConferenceError (errorCode: string): void {
     console.warn('Not implemented: _handleConferenceError', errorCode)
   }
 
   @bind
-  private handleKicked () {
+  private handleKicked (): void {
     console.warn('Not implemented: _handleKicked')
   }
 
   @bind
-  private handleStartMutedPolicyChanged () {
+  private handleStartMutedPolicyChanged (): void {
     console.warn('Not implemented: _handleStartMutedPolicyChanged')
   }
 
   @bind
-  private handleStartedMuted () {
+  private handleStartedMuted (): void {
     console.warn('Not implemented: _handleStartedMuted')
   }
 
   @bind
-  private handleBeforeStatisticsDisposed () {
+  private handleBeforeStatisticsDisposed (): void {
     console.warn('Not implemented: _handleBeforeStatisticsDisposed')
   }
 
   @bind
-  private handleAuthStatusChanged (isAuthEnabled: boolean, authIdentity: string) {
+  private handleAuthStatusChanged (isAuthEnabled: boolean, authIdentity: string): void {
     console.warn('Not implemented: _handleAuthStatusChanged', isAuthEnabled, authIdentity)
   }
 
   @bind
-  private handleEndpointMessageReceived () {
+  private handleEndpointMessageReceived (): void {
     console.warn('Not implemented: _handleEndpointMessageReceived')
   }
 
   @bind
-  private handleTalkWhileMuted () {
+  private handleTalkWhileMuted (): void {
     console.warn('Not implemented: _handleTalkWhileMuted')
   }
 
   @bind
-  private handleNoAudioInput () {
+  private handleNoAudioInput (): void {
     console.warn('Not implemented: _handleNoAudioInput')
   }
 
   @bind
-  private handleAudioInputStateChanged () {
+  private handleAudioInputStateChanged (): void {
     console.warn('Not implemented: _handleAudioInputStateChanged')
   }
 
   @bind
-  private handleNoisyMic () {
+  private handleNoisyMic (): void {
     console.warn('Not implemented: _handleNoisyMic')
   }
 }

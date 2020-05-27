@@ -40,14 +40,14 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount (): void {
     this.props.conference.off(JitsiConferenceManager.events.PARTICIPANT_JOINED, this.autoSwitchView)
     this.props.conference.off(JitsiConferenceManager.events.PARTICIPANT_LEFT, this.autoSwitchView)
     window.removeEventListener('resize', this.autoSwitchViewDebounced)
   }
 
   @bind()
-  autoSwitchView () {
+  autoSwitchView (): void {
     if (this.state.autoSwitchView) {
       const { conference } = this.props
       let { view, crop } = this.state
@@ -66,7 +66,7 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
   }
 
   @bind()
-  handleViewChange (view: string) {
+  handleViewChange (view: string): void {
     // Always zoom spotlight view
     const crop = view === 'spotlight'
     const autoSwitchView = false
@@ -74,7 +74,7 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
     this.setState({ view: view, crop, autoSwitchView })
   }
 
-  render () {
+  render (): JSX.Element | null {
     const conference = this.props.conference
     const { localParticipant, participants, status } = conference
 

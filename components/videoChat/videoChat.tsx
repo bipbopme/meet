@@ -6,6 +6,7 @@ import VideoChatControls from './controls/videoChatControls'
 import { observer } from 'mobx-react'
 import { bind } from 'lodash-decorators'
 import debounce from 'lodash/debounce'
+import QuakeView from './quakeView'
 
 interface VideoChatProps {
   conference: JitsiConferenceManager;
@@ -34,9 +35,9 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
     window.addEventListener('resize', this.autoSwitchViewDebounced)
 
     this.state = {
-      view: 'spotlight',
+      view: this.props.conference.id === 'quake' ? 'quake' : 'spotlight',
       crop: true,
-      autoSwitchView: true
+      autoSwitchView: this.props.conference.id === 'quake' ? false : true
     }
   }
 
@@ -80,9 +81,7 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
 
     return (status === 'joined' && localParticipant) ? (
       <div className='videoChat'>
-        <header>
-          <h1>bipbop</h1>
-        </header>
+
         {this.state.view === 'spotlight' &&
           <SpotlightView 
             conference={conference}
@@ -93,6 +92,14 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
         }
         {this.state.view === 'grid' &&
           <GridView 
+            conference={this.props.conference} 
+            localParticipant={localParticipant}
+            participants={participants}
+            crop={this.state.crop} 
+          />
+        }
+        {this.state.view === 'quake' &&
+          <QuakeView 
             conference={this.props.conference} 
             localParticipant={localParticipant}
             participants={participants}

@@ -6,6 +6,7 @@ import _uniqBy from 'lodash/uniqBy'
 import { faCog } from '@fortawesome/free-solid-svg-icons'
 import localforage from 'localforage'
 import { matopush } from '../../lib/matomo'
+import { bind } from 'lodash-decorators'
 
 interface SettingsProps {
   collapseAudioVideoSettings?: boolean;
@@ -31,16 +32,6 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
   constructor (props: SettingsProps) {
     super(props)
 
-    this.handleNameChange = this.handleNameChange.bind(this)
-    this.handleAudioInputChange = this.handleAudioInputChange.bind(this)
-    this.handleAudioOutputChange = this.handleAudioOutputChange.bind(this)
-    this.handleVideoInputChange = this.handleVideoInputChange.bind(this)
-    this.handleCreateLocalTracks = this.handleCreateLocalTracks.bind(this)
-    this.handleEnumerateDevices = this.handleEnumerateDevices.bind(this)
-    this.onError = this.onError.bind(this)
-    this.handleSubmit = this.handleSubmit.bind(this)
-    this.handleShowAudioVideoSettings = this.handleShowAudioVideoSettings.bind(this)
-
     this.state = {
       name: '',
       selectedAudioInputID: undefined,
@@ -55,7 +46,11 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
   componentDidMount () {
     this.getUserMedia()
 
-    JitsiMeetJS.mediaDevices.addEventListener(JitsiMeetJS.events.mediaDevices.DEVICE_LIST_CHANGED, this.handleDeviceListChanged.bind(this))
+    JitsiMeetJS.mediaDevices.addEventListener(JitsiMeetJS.events.mediaDevices.DEVICE_LIST_CHANGED, this.handleDeviceListChanged)
+  }
+
+  componentWillUnmount () {
+    JitsiMeetJS.mediaDevices.removeEventListener(JitsiMeetJS.events.mediaDevices.DEVICE_LIST_CHANGED, this.handleDeviceListChanged)
   }
 
   async getUserMedia () {
@@ -78,6 +73,7 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
     JitsiMeetJS.createLocalTracks(options).then(this.handleCreateLocalTracks).catch(this.onError)
   }
 
+  @bind()
   async onError (error: Error) {
     console.error(error)
 
@@ -92,6 +88,7 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
     }
   }
 
+  @bind()
   handleCreateLocalTracks (tracks: JitsiMeetJS.JitsiTrack[]) {
     let audioTrack: JitsiMeetJS.JitsiTrack | undefined
     let videoTrack: JitsiMeetJS.JitsiTrack | undefined
@@ -123,6 +120,7 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
     })
   }
 
+  @bind()
   async handleEnumerateDevices (devices: MediaDeviceInfo[]) {
     if (devices) {
       const audioInputs = _uniqBy(devices.filter(d => d.kind === 'audioinput'), 'deviceId')
@@ -139,11 +137,13 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
     }
   }
 
+  @bind()
   handleDeviceListChanged (devices: MediaDeviceInfo[]) {
     console.log('Device list changed')
     this.handleEnumerateDevices(devices)
   }
 
+  @bind()
   handleNameChange (event: React.ChangeEvent<HTMLInputElement>) {
     const name = event.target.value
 
@@ -153,6 +153,7 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
     matopush(['trackEvent', 'settings', 'name', 'update'])
   }
 
+  @bind()
   handleAudioInputChange (event: React.ChangeEvent<HTMLSelectElement>) {
     const selectedAudioInputID = event.target.value
 
@@ -164,6 +165,7 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
     matopush(['trackEvent', 'settings', 'audioInput', 'update'])
   }
 
+  @bind()
   handleAudioOutputChange (event: React.ChangeEvent<HTMLSelectElement>) {
     const selectedAudioOutputID = event.target.value
 
@@ -175,6 +177,7 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
     matopush(['trackEvent', 'settings', 'audioOutput', 'update'])
   }
 
+  @bind()
   handleVideoInputChange (event: React.ChangeEvent<HTMLSelectElement>) {
     const selectedVideoInputID = event.target.value
 
@@ -230,6 +233,7 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
     this.setState(newState)
   }
 
+  @bind()
   handleSubmit (event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
@@ -244,6 +248,7 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
     }
   }
 
+  @bind()
   handleShowAudioVideoSettings () {
     this.setState({ collapseAudioVideoSettings: false })
   }

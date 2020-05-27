@@ -46,6 +46,18 @@ export default class RoomActive extends React.Component<RoomActiveProps, RoomAct
     this.startAutoHideControlsTimer()
   }
 
+  componentWillUnmount () {
+    if (!isTouchEnabled()) {
+      window.removeEventListener('mousemove', this.handleMouseMove)
+      window.removeEventListener('mouseout', this.handleMouseOut)
+    }
+
+    window.removeEventListener('click', this.handleClick)
+    window.removeEventListener('dblclick', this.handleDoubleClick)
+
+    this.clearAutoHideControlsTimer()
+  }
+
   startAutoHideControlsTimer (delay = HIDE_CONTROLS_DELAY) {
     this.clearAutoHideControlsTimer()
     this.hideControlsTimer = window.setTimeout(this.hideControls, delay)

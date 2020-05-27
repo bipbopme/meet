@@ -52,6 +52,11 @@ export default class Room extends React.Component<RoomProps, RoomState> {
     }
   }
 
+  componentWillUnmount () {
+    window.removeEventListener('resize', this.updateMobileViewportHeight)
+    this.jitsi.disconnect()
+  }
+
   @bind()
   handleJitsiConnected () {
     // If setup is already complete, init the conference

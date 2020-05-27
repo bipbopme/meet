@@ -43,19 +43,15 @@ export default class JitsiConferenceManager extends events.EventEmitter {
         }
       }
     })
-
-    this.addEventListeners()
   }
 
   join () {
+    this.addEventListeners()
     this.conference.join()
   }
 
   leave () {
-    this.conference.leave()
-
-    // TODO: this should probably be handled somewhere else
-    this.disposeLocalTracks()
+    return this.conference.leave()
   }
 
   sendTextMessage (text: string) {
@@ -98,6 +94,30 @@ export default class JitsiConferenceManager extends events.EventEmitter {
     this.conference.addEventListener(JitsiMeetJS.events.conference.NOISY_MIC, this.handleNoisyMic)
   }
 
+    private removeEventListeners () {
+    // Events from https://github.com/jitsi/lib-jitsi-meet/blob/master/doc/API.md
+    this.conference.removeEventListener(JitsiMeetJS.events.conference.USER_JOINED, this.handleUserJoined)
+    this.conference.removeEventListener(JitsiMeetJS.events.conference.USER_LEFT, this.handleUserLeft)
+    this.conference.removeEventListener(JitsiMeetJS.events.conference.MESSAGE_RECEIVED, this.handleMessageReceived)
+    this.conference.removeEventListener(JitsiMeetJS.events.conference.SUBJECT_CHANGED, this.handleSubjectChanged)
+    this.conference.removeEventListener(JitsiMeetJS.events.conference.LAST_N_ENDPOINTS_CHANGED, this.handleLastNEndpointsChanged)
+    this.conference.removeEventListener(JitsiMeetJS.events.conference.CONFERENCE_JOINED, this.handleConferenceJoined)
+    this.conference.removeEventListener(JitsiMeetJS.events.conference.CONFERENCE_LEFT, this.handleConferenceLeft)
+    this.conference.removeEventListener(JitsiMeetJS.events.conference.DTMF_SUPPORT_CHANGED, this.handleDtmfSupportChanged)
+    this.conference.removeEventListener(JitsiMeetJS.events.conference.CONFERENCE_FAILED, this.handleConferenceFailed)
+    this.conference.removeEventListener(JitsiMeetJS.events.conference.CONFERENCE_ERROR, this.handleConferenceError)
+    this.conference.removeEventListener(JitsiMeetJS.events.conference.KICKED, this.handleKicked)
+    this.conference.removeEventListener(JitsiMeetJS.events.conference.START_MUTED_POLICY_CHANGED, this.handleStartMutedPolicyChanged)
+    this.conference.removeEventListener(JitsiMeetJS.events.conference.STARTED_MUTED, this.handleStartedMuted)
+    this.conference.removeEventListener(JitsiMeetJS.events.conference.BEFORE_STATISTICS_DISPOSED, this.handleBeforeStatisticsDisposed)
+    this.conference.removeEventListener(JitsiMeetJS.events.conference.AUTH_STATUS_CHANGED, this.handleAuthStatusChanged)
+    this.conference.removeEventListener(JitsiMeetJS.events.conference.ENDPOINT_MESSAGE_RECEIVED, this.handleEndpointMessageReceived)
+    this.conference.removeEventListener(JitsiMeetJS.events.conference.TALK_WHILE_MUTED, this.handleTalkWhileMuted)
+    this.conference.removeEventListener(JitsiMeetJS.events.conference.NO_AUDIO_INPUT, this.handleNoAudioInput)
+    this.conference.removeEventListener(JitsiMeetJS.events.conference.AUDIO_INPUT_STATE_CHANGE, this.handleAudioInputStateChanged)
+    this.conference.removeEventListener(JitsiMeetJS.events.conference.NOISY_MIC, this.handleNoisyMic)
+  }
+
   private disposeLocalTracks () {
     if (this.localParticipant) {
       if (this.localParticipant.audioTrack) {
@@ -131,7 +151,12 @@ export default class JitsiConferenceManager extends events.EventEmitter {
 
   @action
   private removeParticipant (id: string) {
-    this.participants = this.participants.filter(p => p.id !== id)
+    const participant = this.getParticipant(id)
+
+    if (participant) {
+      participant.dispose()
+      this.participants = this.participants.filter(p => p.id !== id)
+    }
   }
 
   private getParticipant(id: string) {
@@ -219,7 +244,10 @@ export default class JitsiConferenceManager extends events.EventEmitter {
 
   @bind
   private handleConferenceLeft () {
-    console.warn('Not implemented: _handleConferenceLeft')
+    this.removeEventListeners()
+    // TODO: this should probably be handled somewhere else
+    this.disposeLocalTracks()
+    console.debug('Implemented: _handleConferenceLeft')
   }
 
   @bind

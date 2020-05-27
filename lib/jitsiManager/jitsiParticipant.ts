@@ -84,7 +84,11 @@ export default class JitsiParticipant extends events.EventEmitter {
     }
   }
 
-  addEventListeners () {
+  dispose () {
+    this.removeEventListeners()
+  }
+
+  private addEventListeners () {
     this.conference.addEventListener(JitsiMeetJS.events.conference.TRACK_ADDED, this.handleTrackAdded)
     this.conference.addEventListener(JitsiMeetJS.events.conference.TRACK_REMOVED, this.handleTrackRemoved)
     this.conference.addEventListener(JitsiMeetJS.events.conference.TRACK_MUTE_CHANGED, this.handleTrackMuteChanged)
@@ -93,6 +97,17 @@ export default class JitsiParticipant extends events.EventEmitter {
     this.conference.addEventListener(JitsiMeetJS.events.conference.DISPLAY_NAME_CHANGED, this.handleDisplayNameChanged)
     this.conference.addEventListener(JitsiMeetJS.events.conference.USER_ROLE_CHANGED, this.handleUserRoleChanged)
     this.conference.addEventListener(JitsiMeetJS.events.conference.USER_STATUS_CHANGED, this.handleUserStatusChanged)
+  }
+
+  private removeEventListeners () {
+    this.conference.removeEventListener(JitsiMeetJS.events.conference.TRACK_ADDED, this.handleTrackAdded)
+    this.conference.removeEventListener(JitsiMeetJS.events.conference.TRACK_REMOVED, this.handleTrackRemoved)
+    this.conference.removeEventListener(JitsiMeetJS.events.conference.TRACK_MUTE_CHANGED, this.handleTrackMuteChanged)
+    this.conference.removeEventListener(JitsiMeetJS.events.conference.TRACK_AUDIO_LEVEL_CHANGED, this.handleTrackAudioLevelChanged)
+    this.conference.removeEventListener(JitsiMeetJS.events.conference.DOMINANT_SPEAKER_CHANGED, this.handleDominantSpeakerChanged)
+    this.conference.removeEventListener(JitsiMeetJS.events.conference.DISPLAY_NAME_CHANGED, this.handleDisplayNameChanged)
+    this.conference.removeEventListener(JitsiMeetJS.events.conference.USER_ROLE_CHANGED, this.handleUserRoleChanged)
+    this.conference.removeEventListener(JitsiMeetJS.events.conference.USER_STATUS_CHANGED, this.handleUserStatusChanged)
   }
 
   @action

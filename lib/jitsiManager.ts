@@ -34,18 +34,21 @@ export default class JitsiManager extends events.EventEmitter {
       serviceUrl: `https://${domain}/http-bind`,
       clientNode: 'https://bipbop.me/JitsiMeetJS'
     })
-
-    this.addEventListeners()
   }
 
   connect(): void {
+    this.addEventListeners()
+
     this.status = 'connecting'
     this.connection.connect()
   }
 
   disconnect() {
     this.status = 'disconnecting'
+    // Helps with cleanup
     this.connection.disconnect()
+
+    // Handlers are disposed of in handleConnectionDisconnected
   }
 
   initConferenceManager(id: string, localTracks: JitsiMeetJS.JitsiTrack[], displayName: string | undefined) {
@@ -67,6 +70,13 @@ export default class JitsiManager extends events.EventEmitter {
     this.connection.addEventListener(JitsiMeetJS.events.connection.WRONG_STATE, this.handleWrongState)
   }
 
+  private removeEventListeners () {
+    this.connection.removeEventListener(JitsiMeetJS.events.connection.CONNECTION_FAILED, this.handleConnectionFailed)
+    this.connection.removeEventListener(JitsiMeetJS.events.connection.CONNECTION_ESTABLISHED, this.handleConnectionEstablished)
+    this.connection.removeEventListener(JitsiMeetJS.events.connection.CONNECTION_DISCONNECTED, this.handleConnectionDisconnected)
+    this.connection.removeEventListener(JitsiMeetJS.events.connection.WRONG_STATE, this.handleWrongState)
+  }
+
   @bind
   private handleConnectionFailed() {
     this.status = 'failed'
@@ -83,6 +93,8 @@ export default class JitsiManager extends events.EventEmitter {
   private handleConnectionDisconnected() {
     this.status = 'disconnected'
     this.emit(JitsiManager.events.CONNECTION_DISCONNECTED)
+
+    this.removeEventListeners()
   }
 
   @bind

@@ -54,6 +54,11 @@ export default class Video extends React.Component<VideoProps> {
     if (videoTrack) {
       videoTrack.detach()
     }
+
+    if (this.videoRef.current) {
+      this.videoRef.current.removeEventListener('canplay', this.handleVideoCanPlay)
+      this.videoRef.current.removeEventListener('emptied', this.handleVideoEmptied)
+    }
   }
 
   // TODO: This finally feels stable but needs to be simplified

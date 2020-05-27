@@ -13,6 +13,10 @@ export default class Modal extends React.Component<ModalProps> {
     document.addEventListener('keydown', this.handleKeyDown);
   }
 
+  componentWillUnmount () {
+    document.removeEventListener('keydown', this.handleKeyDown);
+  }
+
   @bind()
   handleKeyDown (event: KeyboardEvent) {
     if (event.key === 'Escape') {

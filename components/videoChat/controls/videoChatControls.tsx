@@ -22,7 +22,7 @@ export default class VideoChatControls extends React.Component<VideoChatControls
     super(props)
 
     // TODO: Safari should work but it's failing right now so disable it
-    this.canScreenCapture = DetectRTC.isScreenCapturingSupported && !DetectRTC.isMobileDevice && !DetectRTC.browser.isSafari
+    this.canScreenCapture = JitsiMeetJS.isDesktopSharingEnabled() && !DetectRTC.isMobileDevice
   }
 
   render (): JSX.Element {

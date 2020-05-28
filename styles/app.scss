@@ -371,6 +371,7 @@ $transparent-white: #fff;
           height: var(--video-height);
           margin: var(--video-margin);
           width: var(--video-width);
+          -webkit-transform: translate3d(0, 0, 0);
 
           &.dominantSpeaker {
             box-shadow: 0 0 5px blue;

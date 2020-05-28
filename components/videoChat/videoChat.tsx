@@ -6,6 +6,7 @@ import VideoChatControls from './controls/videoChatControls'
 import { observer } from 'mobx-react'
 import { bind } from 'lodash-decorators'
 import debounce from 'lodash/debounce'
+import QuakeView from './quakeView'
 
 interface VideoChatProps {
   conference: JitsiConferenceManager;
@@ -21,10 +22,12 @@ interface VideoChatState {
 @observer
 export default class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
   private autoSwitchViewDebounced: () => void
+  private isQuake = false
 
   constructor (props: VideoChatProps) {
     super(props)
 
+    this.isQuake =  this.props.conference.id.indexOf('quake') >= 0
     this.autoSwitchViewDebounced = debounce(this.autoSwitchView, 200)
 
     // TODO: these are dangerous because they trigger double renders
@@ -34,9 +37,9 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
     window.addEventListener('resize', this.autoSwitchViewDebounced)
 
     this.state = {
-      view: 'spotlight',
+      view: this.isQuake ? 'quake' : 'spotlight',
       crop: true,
-      autoSwitchView: true
+      autoSwitchView: !this.isQuake
     }
   }
 
@@ -80,9 +83,7 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
 
     return (status === 'joined' && localParticipant) ? (
       <div className='videoChat'>
-        <header>
-          <h1>bipbop</h1>
-        </header>
+
         {this.state.view === 'spotlight' &&
           <SpotlightView 
             conference={conference}
@@ -93,6 +94,14 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
         }
         {this.state.view === 'grid' &&
           <GridView 
+            conference={this.props.conference} 
+            localParticipant={localParticipant}
+            participants={participants}
+            crop={this.state.crop} 
+          />
+        }
+        {this.state.view === 'quake' &&
+          <QuakeView 
             conference={this.props.conference} 
             localParticipant={localParticipant}
             participants={participants}

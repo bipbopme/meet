@@ -3,7 +3,6 @@ import Video from './video'
 import { observer } from 'mobx-react'
 import JitsiConferenceManager from '../../lib/jitsiManager/jitsiConferenceManager'
 import JitsiParticipant from '../../lib/jitsiManager/jitsiParticipant'
-import { bind } from 'lodash-decorators'
 
 interface QuakeViewProps {
   conference: JitsiConferenceManager;

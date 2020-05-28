@@ -22,10 +22,12 @@ interface VideoChatState {
 @observer
 export default class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
   private autoSwitchViewDebounced: () => void
+  private isQuake = false
 
   constructor (props: VideoChatProps) {
     super(props)
 
+    this.isQuake =  this.props.conference.id.indexOf('quake') >= 0
     this.autoSwitchViewDebounced = debounce(this.autoSwitchView, 200)
 
     // TODO: these are dangerous because they trigger double renders
@@ -35,9 +37,9 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
     window.addEventListener('resize', this.autoSwitchViewDebounced)
 
     this.state = {
-      view: this.props.conference.id === 'quake' ? 'quake' : 'spotlight',
+      view: this.isQuake ? 'quake' : 'spotlight',
       crop: true,
-      autoSwitchView: this.props.conference.id === 'quake' ? false : true
+      autoSwitchView: !this.isQuake
     }
   }
 

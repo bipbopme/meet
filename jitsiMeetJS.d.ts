@@ -33,7 +33,7 @@ declare namespace JitsiMeetJS {
     facingMode?: string;
   }
 
-  function createLocalTracks(options: CreateLocalTracksOptions, firePermissionPromptIsShownEvent?: boolean)
+  function createLocalTracks(options: CreateLocalTracksOptions, firePermissionPromptIsShownEvent?: boolean);
 
   // TODO: Had to guess on return types
   interface VadProcessor {
@@ -42,7 +42,9 @@ declare namespace JitsiMeetJS {
     calculateAudioFrameVAD(pcmSample): number;
   }
 
-  function createTrackVADEmitter(localAudioDeviceId: string, sampleRate: number, vadProcessor: VadProcessor)
+  function createTrackVADEmitter(localAudioDeviceId: string, sampleRate: number, vadProcessor: VadProcessor);
+
+  function isDesktopSharingEnabled(): boolean;
 
   // Is there a better way to represent these?
   declare namespace logLevels {
@@ -358,6 +360,11 @@ declare namespace JitsiMeetJS {
 
     // This is undocumented. Private?
     getTrack(): MediaStreamTrack
+
+    // Undocumented
+    addEventListener(event: string, listener): void;
+
+    removeEventListener(event: string, listener): void;
   }
 
   // This seems to be for private use

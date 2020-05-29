@@ -1,24 +1,24 @@
-import Head from 'next/head'
-import React from 'react'
-import Router from 'next/router'
-import { uuid } from '../lib/utils'
+import { uuid } from "../lib/utils";
+import Head from "next/head";
+import React from "react";
+import Router from "next/router";
 
 export default class HomePage extends React.Component {
-  handleClick (): void {
-    Router.push(`/r/${uuid()}`)
+  handleClick(): void {
+    Router.push(`/r/${uuid()}`);
   }
 
-  render (): JSX.Element {
+  render(): JSX.Element {
     return (
-      <div className='homePage'>
+      <div className="homePage">
         <Head>
           <title>bipbop.</title>
         </Head>
         <h1>bipbop</h1>
         <h2>easy video chats in your browser</h2>
         <button onClick={this.handleClick}>Start</button>
-        <div className='temporary'>(yes, there will be a proper home page soon)</div>
+        <div className="temporary">(yes, there will be a proper home page soon)</div>
       </div>
-    )
+    );
   }
 }

@@ -33,7 +33,10 @@ declare namespace JitsiMeetJS {
     facingMode?: string;
   }
 
-  function createLocalTracks(options: CreateLocalTracksOptions, firePermissionPromptIsShownEvent?: boolean);
+  function createLocalTracks(
+    options: CreateLocalTracksOptions,
+    firePermissionPromptIsShownEvent?: boolean
+  );
 
   // TODO: Had to guess on return types
   interface VadProcessor {
@@ -42,7 +45,11 @@ declare namespace JitsiMeetJS {
     calculateAudioFrameVAD(pcmSample): number;
   }
 
-  function createTrackVADEmitter(localAudioDeviceId: string, sampleRate: number, vadProcessor: VadProcessor);
+  function createTrackVADEmitter(
+    localAudioDeviceId: string,
+    sampleRate: number,
+    vadProcessor: VadProcessor
+  );
 
   function isDesktopSharingEnabled(): boolean;
 
@@ -181,8 +188,8 @@ declare namespace JitsiMeetJS {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   class JitsiConnection {
     constructor(
-      appID: string | undefined, 
-      token: string | undefined, 
+      appID: string | undefined,
+      token: string | undefined,
       options: {
         serviceUrl: string;
         hosts: {
@@ -246,7 +253,7 @@ declare namespace JitsiMeetJS {
     audio: boolean;
     video: boolean;
   }
-  
+
   class JitsiConference {
     join(password?: string): void;
 
@@ -275,7 +282,7 @@ declare namespace JitsiMeetJS {
     selectParticipants(participantId: string[]): void;
 
     sendCommand(name: string, values: JitsiConferenceCommand): void;
-    
+
     sendCommandOnce(name: string, values: JitsiConferenceCommand): void;
 
     removeCommand(name: string): void;
@@ -294,9 +301,9 @@ declare namespace JitsiMeetJS {
 
     isModerator(): boolean;
 
-    lock(password: string): Promise
+    lock(password: string): Promise;
 
-    unlock(): Promise
+    unlock(): Promise;
 
     kick(id): void;
 
@@ -349,7 +356,7 @@ declare namespace JitsiMeetJS {
     getId(): string;
 
     getParticipantId(): string;
-    
+
     setAudioOutput(audioOutputDeviceId: string): void;
 
     getDeviceId(): string;
@@ -359,7 +366,7 @@ declare namespace JitsiMeetJS {
     //setEffect(effect)
 
     // This is undocumented. Private?
-    getTrack(): MediaStreamTrack
+    getTrack(): MediaStreamTrack;
 
     // Undocumented
     addEventListener(event: string, listener): void;

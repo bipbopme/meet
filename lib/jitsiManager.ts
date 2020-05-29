@@ -1,7 +1,6 @@
 /* global JitsiMeetJS */
-import { observable } from "mobx";
-
 import { bind } from "decko";
+import { observable } from "mobx";
 import JitsiConferenceManager from "./jitsiManager/jitsiConferenceManager";
 import events from "events";
 

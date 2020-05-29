@@ -19,12 +19,7 @@ module.exports = {
     "prettier/prettier": "error",
     "no-trailing-spaces": "error",
     "eol-last": ["error", "always"],
-    "sort-imports-es6-autofix/sort-imports-es6": [
-      "error",
-      {
-        ignoreCase: false
-      }
-    ]
+    "sort-imports-es6-autofix/sort-imports-es6": "error"
   },
   overrides: [
     {

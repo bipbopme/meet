@@ -1,5 +1,4 @@
 import { action, observable } from "mobx";
-
 import { bind } from "decko";
 import events from "events";
 

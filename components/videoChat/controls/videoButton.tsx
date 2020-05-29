@@ -1,7 +1,6 @@
-import { faVideo, faVideoSlash } from "@fortawesome/free-solid-svg-icons";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { bind } from "lodash-decorators";
+import { faVideo, faVideoSlash } from "@fortawesome/free-solid-svg-icons";
 import { matopush } from "../../../lib/matomo";
 import JitsiParticipant from "../../../lib/jitsiManager/jitsiParticipant";
 import React from "react";

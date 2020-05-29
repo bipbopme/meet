@@ -1,5 +1,4 @@
 import { bind, debounce } from "lodash-decorators";
-
 import { observer } from "mobx-react";
 import DetectRTC from "detectrtc";
 import JitsiConferenceManager from "../../lib/jitsiManager/jitsiConferenceManager";

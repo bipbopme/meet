@@ -1,6 +1,5 @@
 import { bind, debounce, throttle } from "lodash-decorators";
 import { getElementPath, isTouchEnabled } from "../../lib/utils";
-
 import Head from "next/head";
 import JitsiConferenceManager from "../../lib/jitsiManager/jitsiConferenceManager";
 import React from "react";

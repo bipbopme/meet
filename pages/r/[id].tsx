@@ -1,9 +1,9 @@
-import React from 'react'
-import { vercelTraceToRegion } from '../../lib/utils'
-import { GetServerSideProps } from 'next'
-import Room from '../../components/room/room'
+import { GetServerSideProps } from "next";
+import { vercelTraceToRegion } from "../../lib/utils";
+import React from "react";
+import Room from "../../components/room/room";
 
-const JITSI_CONFIG = JSON.parse(process.env.JITSI_CONFIG || '')
+const JITSI_CONFIG = JSON.parse(process.env.JITSI_CONFIG || "");
 
 interface RoomPageProps {
   id: string;
@@ -15,55 +15,62 @@ interface RoomPageState {
 }
 
 export const getServerSideProps: GetServerSideProps<RoomPageProps, {}> = async ({ req, query }) => {
-  const id = query.id ? query.id.toString() : ''
-  const trace = req.headers['x-vercel-trace'] ? req.headers['x-vercel-trace'].toString() : ''
+  const id = query.id ? query.id.toString() : "";
+  const trace = req.headers["x-vercel-trace"] ? req.headers["x-vercel-trace"].toString() : "";
   // Allows override from the query string
-  const region = query.region ? query.region.toString() : vercelTraceToRegion(trace)
+  const region = query.region ? query.region.toString() : vercelTraceToRegion(trace);
 
   return {
     props: {
       id: id,
       region: region
     }
-  }
-}
+  };
+};
 
 export default class RoomPage extends React.Component<RoomPageProps, RoomPageState> {
-  constructor (props: RoomPageProps) {
-    super(props)
+  constructor(props: RoomPageProps) {
+    super(props);
 
     this.state = {
       mounted: false
-    }
+    };
   }
 
-  componentDidMount (): void {
-    this.setState({ mounted: true })
+  componentDidMount(): void {
+    this.setState({ mounted: true });
   }
 
-  render (): JSX.Element | null {
+  render(): JSX.Element | null {
     if (this.state.mounted) {
-      return <Room id={this.props.id} region={this.props.region} host={JITSI_CONFIG.host} />
+      return <Room id={this.props.id} region={this.props.region} host={JITSI_CONFIG.host} />;
     } else {
       return (
-        <div className='roomPage roomSetup'>
-          <div className='videoChat'>
-            <header><h1>bipbop</h1></header>
-            <section className='videosPreview'>
-              <div className='preview'>
-                <div className='settings'>
-                  <div className='videoContainer'>
-                    <div className='video local cameraVideoType inactive wideAspect'></div>
-                  </div><div className='formContainer'>
+        <div className="roomPage roomSetup">
+          <div className="videoChat">
+            <header>
+              <h1>bipbop</h1>
+            </header>
+            <section className="videosPreview">
+              <div className="preview">
+                <div className="settings">
+                  <div className="videoContainer">
+                    <div className="video local cameraVideoType inactive wideAspect"></div>
+                  </div>
+                  <div className="formContainer">
                     <h2>Ready to join?</h2>
-                    <h3>Please allow access to your<br/>microphone and camera.</h3>
+                    <h3>
+                      Please allow access to your
+                      <br />
+                      microphone and camera.
+                    </h3>
                   </div>
                 </div>
               </div>
             </section>
           </div>
         </div>
-      )
+      );
     }
   }
 }

@@ -44,9 +44,9 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
   }
 
   componentDidMount (): void {
-    this.getUserMedia()
-
     JitsiMeetJS.mediaDevices.addEventListener(JitsiMeetJS.events.mediaDevices.DEVICE_LIST_CHANGED, this.handleDeviceListChanged)
+
+    this.getUserMedia()
   }
 
   componentWillUnmount (): void {
@@ -318,10 +318,16 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
           </>}
 
         {!this.state.videoTrack &&
-          <div className='statusMessage'>
-            <h2>Hello, there.</h2>
-            <h3>Please allow access to your camera and microphone.</h3>
-          </div>}
+          <>
+            <div className="videoContainer">
+              <div className="video local cameraVideoType inactive wideAspect"></div>
+            </div>
+            <div className="formContainer">
+              <h2>Ready to join?</h2>
+              <h3>Please allow access to your<br/>microphone and camera.</h3>
+            </div>
+          </>
+        }
       </div>
     )
   }

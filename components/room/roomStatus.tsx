@@ -22,11 +22,6 @@ export default class RoomStatus extends React.Component<RoomStatusProps> {
           </section>
           <footer className='controls' />
         </div>
-        <div className='textChat'>
-          <header />
-          <section className='messages' />
-          <footer className='chatBox' />
-        </div>
       </div>
     )
   }

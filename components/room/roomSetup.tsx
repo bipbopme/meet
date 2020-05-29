@@ -22,11 +22,6 @@ export default class RoomSetup extends React.Component<RoomSetupProps> {
             </div>
           </section>
         </div>
-        <div className='textChat'>
-          <header />
-          <section className='messages' />
-          <footer className='chatBox' />
-        </div>
       </div>
     )
   }

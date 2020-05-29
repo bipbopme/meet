@@ -37,7 +37,7 @@ export default class RoomPage extends React.Component<RoomPageProps, RoomPageSta
     }
   }
 
-  componentDidMount(): void {
+  componentDidMount (): void {
     this.setState({ mounted: true })
   }
 
@@ -45,7 +45,25 @@ export default class RoomPage extends React.Component<RoomPageProps, RoomPageSta
     if (this.state.mounted) {
       return <Room id={this.props.id} region={this.props.region} host={JITSI_CONFIG.host} />
     } else {
-      return null
+      return (
+        <div className='roomPage roomSetup'>
+          <div className='videoChat'>
+            <header><h1>bipbop</h1></header>
+            <section className='videosPreview'>
+              <div className='preview'>
+                <div className='settings'>
+                  <div className='videoContainer'>
+                    <div className='video local cameraVideoType inactive wideAspect'></div>
+                  </div><div className='formContainer'>
+                    <h2>Ready to join?</h2>
+                    <h3>Please allow access to your<br/>microphone and camera.</h3>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      )
     }
   }
 }

@@ -442,7 +442,6 @@ $transparent-white: #fff;
       display: flex;
       flex-direction: column;
       font-size: 14px;
-      font-weight: bold;
       justify-content: center;
       user-select: none;
 
@@ -494,23 +493,38 @@ $transparent-white: #fff;
 
   .videoContainer {
     .video {
+      background: #eee;
+      border-radius: 10px;
+      height: 363px;
+      overflow: hidden;
+      width: 645px;
+      -webkit-transform: translate3d(0, 0, 0);
+
       video {
-        border-radius: 10px;
-        max-width: 700px;
         transform: scaleX(-1);
+        height: 100%;
         width: 100%;
+        object-fit: contain;
       }
     }
   }
 
   .formContainer {
     width: 350px;
+    min-height: 135px; // min height for less jumpiness
     padding-left: 20px;
     text-align: center;
 
     h2 {
       font-size: 24px;
       margin-bottom: 10px;
+    }
+
+    h3 {
+      color: #777;
+      font-size: 14px;
+      line-height: 1.4em;
+      margin-top: 15px;
     }
 
     .nameRow {
@@ -565,9 +579,13 @@ $transparent-white: #fff;
   @include responsive($breakpoint) {
     flex-direction: column;
 
-    video {
-      max-height: 350px !important;
+    .videoContainer{
+      .video {
+        width: 225px;
+        height: 400px;
+      }
     }
+
 
     .formContainer {
       padding: 20px 0 0 0;

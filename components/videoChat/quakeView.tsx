@@ -42,7 +42,6 @@ export default class QuakeView extends React.Component<QuakeViewProps> {
                 key={participant.id}
                 participant={participant}
                 isLocal={participant.isLocal}
-                isVideoActive={participant.isVideoTagActive}
                 audioTrack={participant.audioTrack}
                 videoTrack={participant.videoTrack}
                 isAudioMuted={participant.isAudioMuted}

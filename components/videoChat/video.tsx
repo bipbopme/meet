@@ -1,6 +1,4 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { action } from "mobx";
-import { bind } from "lodash-decorators";
 import { faMicrophoneSlash, faVideoSlash } from "@fortawesome/free-solid-svg-icons";
 import { observer } from "mobx-react";
 import JitsiParticipant from "../../lib/jitsiManager/jitsiParticipant";

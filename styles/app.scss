@@ -136,6 +136,18 @@ $transparent-white: #fff;
       align-items: center;
       display: flex;
       justify-content: center;
+
+      .videoContainer {
+        .video {
+          height: 363px;
+          width: 645px;
+
+          @include responsive($breakpoint) {
+            height: 400px;
+            width: 225px;
+          }
+        }
+      }
     }
   }
 }
@@ -498,11 +510,11 @@ $transparent-white: #fff;
     .video {
       background: #eee;
       border-radius: 10px;
-      height: 363px;
+      height: 225px;
       overflow: hidden;
       // Fixes issue with Safari border radius
       -webkit-transform: translate3d(0, 0, 0);
-      width: 645px;
+      width: 400px;
 
       video {
         height: 100%;

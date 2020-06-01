@@ -71,7 +71,6 @@ export default class SpotlightView extends React.Component<SpotlightViewProps> {
                 key={participant.id}
                 participant={participant}
                 isLocal={participant.isLocal}
-                isVideoActive={participant.isVideoTagActive}
                 audioTrack={participant.audioTrack}
                 videoTrack={participant.videoTrack}
                 isAudioMuted={participant.isAudioMuted}
@@ -86,7 +85,6 @@ export default class SpotlightView extends React.Component<SpotlightViewProps> {
                 key={speakingParticipant.id}
                 participant={speakingParticipant}
                 isLocal={speakingParticipant.isLocal}
-                isVideoActive={speakingParticipant.isVideoTagActive}
                 audioTrack={speakingParticipant.audioTrack}
                 videoTrack={speakingParticipant.videoTrack}
                 isAudioMuted={speakingParticipant.isAudioMuted}

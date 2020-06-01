@@ -164,7 +164,6 @@ export default class GridView extends React.Component<GridViewProps> {
                   isLocal={participant.isLocal}
                   audioTrack={participant.audioTrack}
                   videoTrack={participant.videoTrack}
-                  isVideoActive={participant.isVideoTagActive}
                   isAudioMuted={participant.isAudioMuted}
                   isVideoMuted={participant.isVideoMuted}
                   isDominantSpeaker={participant.isDominantSpeaker}

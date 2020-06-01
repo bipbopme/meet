@@ -11,7 +11,6 @@ interface VideoProps {
   isLocal: boolean;
   audioTrack: JitsiMeetJS.JitsiTrack | undefined;
   videoTrack: JitsiMeetJS.JitsiTrack | undefined;
-  isVideoActive?: boolean;
   isAudioMuted?: boolean;
   isVideoMuted?: boolean;
   isDominantSpeaker?: boolean;
@@ -32,110 +31,33 @@ export default class Video extends React.Component<VideoProps> {
   }
 
   componentDidMount(): void {
-    this.updateTrackAttachments();
-
-    if (this.videoRef.current) {
-      this.videoRef.current.addEventListener("canplay", this.handleVideoCanPlay);
-      this.videoRef.current.addEventListener("emptied", this.handleVideoEmptied);
-    }
+    this.attachTracks();
   }
 
-  componentDidUpdate(prevProps: VideoProps): void {
-    this.updateTrackAttachments(prevProps);
+  componentDidUpdate(): void {
+    this.attachTracks();
   }
 
   componentWillUnmount(): void {
     const { audioTrack, videoTrack } = this.props;
 
-    if (audioTrack) {
-      audioTrack.detach();
+    if (audioTrack && this.audioRef.current) {
+      audioTrack.detach(this.audioRef.current);
     }
 
-    if (videoTrack) {
-      videoTrack.detach();
-    }
-
-    if (this.videoRef.current) {
-      this.videoRef.current.removeEventListener("canplay", this.handleVideoCanPlay);
-      this.videoRef.current.removeEventListener("emptied", this.handleVideoEmptied);
+    if (videoTrack && this.videoRef.current) {
+      videoTrack.detach(this.videoRef.current);
     }
   }
 
-  // TODO: This finally feels stable but needs to be simplified
-  // TS: MAKE SURE THIS WORKS
-  updateTrackAttachments(prevProps?: VideoProps): void {
-    if (this.audioRef.current) {
-      // Add audio track
-      if (!(prevProps && prevProps.audioTrack) && this.props.audioTrack) {
-        console.info("Add audio track", prevProps, this.props);
-        this.props.audioTrack.attach(this.audioRef.current);
-      }
-
-      // Update audio track
-      if (prevProps && prevProps.audioTrack && this.props.audioTrack) {
-        if (prevProps.audioTrack.getId() !== this.props.audioTrack.getId()) {
-          console.info("Replace audio track", prevProps, this.props);
-          prevProps.audioTrack.detach();
-          this.props.audioTrack.attach(this.audioRef.current);
-        } else {
-          // They're the same so do nothing
-        }
-      }
-
-      // Remove audio track
-      if (prevProps && prevProps.audioTrack && !this.props.audioTrack) {
-        console.info("Remove audio track", prevProps, this.props);
-        prevProps.audioTrack.detach();
-      }
-    } else {
-      console.warn("Can't update audio track. Audio ref undefined.");
+  attachTracks(): void {
+    if (this.audioRef.current && this.props.audioTrack) {
+      this.props.audioTrack.attach(this.audioRef.current);
     }
 
-    if (this.videoRef.current) {
-      // Add video track
-      if (!(prevProps && prevProps.videoTrack) && this.props.videoTrack) {
-        console.info("Add video track", prevProps, this.props);
-        this.props.videoTrack.attach(this.videoRef.current);
-      }
-
-      // Update video track
-      if (prevProps && prevProps.videoTrack && this.props.videoTrack) {
-        if (prevProps.videoTrack.getId() !== this.props.videoTrack.getId()) {
-          console.info("Replace video track", prevProps, this.props);
-          prevProps.videoTrack.detach();
-          this.props.videoTrack.attach(this.videoRef.current);
-        } else {
-          // They're the same so do nothing
-        }
-      }
-
-      // Remove video track
-      if (prevProps && prevProps.videoTrack && !this.props.videoTrack) {
-        console.info("Remove video track", prevProps, this.props);
-        prevProps.videoTrack.detach();
-      }
-
+    if (this.videoRef.current && this.props.videoTrack) {
+      this.props.videoTrack.attach(this.videoRef.current);
       this.updateAspectRatio();
-    } else {
-      console.warn("Can't update video track. Video ref undefined.");
-    }
-  }
-
-  @bind()
-  handleVideoCanPlay(): void {
-    this.updateVideoTagStaus(true);
-    this.updateAspectRatio();
-  }
-
-  @bind()
-  handleVideoEmptied(): void {
-    this.updateVideoTagStaus(false);
-  }
-
-  @action
-  updateVideoTagStaus(active: boolean): void {
-    if (this.props.participant) {
-      this.props.participant.isVideoTagActive = active;
     }
   }
 
@@ -153,14 +75,7 @@ export default class Video extends React.Component<VideoProps> {
   }
 
   getClassNames(): string {
-    const {
-      isLocal,
-      isAudioMuted,
-      isVideoMuted,
-      isDominantSpeaker,
-      videoTrack,
-      isVideoActive
-    } = this.props;
+    const { isLocal, isAudioMuted, isVideoMuted, isDominantSpeaker, videoTrack } = this.props;
     const classNames = ["video"];
 
     classNames.push(isLocal ? "local" : "remote");
@@ -180,8 +95,6 @@ export default class Video extends React.Component<VideoProps> {
     if (videoTrack) {
       classNames.push(`${videoTrack.videoType}VideoType`);
     }
-
-    classNames.push(isVideoActive ? "active" : "inactive");
 
     return classNames.join(" ");
   }

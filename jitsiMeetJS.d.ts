@@ -351,7 +351,7 @@ declare namespace JitsiMeetJS {
 
     detach(container?: Element): void;
 
-    dispose(): void;
+    dispose(): Promise<void>;
 
     getId(): string;
 

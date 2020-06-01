@@ -70,21 +70,29 @@ export default class JitsiParticipant extends events.EventEmitter {
 
   async replaceAudioTrack(track: JitsiMeetJS.JitsiTrack): Promise<void> {
     if (this.audioTrack && track.getId() !== this.audioTrack.getId()) {
-      await this.conference.removeTrack(this.audioTrack);
-      this.audioTrack.dispose();
+      const wasMuted = this.audioTrack.isMuted();
 
+      await this.audioTrack.dispose();
       await this.conference.addTrack(track);
-      this.addTrack(track);
+      await this.addTrack(track);
+
+      if (wasMuted) {
+        this.muteAudio();
+      }
     }
   }
 
   async replaceVideoTrack(track: JitsiMeetJS.JitsiTrack): Promise<void> {
     if (this.videoTrack && track.getId() !== this.videoTrack.getId()) {
-      await this.conference.removeTrack(this.videoTrack);
-      this.videoTrack.dispose();
+      const wasMuted = this.videoTrack.isMuted();
 
+      await this.videoTrack.dispose();
       await this.conference.addTrack(track);
-      this.addTrack(track);
+      await this.addTrack(track);
+
+      if (wasMuted) {
+        this.muteVideo();
+      }
     }
   }
 
@@ -163,7 +171,7 @@ export default class JitsiParticipant extends events.EventEmitter {
   }
 
   @action
-  addTrack(track: JitsiMeetJS.JitsiTrack): void {
+  async addTrack(track: JitsiMeetJS.JitsiTrack): Promise<void> {
     const trackType = track.getType();
     const isMuted = track.isMuted();
 
@@ -171,7 +179,7 @@ export default class JitsiParticipant extends events.EventEmitter {
       // Update the audio track if it's not set or if the IDs don't match
       if (!this.audioTrack || this.audioTrack.getId() !== track.getId()) {
         if (this.audioTrack) {
-          this.audioTrack.dispose();
+          await this.audioTrack.dispose();
         }
 
         this.audioTrack = track;
@@ -183,7 +191,7 @@ export default class JitsiParticipant extends events.EventEmitter {
       // Update the video track if it's not set or if the IDs don't match
       if (!this.videoTrack || this.videoTrack.getId() !== track.getId()) {
         if (this.videoTrack) {
-          this.videoTrack.dispose();
+          await this.videoTrack.dispose();
         }
 
         this.videoTrack = track;
@@ -193,13 +201,14 @@ export default class JitsiParticipant extends events.EventEmitter {
   }
 
   @action
-  removeTrack(track: JitsiMeetJS.JitsiTrack): void {
+  async removeTrack(track: JitsiMeetJS.JitsiTrack): Promise<void> {
     const trackType = track.getType();
     const isMuted = false;
 
     if (trackType === "audio") {
       if (this.audioTrack) {
-        this.audioTrack.dispose();
+        this.audioTrack.detach();
+        await this.audioTrack.dispose();
       }
 
       this.audioTrack = undefined;
@@ -208,7 +217,8 @@ export default class JitsiParticipant extends events.EventEmitter {
 
     if (trackType === "video") {
       if (this.videoTrack) {
-        this.videoTrack.dispose();
+        this.videoTrack.detach();
+        await this.videoTrack.dispose();
       }
 
       this.videoTrack = undefined;

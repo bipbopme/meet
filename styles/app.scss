@@ -653,3 +653,24 @@ $transparent-white: #fff;
     font-size: 14px;
   }
 }
+
+.Toastify {
+  bottom: 10px;
+  position: absolute;
+  right: 10px;
+  z-index: 100;
+}
+
+.Toastify__toast {
+  background: #121212 !important;
+  border-radius: 10px !important;
+  color: #fff !important;
+
+  .Toastify__toast-body {
+    padding-left: 10px;
+  }
+}
+
+.Toastify__toast-container--bottom-right {
+  bottom: 90px !important;
+}

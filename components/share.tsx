@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy } from "@fortawesome/free-solid-svg-icons";
+import { toast } from "react-toastify";
 import Modal from "./modal";
 import React from "react";
 
@@ -11,6 +12,7 @@ export default class Share extends React.Component<ShareProps> {
   async copyLink(): Promise<void> {
     try {
       await navigator.clipboard.writeText(window.location.toString());
+      toast("Copied to clipboard.");
     } catch (error) {
       console.error(error);
     }

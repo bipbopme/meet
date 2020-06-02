@@ -50,7 +50,16 @@ $transparent-white: #fff;
     box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.2);
     max-width: 700px;
     padding: 20px;
+    position: relative;
     width: 100%;
+
+    .close {
+      color: #888;
+      cursor: pointer;
+      position: absolute;
+      right: 20px;
+      top: 20px;
+    }
 
     h2 {
       font-size: 24px;

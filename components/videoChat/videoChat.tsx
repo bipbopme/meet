@@ -18,6 +18,7 @@ interface VideoChatState {
   view: string;
   crop: boolean;
   autoSwitchView: boolean;
+  showShare: boolean;
 }
 
 @observer
@@ -40,7 +41,8 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
     this.state = {
       view: this.isQuake ? "quake" : "spotlight",
       crop: true,
-      autoSwitchView: !this.isQuake
+      autoSwitchView: !this.isQuake,
+      showShare: true
     };
   }
 
@@ -81,13 +83,20 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
     this.setState({ view: view, crop, autoSwitchView });
   }
 
+  @bind()
+  handleShareCancel(): void {
+    this.setState({ showShare: false });
+  }
+
   render(): JSX.Element | null {
     const conference = this.props.conference;
     const { localParticipant, participants, status } = conference;
 
     return status === "joined" && localParticipant ? (
       <div className="videoChat">
-        {participants.length === 0 && <Share />}
+        {participants.length === 0 && this.state.showShare && (
+          <Share onCancel={this.handleShareCancel} />
+        )}
         {this.state.view === "spotlight" && (
           <SpotlightView
             conference={conference}

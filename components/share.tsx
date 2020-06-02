@@ -3,7 +3,11 @@ import { faCopy } from "@fortawesome/free-solid-svg-icons";
 import Modal from "./modal";
 import React from "react";
 
-export default class Share extends React.Component {
+interface ShareProps {
+  onCancel(): void;
+}
+
+export default class Share extends React.Component<ShareProps> {
   async copyLink(): Promise<void> {
     try {
       await navigator.clipboard.writeText(window.location.toString());
@@ -16,7 +20,7 @@ export default class Share extends React.Component {
     const url = window.location.toString();
 
     return (
-      <Modal className="share">
+      <Modal className="share" onCancel={this.props.onCancel}>
         <h2>Invite your people</h2>
         <div className="message">Share this link with people you want to join this chat</div>
         <div className="url">

@@ -10,6 +10,7 @@ import ViewButton from "./viewButton";
 
 interface VideoChatControlsProps {
   localParticipant: JitsiParticipant;
+  participants: JitsiParticipant[];
   onLeave(): void;
   onViewChange(view: string): void;
   view: string;
@@ -21,13 +22,22 @@ export default class VideoChatControls extends React.Component<VideoChatControls
   constructor(props: VideoChatControlsProps) {
     super(props);
 
-    // TODO: Safari should work but it's failing right now so disable it
     this.canScreenCapture = JitsiMeetJS.isDesktopSharingEnabled() && !DetectRTC.isMobileDevice;
+  }
+
+  getClassNames(): string {
+    const classNames = ["controls"];
+
+    if (this.props.participants.length > 0) {
+      classNames.push("hidable");
+    }
+
+    return classNames.join(" ");
   }
 
   render(): JSX.Element {
     return (
-      <footer className="controls">
+      <footer className={this.getClassNames()}>
         <div className="left">
           {this.canScreenCapture && (
             <ScreenShareButton localParticipant={this.props.localParticipant} />

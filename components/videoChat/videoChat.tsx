@@ -123,6 +123,7 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
         )}
         <VideoChatControls
           localParticipant={localParticipant}
+          participants={participants}
           view={this.state.view}
           onLeave={this.props.onLeave}
           onViewChange={this.handleViewChange}

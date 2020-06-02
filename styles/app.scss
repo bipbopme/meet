@@ -147,7 +147,7 @@ $transparent-white: #fff;
 
   &.hideControls {
     .videoChat {
-      > footer {
+      > footer.hidable {
         bottom: -85px;
       }
     }

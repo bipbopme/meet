@@ -1,4 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { bind } from "lodash-decorators";
 import { faMicrophoneSlash, faVideoSlash } from "@fortawesome/free-solid-svg-icons";
 import { observer } from "mobx-react";
 import JitsiParticipant from "../../lib/jitsiManager/jitsiParticipant";
@@ -54,11 +55,12 @@ export default class Video extends React.Component<VideoProps> {
     }
 
     if (this.videoRef.current && this.props.videoTrack) {
+      this.videoRef.current.addEventListener("loadeddata", this.updateAspectRatio, { once: true });
       this.props.videoTrack.attach(this.videoRef.current);
-      this.updateAspectRatio();
     }
   }
 
+  @bind()
   updateAspectRatio(): void {
     const containerEl = this.videoContainerRef.current;
     const videoEl = this.videoRef.current;

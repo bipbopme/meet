@@ -4,6 +4,7 @@ import GridView from "./gridView";
 import JitsiConferenceManager from "../../lib/jitsiManager/jitsiConferenceManager";
 import QuakeView from "./quakeView";
 import React from "react";
+import Share from "../share";
 import SpotlightView from "./spotlightView";
 import VideoChatControls from "./controls/videoChatControls";
 import debounce from "lodash/debounce";
@@ -86,6 +87,7 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
 
     return status === "joined" && localParticipant ? (
       <div className="videoChat">
+        {participants.length === 0 && <Share />}
         {this.state.view === "spotlight" && (
           <SpotlightView
             conference={conference}

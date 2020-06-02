@@ -3,7 +3,8 @@ import { bind } from "lodash-decorators";
 import React from "react";
 
 interface ModalProps {
-  onCancel(): void;
+  onCancel?(): void;
+  className?: string;
 }
 
 export default class Modal extends React.Component<ModalProps> {
@@ -25,13 +26,26 @@ export default class Modal extends React.Component<ModalProps> {
   }
 
   cancel(): void {
-    this.props.onCancel();
+    if (this.props.onCancel) {
+      this.props.onCancel();
+    }
+  }
+
+  // Doesn't let click events leave the modal dialog.
+  // Helps prevent interference with global click events that are managing
+  // the autohiding toolbar.
+  stopClickPropagation(event: React.MouseEvent<HTMLDivElement>): void {
+    event.stopPropagation();
   }
 
   render(): JSX.Element {
     return (
       <Portal>
-        <div className="modal">
+        <div
+          className={`modal ${this.props.className}`}
+          onClick={this.stopClickPropagation}
+          onDoubleClick={this.stopClickPropagation}
+        >
           <div className="modalInner">{this.props.children}</div>
         </div>
       </Portal>

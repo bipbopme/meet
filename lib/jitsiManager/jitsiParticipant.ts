@@ -85,12 +85,13 @@ export default class JitsiParticipant extends events.EventEmitter {
   async replaceVideoTrack(track: JitsiMeetJS.JitsiTrack): Promise<void> {
     if (this.videoTrack && track.getId() !== this.videoTrack.getId()) {
       const wasMuted = this.videoTrack.isMuted();
+      const sameVideoType = this.videoTrack.videoType === track.videoType;
 
       await this.videoTrack.dispose();
       await this.conference.addTrack(track);
       await this.addTrack(track);
 
-      if (wasMuted) {
+      if (wasMuted && sameVideoType) {
         this.muteVideo();
       }
     }

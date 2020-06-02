@@ -33,6 +33,12 @@ export default class ScreenShareButton extends React.Component<
     const shared = !this.state.shared;
     const { localParticipant } = this.props;
 
+    // Clear previous event listeners
+    localParticipant.videoTrack?.removeEventListener(
+      JitsiMeetJS.events.track.LOCAL_TRACK_STOPPED,
+      this.handleClick
+    );
+
     // Flip the state
     this.setState({ shared });
 
@@ -52,10 +58,14 @@ export default class ScreenShareButton extends React.Component<
       // Watch for the track to be stopped via other browser UI
       if (shared) {
         // Treat closes from the browser as a click on the button
-        videoTrack.addEventListener(JitsiMeetJS.events.track.LOCAL_TRACK_STOPPED, this.handleClick);
+        videoTrack.addEventListener(
+          JitsiMeetJS.events.track.LOCAL_TRACK_STOPPED,
+          this.handleClick,
+          { once: true }
+        );
       }
 
-      localParticipant.replaceVideoTrack(videoTrack);
+      await localParticipant.replaceVideoTrack(videoTrack);
     } catch (error) {
       console.warn(error);
 

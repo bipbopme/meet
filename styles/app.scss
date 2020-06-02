@@ -50,7 +50,16 @@ $transparent-white: #fff;
     box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.2);
     max-width: 700px;
     padding: 20px;
+    position: relative;
     width: 100%;
+
+    .close {
+      color: #888;
+      cursor: pointer;
+      position: absolute;
+      right: 20px;
+      top: 20px;
+    }
 
     h2 {
       font-size: 24px;
@@ -60,6 +69,39 @@ $transparent-white: #fff;
     h3 {
       font-size: 20px;
       margin: 15px 0;
+    }
+  }
+}
+
+.modal.share {
+  align-items: flex-end;
+
+  .modalInner {
+    color: #555;
+    margin-bottom: 150px;
+    max-width: 500px;
+
+    @include responsive($breakpoint) {
+      margin-bottom: 115px;
+    }
+
+    .message {
+      margin-bottom: 15px;
+    }
+
+    .url {
+      font-size: 15px;
+      margin-bottom: 20px;
+    }
+
+    .action {
+      cursor: pointer;
+      margin-bottom: 10px;
+
+      svg {
+        color: #999;
+        margin-right: 5px;
+      }
     }
   }
 }
@@ -115,7 +157,7 @@ $transparent-white: #fff;
 
   &.hideControls {
     .videoChat {
-      > footer {
+      > footer.hidable {
         bottom: -85px;
       }
     }
@@ -620,4 +662,25 @@ $transparent-white: #fff;
     color: #777;
     font-size: 14px;
   }
+}
+
+.Toastify {
+  bottom: 10px;
+  position: absolute;
+  right: 10px;
+  z-index: 100;
+}
+
+.Toastify__toast {
+  background: #121212 !important;
+  border-radius: 10px !important;
+  color: #fff !important;
+
+  .Toastify__toast-body {
+    padding-left: 10px;
+  }
+}
+
+.Toastify__toast-container--bottom-right {
+  bottom: 90px !important;
 }

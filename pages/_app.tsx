@@ -1,5 +1,6 @@
 import "../styles/app.scss";
 import "@fortawesome/fontawesome-svg-core/styles.css";
+import "react-toastify/dist/ReactToastify.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import { initMatomo } from "../lib/matomo";
 import App from "next/app";

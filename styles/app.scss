@@ -77,20 +77,30 @@ $transparent-white: #fff;
   align-items: flex-end;
 
   .modalInner {
-    margin-bottom: 175px;
+    color: #555;
+    margin-bottom: 150px;
     max-width: 500px;
 
+    @include responsive($breakpoint) {
+      margin-bottom: 115px;
+    }
+
     .message {
-      color: #555;
       margin-bottom: 15px;
     }
 
     .url {
+      font-size: 15px;
+      margin-bottom: 20px;
+    }
+
+    .action {
+      cursor: pointer;
       margin-bottom: 10px;
 
       svg {
-        color: #aaa;
-        cursor: pointer;
+        color: #999;
+        margin-right: 5px;
       }
     }
   }

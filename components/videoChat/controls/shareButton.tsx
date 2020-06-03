@@ -9,14 +9,10 @@ interface ShareButtonState {
   showShare: boolean;
 }
 
-export default class ShareButton extends React.Component<{}, ShareButtonState> {
-  constructor(props: {}) {
-    super(props);
-
-    this.state = {
-      showShare: false
-    };
-  }
+export default class ShareButton extends React.Component<unknown, ShareButtonState> {
+  state = {
+    showShare: false
+  };
 
   @bind()
   handleClick(): void {

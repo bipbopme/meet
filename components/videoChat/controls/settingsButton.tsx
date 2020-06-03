@@ -19,13 +19,9 @@ export default class SettingsButton extends React.Component<
   SettingsButtonProps,
   SettingsButtonState
 > {
-  constructor(props: SettingsButtonProps) {
-    super(props);
-
-    this.state = {
-      showSettings: false
-    };
-  }
+  state = {
+    showSettings: false
+  };
 
   @bind()
   handleClick(): void {

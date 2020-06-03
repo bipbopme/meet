@@ -14,13 +14,9 @@ interface ShareState {
 }
 
 export default class Share extends React.Component<ShareProps, ShareState> {
-  constructor(props: ShareProps) {
-    super(props);
-
-    this.state = {
-      url: window.location.toString()
-    };
-  }
+  state = {
+    url: window.location.toString()
+  };
 
   @bind()
   async copyLink(): Promise<void> {
@@ -36,7 +32,10 @@ export default class Share extends React.Component<ShareProps, ShareState> {
   async shareLink(): Promise<void> {
     if (navigator.share) {
       try {
-        await navigator.share({ text: "Video chat with me on bipbop", url: this.state.url });
+        await navigator.share({
+          text: "Video chat with me on bipbop",
+          url: this.state.url
+        });
       } catch (error) {
         console.error(error);
       }

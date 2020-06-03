@@ -1,5 +1,5 @@
 import { action, observable } from "mobx";
-import { bind } from "decko";
+import { bind } from "lodash-decorators";
 import events from "events";
 
 export default class JitsiParticipant extends events.EventEmitter {
@@ -264,7 +264,7 @@ export default class JitsiParticipant extends events.EventEmitter {
     this.status = status;
   }
 
-  @bind
+  @bind()
   private handleTrackAdded(track: JitsiMeetJS.JitsiTrack): void {
     if (this.id === track.getParticipantId() && !this.isLocal) {
       this.addTrack(track);
@@ -274,7 +274,7 @@ export default class JitsiParticipant extends events.EventEmitter {
     }
   }
 
-  @bind
+  @bind()
   private handleTrackRemoved(track: JitsiMeetJS.JitsiTrack): void {
     if (this.id === track.getParticipantId() && !this.isLocal) {
       this.removeTrack(track);
@@ -284,7 +284,7 @@ export default class JitsiParticipant extends events.EventEmitter {
     }
   }
 
-  @bind
+  @bind()
   private handleTrackMuteChanged(track: JitsiMeetJS.JitsiTrack): void {
     if (this.id === track.getParticipantId()) {
       this.updateTrackMute(track);
@@ -294,12 +294,12 @@ export default class JitsiParticipant extends events.EventEmitter {
     }
   }
 
-  @bind
+  @bind()
   private handleTrackAudioLevelChanged(track: JitsiMeetJS.JitsiTrack): void {
     console.warn("Not implemented: _handleTrackAudioLevelChanged", track);
   }
 
-  @bind
+  @bind()
   private handleDominantSpeakerChanged(id: string): void {
     this.updateIsDominantSpeaker(id === this.id);
     this.emit(JitsiParticipant.events.DOMINANT_SPEAKER_CHANGED);
@@ -307,7 +307,7 @@ export default class JitsiParticipant extends events.EventEmitter {
     console.debug("Implemented: DominantSpeakerChanged", id, this);
   }
 
-  @bind
+  @bind()
   private handleDisplayNameChanged(id: string, displayName: string): void {
     if (this.id === id) {
       this.updateDisplayName(displayName);
@@ -317,7 +317,7 @@ export default class JitsiParticipant extends events.EventEmitter {
     }
   }
 
-  @bind
+  @bind()
   private handleUserRoleChanged(id: string, role: string): void {
     if (this.id === id) {
       this.updateRole(role);
@@ -327,7 +327,7 @@ export default class JitsiParticipant extends events.EventEmitter {
     }
   }
 
-  @bind
+  @bind()
   private handleUserStatusChanged(id: string, status: string): void {
     if (this.id === id) {
       this.updateStatus(status);

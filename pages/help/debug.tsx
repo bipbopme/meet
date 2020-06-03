@@ -7,7 +7,7 @@ type DebugPageProps = {
   region: string;
 };
 
-export const getServerSideProps: GetServerSideProps<DebugPageProps, {}> = async ({ req }) => {
+export const getServerSideProps: GetServerSideProps<DebugPageProps> = async ({ req }) => {
   const trace = req.headers["x-vercel-trace"] ? req.headers["x-vercel-trace"].toString() : "none";
 
   return {

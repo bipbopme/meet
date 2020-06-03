@@ -1,5 +1,5 @@
 /* global JitsiMeetJS */
-import { bind } from "decko";
+import { bind } from "lodash-decorators";
 import { observable } from "mobx";
 import JitsiConferenceManager from "./jitsiManager/jitsiConferenceManager";
 import events from "events";
@@ -104,19 +104,19 @@ export default class JitsiManager extends events.EventEmitter {
     );
   }
 
-  @bind
+  @bind()
   private handleConnectionFailed(): void {
     this.status = "failed";
     this.emit(JitsiManager.events.CONNECTION_FAILED);
   }
 
-  @bind
+  @bind()
   private handleConnectionEstablished(): void {
     this.status = "connected";
     this.emit(JitsiManager.events.CONNECTION_ESTABLISHED);
   }
 
-  @bind
+  @bind()
   private handleConnectionDisconnected(): void {
     this.status = "disconnected";
     this.emit(JitsiManager.events.CONNECTION_DISCONNECTED);
@@ -124,7 +124,7 @@ export default class JitsiManager extends events.EventEmitter {
     this.removeEventListeners();
   }
 
-  @bind
+  @bind()
   private handleWrongState(): void {
     console.warn("Action can't be executed because the connection is in wrong state.");
   }

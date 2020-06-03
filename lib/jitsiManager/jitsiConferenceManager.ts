@@ -1,5 +1,5 @@
 import { action, observable } from "mobx";
-import { bind } from "decko";
+import { bind } from "lodash-decorators";
 import JitsiManager from "../jitsiManager";
 import JitsiMessage from "./jitsiMessage";
 import JitsiParticipant from "./jitsiParticipant";
@@ -298,7 +298,7 @@ export default class JitsiConferenceManager extends events.EventEmitter {
     this.localParticipant = localParticipant;
   }
 
-  @bind
+  @bind()
   private handleUserJoined(
     id: string,
     jitsiInternalParticipant: JitsiMeetJS.JitsiParticipant
@@ -310,7 +310,7 @@ export default class JitsiConferenceManager extends events.EventEmitter {
     this.emit(JitsiConferenceManager.events.PARTICIPANT_JOINED, participant);
   }
 
-  @bind
+  @bind()
   private handleUserLeft(id: string, jitsiInternalParticipant: JitsiMeetJS.JitsiParticipant): void {
     const participant = this.removeParticipant(id);
 
@@ -319,7 +319,7 @@ export default class JitsiConferenceManager extends events.EventEmitter {
     console.debug("Implemented: UserLeft", id, jitsiInternalParticipant, this);
   }
 
-  @bind
+  @bind()
   private handleMessageReceived(id: string, text: string, ts: Date): void {
     const participant = this.getParticipant(id);
 
@@ -332,14 +332,14 @@ export default class JitsiConferenceManager extends events.EventEmitter {
     }
   }
 
-  @bind
+  @bind()
   private handleSubjectChanged(subject: string): void {
     console.warn("Not implemented: _handleSubjectChanged");
 
     this.updateSubject(subject);
   }
 
-  @bind
+  @bind()
   private handleLastNEndpointsChanged(
     leavingEndpointIds: string[],
     enteringEndpointIds: string[]
@@ -351,7 +351,7 @@ export default class JitsiConferenceManager extends events.EventEmitter {
     );
   }
 
-  @bind
+  @bind()
   private handleConferenceJoined(): void {
     this.addLocalParticipant(this.conference.myUserId(), this.displayName);
     this.updateStatus("joined");
@@ -365,7 +365,7 @@ export default class JitsiConferenceManager extends events.EventEmitter {
     console.debug("Implemented: ConferenceJoined", this);
   }
 
-  @bind
+  @bind()
   private handleConferenceLeft(): void {
     this.removeEventListeners();
     // TODO: this should probably be handled somewhere else
@@ -373,67 +373,67 @@ export default class JitsiConferenceManager extends events.EventEmitter {
     console.debug("Implemented: _handleConferenceLeft");
   }
 
-  @bind
+  @bind()
   private handleDtmfSupportChanged(supports: boolean): void {
     console.warn("Not implemented: _handleDtmfSupportChanged", supports);
   }
 
-  @bind
+  @bind()
   private handleConferenceFailed(errorCode: string): void {
     console.warn("Not implemented: _handleConferenceFailed", errorCode);
   }
 
-  @bind
+  @bind()
   private handleConferenceError(errorCode: string): void {
     console.warn("Not implemented: _handleConferenceError", errorCode);
   }
 
-  @bind
+  @bind()
   private handleKicked(): void {
     console.warn("Not implemented: _handleKicked");
   }
 
-  @bind
+  @bind()
   private handleStartMutedPolicyChanged(): void {
     console.warn("Not implemented: _handleStartMutedPolicyChanged");
   }
 
-  @bind
+  @bind()
   private handleStartedMuted(): void {
     console.warn("Not implemented: _handleStartedMuted");
   }
 
-  @bind
+  @bind()
   private handleBeforeStatisticsDisposed(): void {
     console.warn("Not implemented: _handleBeforeStatisticsDisposed");
   }
 
-  @bind
+  @bind()
   private handleAuthStatusChanged(isAuthEnabled: boolean, authIdentity: string): void {
     console.warn("Not implemented: _handleAuthStatusChanged", isAuthEnabled, authIdentity);
   }
 
-  @bind
+  @bind()
   private handleEndpointMessageReceived(): void {
     console.warn("Not implemented: _handleEndpointMessageReceived");
   }
 
-  @bind
+  @bind()
   private handleTalkWhileMuted(): void {
     console.warn("Not implemented: _handleTalkWhileMuted");
   }
 
-  @bind
+  @bind()
   private handleNoAudioInput(): void {
     console.warn("Not implemented: _handleNoAudioInput");
   }
 
-  @bind
+  @bind()
   private handleAudioInputStateChanged(): void {
     console.warn("Not implemented: _handleAudioInputStateChanged");
   }
 
-  @bind
+  @bind()
   private handleNoisyMic(): void {
     console.warn("Not implemented: _handleNoisyMic");
   }

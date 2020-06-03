@@ -14,7 +14,7 @@ interface RoomPageState {
   mounted: boolean;
 }
 
-export const getServerSideProps: GetServerSideProps<RoomPageProps, {}> = async ({ req, query }) => {
+export const getServerSideProps: GetServerSideProps<RoomPageProps> = async ({ req, query }) => {
   const id = query.id ? query.id.toString() : "";
   const trace = req.headers["x-vercel-trace"] ? req.headers["x-vercel-trace"].toString() : "";
   // Allows override from the query string
@@ -29,13 +29,9 @@ export const getServerSideProps: GetServerSideProps<RoomPageProps, {}> = async (
 };
 
 export default class RoomPage extends React.Component<RoomPageProps, RoomPageState> {
-  constructor(props: RoomPageProps) {
-    super(props);
-
-    this.state = {
-      mounted: false
-    };
-  }
+  state = {
+    mounted: false
+  };
 
   componentDidMount(): void {
     this.setState({ mounted: true });

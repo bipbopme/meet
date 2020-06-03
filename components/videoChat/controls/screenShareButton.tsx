@@ -19,13 +19,9 @@ export default class ScreenShareButton extends React.Component<
   ScreenShareButtonProps,
   ScreenShareButtonState
 > {
-  constructor(props: ScreenShareButtonProps) {
-    super(props);
-
-    this.state = {
-      shared: false
-    };
-  }
+  state = {
+    shared: false
+  };
 
   @bind()
   async handleClick(): Promise<void> {

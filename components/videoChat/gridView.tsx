@@ -141,6 +141,10 @@ export default class GridView extends React.Component<GridViewProps> {
 
     classNames.push(this.props.crop ? "cropped" : "uncropped");
 
+    if (this.props.participants.length === 1) {
+      classNames.push("oneToOne");
+    }
+
     return classNames.join(" ");
   }
 

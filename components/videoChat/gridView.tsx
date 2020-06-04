@@ -93,7 +93,8 @@ export default class GridView extends React.Component<GridViewProps> {
     gridDimensions: { columns: number; rows: number },
     crop = false,
     aspectRatio = 16 / 9,
-    videoMargin = 5
+    videoMargin = 5,
+    controlsHeight = 55
   ): void {
     if (this.videosRef.current) {
       let containerHeight = this.videosRef.current.offsetHeight;
@@ -101,7 +102,7 @@ export default class GridView extends React.Component<GridViewProps> {
       const combinedMargin = videoMargin * 2;
 
       // Remove margin from the container calculation
-      containerHeight = containerHeight - combinedMargin;
+      containerHeight = containerHeight - combinedMargin - controlsHeight;
       containerWidth = containerWidth - combinedMargin;
 
       let height: number, width: number;
@@ -153,7 +154,7 @@ export default class GridView extends React.Component<GridViewProps> {
     const participantChunks = _chunk(allParticipants, this.gridDimensions.columns);
 
     return (
-      <section className="videos" ref={this.videosRef}>
+      <div className="videos" ref={this.videosRef}>
         <div className={this.getCssClassNames()}>
           {participantChunks.map((participants, chunkIndex) => (
             <div key={`row-${chunkIndex}`} className="row">
@@ -172,7 +173,7 @@ export default class GridView extends React.Component<GridViewProps> {
             </div>
           ))}
         </div>
-      </section>
+      </div>
     );
   }
 }

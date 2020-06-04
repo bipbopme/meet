@@ -4,35 +4,72 @@
 
 $breakpoint: "max-width: 960px";
 $aspectBreakpoint: "max-aspect-ratio: 3/4";
-$transparent-white: #fff;
 
-.video {
-  max-width: 100%;
-
-  video {
-    max-width: 100%;
-  }
+body {
+  height: 100vh;
+  overflow: hidden;
+  width: 100vw;
 }
 
 .roomSetup {
+  align-items: center;
+  display: flex;
   height: 100vh;
+  justify-content: center;
+
+  .settings {
+    width: 960px;
+
+    .formContainer {
+      min-height: 152px;
+      text-align: center;
+
+      .ant-select {
+        text-align: left;
+      }
+    }
+
+    h2 {
+      margin-bottom: 5px;
+    }
+
+    .changeSettingsItem {
+      margin-bottom: 11px;
+    }
+
+    .video {
+      background: #eee;
+      border-radius: 8px;
+      height: 350px;
+      overflow: hidden;
+      // Fixes issue with Safari border radius
+      -webkit-transform: translate3d(0, 0, 0);
+      width: 623px;
+
+      video {
+        height: 100%;
+        object-fit: contain;
+        transform: scaleX(-1);
+        width: 100%;
+      }
+    }
+  }
 }
 
 .videoChat {
   height: 100vh;
+  overflow: hidden;
   position: relative;
-
-  .videoChatControls {
-    background: #fff;
-    bottom: 0;
-    left: 0;
-    position: absolute;
-    width: 100%;
-  }
 }
 
 .videoChatControls {
-  height: 65px;
+  background: #fff;
+  bottom: 0;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  left: 0;
+  padding: 8px;
+  position: absolute;
+  width: 100%;
 
   .ant-space {
     // Defaults to flex-inline
@@ -42,7 +79,6 @@ $transparent-white: #fff;
   .left {
     .ant-space {
       justify-content: flex-start;
-      padding-left: 10px;
     }
   }
 
@@ -55,7 +91,14 @@ $transparent-white: #fff;
   .right {
     .ant-space {
       justify-content: flex-end;
-      padding-right: 10px;
+    }
+  }
+}
+
+.ant-dropdown-menu-item {
+  .ant-btn-text {
+    &:hover {
+      background-color: transparent;
     }
   }
 }
@@ -67,7 +110,6 @@ $transparent-white: #fff;
   display: flex;
   height: 100%;
   justify-content: center;
-  padding: 0;
   position: relative;
 
   .video {
@@ -156,6 +198,7 @@ $transparent-white: #fff;
 
   .spotlightView {
     height: 100%;
+    padding-bottom: 55px;
     width: 100%;
 
     .nonSpeakingParticipants {
@@ -227,6 +270,7 @@ $transparent-white: #fff;
     display: flex;
     flex-direction: column;
     margin: var(--video-margin);
+    padding-bottom: 55px;
 
     .row {
       display: flex;

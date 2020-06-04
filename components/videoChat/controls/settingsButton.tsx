@@ -58,6 +58,7 @@ export default class SettingsButton extends React.Component<
           onCancel={this.handleModalCancel}
           visible={this.state.showSettings}
           title="Settings"
+          centered
           footer={[
             <Button key="back" onClick={this.handleModalCancel}>
               Cancel

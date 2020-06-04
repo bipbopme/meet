@@ -1,5 +1,5 @@
 /* global JitsiMeetJS */
-import { Button, Col, Form, Row, Select } from "antd";
+import { Button, Col, Form, Row, Select, Typography } from "antd";
 import { SettingOutlined } from "@ant-design/icons";
 import { bind } from "lodash-decorators";
 import { matopush } from "../../lib/matomo";
@@ -7,6 +7,8 @@ import React from "react";
 import Video from "../videoChat/video";
 import _uniqBy from "lodash/uniqBy";
 import localforage from "localforage";
+
+const { Title, Paragraph } = Typography;
 
 interface SettingsProps {
   collapseAudioVideoSettings?: boolean;
@@ -278,20 +280,21 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
     return (
       <Row className="settings" gutter={16} align="middle">
         <>
-          <Col span={14} className="videoContainer">
-            {this.state.videoTrack && (
-              <Video
-                key="localVideo"
-                isLocal
-                audioTrack={this.state.audioTrack}
-                videoTrack={this.state.videoTrack}
-              />
-            )}
+          <Col span={16} className="videoContainer">
+            <Video
+              key="localVideo"
+              isLocal
+              audioTrack={this.state.audioTrack}
+              videoTrack={this.state.videoTrack}
+            />
           </Col>
-          <Col span={10} className="formContainer">
-            {this.props.titleText && <h2>{this.props.titleText}</h2>}
+          <Col span={8} className="formContainer">
+            {this.props.titleText && <Title level={2}>{this.props.titleText}</Title>}
             {!this.state.videoTrack && (
-              <div>Please allow access to your microphone and camera.</div>
+              <Paragraph type="secondary" strong>
+                Please allow access to your <br />
+                microphone and camera.
+              </Paragraph>
             )}
             {this.state.videoTrack && (
               <Form
@@ -305,7 +308,7 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
                 }}
               >
                 {this.state.collapseAudioVideoSettings && (
-                  <Form.Item>
+                  <Form.Item className="changeSettingsItem">
                     <Button
                       type="text"
                       onClick={this.handleShowAudioVideoSettings}

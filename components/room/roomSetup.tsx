@@ -13,16 +13,14 @@ interface RoomSetupProps {
 export default class RoomSetup extends React.Component<RoomSetupProps> {
   render(): JSX.Element {
     return (
-      <Row className="roomSetup" align="middle" justify="center">
-        <Col span="18">
-          <Settings
-            titleText="Ready to join?"
-            buttonText="Join"
-            onButtonClick={this.props.onComplete}
-            collapseAudioVideoSettings={true}
-          />
-        </Col>
-      </Row>
+      <div className="roomSetup">
+        <Settings
+          titleText="Ready to join?"
+          buttonText="Join"
+          onButtonClick={this.props.onComplete}
+          collapseAudioVideoSettings={true}
+        />
+      </div>
     );
   }
 }

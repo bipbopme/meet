@@ -24,6 +24,7 @@ interface VideoChatState {
 @observer
 export default class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
   private autoSwitchViewDebounced: () => void;
+  private shareNotificationTimer: number | undefined = undefined;
   private isQuake = false;
 
   constructor(props: VideoChatProps) {
@@ -46,15 +47,7 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
   }
 
   componentDidMount(): void {
-    if (this.props.conference.participants.length == 0) {
-      this.showShareNotification();
-    }
-  }
-
-  componentDidUpdate(): void {
-    if (this.props.conference.participants.length > 0) {
-      this.closeShareNotification();
-    }
+    this.setupShareNotification();
   }
 
   componentWillUnmount(): void {
@@ -66,16 +59,25 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
     window.removeEventListener("resize", this.autoSwitchViewDebounced);
   }
 
+  setupShareNotification(): void {
+    if (this.props.conference.participants.length == 0) {
+      this.props.conference.once("PARTICIPANT_JOINED", this.closeShareNotification);
+      this.shareNotificationTimer = window.setTimeout(this.showShareNotification, 750);
+    }
+  }
+
   showShareNotification(): void {
     notification.open({
       key: "share",
-      message: "Invite your people!",
+      message: "Invite your people",
       description: <Share />,
       duration: 30
     });
   }
 
+  @bind()
   closeShareNotification(): void {
+    clearTimeout(this.shareNotificationTimer);
     notification.close("share");
   }
 
@@ -139,7 +141,6 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
         )}
         <VideoChatControls
           localParticipant={localParticipant}
-          participants={participants}
           view={this.state.view}
           onLeave={this.props.onLeave}
           onViewChange={this.handleViewChange}

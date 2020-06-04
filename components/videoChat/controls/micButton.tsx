@@ -43,12 +43,12 @@ export default class MicButton extends React.Component<MicButtonProps, MicButton
     return (
       <div className="button micButton" onClick={this.handleClick}>
         {this.state.muted && (
-          <Tooltip title="Turn on microphone">
+          <Tooltip title="Turn on microphone" mouseEnterDelay={0} mouseLeaveDelay={0}>
             <Button shape="circle" size="large" icon={<AudioMutedOutlined />} />
           </Tooltip>
         )}
         {!this.state.muted && (
-          <Tooltip title="Turn off microphone">
+          <Tooltip title="Turn off microphone" mouseEnterDelay={0} mouseLeaveDelay={0}>
             <Button shape="circle" size="large" icon={<AudioOutlined />} />
           </Tooltip>
         )}

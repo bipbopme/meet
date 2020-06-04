@@ -19,7 +19,7 @@ export default class LeaveButton extends React.Component<LeaveButtonProps> {
   render(): JSX.Element {
     return (
       <div className="button leaveButton" onClick={this.handleClick}>
-        <Tooltip title="Leave video chat">
+        <Tooltip title="Leave video chat" mouseEnterDelay={0} mouseLeaveDelay={0}>
           <Button shape="circle" size="large" icon={<CloseOutlined />} />
         </Tooltip>
       </div>

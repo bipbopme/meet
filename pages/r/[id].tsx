@@ -42,28 +42,29 @@ export default class RoomPage extends React.Component<RoomPageProps, RoomPageSta
       return <Room id={this.props.id} region={this.props.region} host={JITSI_CONFIG.host} />;
     } else {
       return (
-        <div className="roomPage roomSetup">
-          <div className="videoChat">
-            <header>
-              <h1>bipbop</h1>
-            </header>
-            <section className="videosPreview">
-              <div className="preview">
-                <div className="settings">
-                  <div className="videoContainer">
-                    <div className="video local cameraVideoType inactive wideAspect"></div>
-                  </div>
-                  <div className="formContainer">
-                    <h2>Ready to join?</h2>
-                    <h3>
-                      Please allow access to your
-                      <br />
-                      microphone and camera.
-                    </h3>
-                  </div>
-                </div>
+        <div className="roomSetup">
+          <div
+            className="ant-row ant-row-middle settings"
+            style={{ marginLeft: "-8px", marginRight: "-8px" }}
+          >
+            <div
+              className="ant-col ant-col-16 videoContainer"
+              style={{ paddingLeft: "8px", paddingRight: "8px" }}
+            >
+              <div className="video local"></div>
+            </div>
+            <div
+              className="ant-col ant-col-8 formContainer"
+              style={{ paddingLeft: "8px", paddingRight: "8px" }}
+            >
+              <h2 className="ant-typography">Ready to join?</h2>
+              <div className="ant-typography ant-typography-secondary">
+                <strong>
+                  Please allow access to your <br />
+                  microphone and camera.
+                </strong>
               </div>
-            </section>
+            </div>
           </div>
         </div>
       );

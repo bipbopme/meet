@@ -42,7 +42,7 @@ export default class ShareButton extends React.Component<unknown, ShareButtonSta
           title="Invite your people"
           footer={[
             <Button key="submit" type="primary" onClick={this.handleCancel}>
-              Got It
+              Done
             </Button>
           ]}
         >

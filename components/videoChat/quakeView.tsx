@@ -34,7 +34,7 @@ export default class QuakeView extends React.Component<QuakeViewProps> {
     const allParticipants = [localParticipant, ...participants];
 
     return (
-      <section className="videos" ref={this.videosRef}>
+      <div className="videos" ref={this.videosRef}>
         <div className={this.getCssClassNames()}>
           <div className="nonSpeakingParticipants">
             {allParticipants.map((participant) => (
@@ -59,7 +59,7 @@ export default class QuakeView extends React.Component<QuakeViewProps> {
             />
           </div>
         </div>
-      </section>
+      </div>
     );
   }
 }

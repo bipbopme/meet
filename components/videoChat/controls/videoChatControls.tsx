@@ -1,5 +1,6 @@
 import { Button, Col, Dropdown, Menu, Row, Space } from "antd";
 import { MoreOutlined } from "@ant-design/icons";
+import { observer } from "mobx-react";
 import DetectRTC from "detectrtc";
 import JitsiParticipant from "../../../lib/jitsiManager/jitsiParticipant";
 import LeaveButton from "./leaveButton";
@@ -13,30 +14,14 @@ import ViewButton from "./viewButton";
 
 interface VideoChatControlsProps {
   localParticipant: JitsiParticipant;
-  participants: JitsiParticipant[];
   onLeave(): void;
   onViewChange(view: string): void;
   view: string;
 }
 
+@observer
 export default class VideoChatControls extends React.Component<VideoChatControlsProps> {
-  private canScreenCapture: boolean;
-
-  constructor(props: VideoChatControlsProps) {
-    super(props);
-
-    this.canScreenCapture = JitsiMeetJS.isDesktopSharingEnabled() && !DetectRTC.isMobileDevice;
-  }
-
-  getClassNames(): string {
-    const classNames = ["videoChatControls"];
-
-    if (this.props.participants.length > 0) {
-      classNames.push("hidable");
-    }
-
-    return classNames.join(" ");
-  }
+  private canScreenCapture = JitsiMeetJS.isDesktopSharingEnabled() && !DetectRTC.isMobileDevice;
 
   render(): JSX.Element {
     const menu = (
@@ -54,7 +39,7 @@ export default class VideoChatControls extends React.Component<VideoChatControls
     );
 
     return (
-      <Row className={this.getClassNames()} align="middle">
+      <Row className="videoChatControls" align="middle">
         <Col span="8" className="left">
           <Space>
             {this.canScreenCapture && (

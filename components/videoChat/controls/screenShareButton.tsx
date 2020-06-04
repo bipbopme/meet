@@ -35,9 +35,6 @@ export default class ScreenShareButton extends React.Component<
       this.handleClick
     );
 
-    // Flip the state
-    this.setState({ shared });
-
     const options: JitsiMeetJS.CreateLocalTracksOptions = { devices: [] };
 
     if (shared) {
@@ -62,6 +59,9 @@ export default class ScreenShareButton extends React.Component<
       }
 
       await localParticipant.replaceVideoTrack(videoTrack);
+
+      // Flip the state
+      this.setState({ shared });
     } catch (error) {
       console.warn(error);
 
@@ -84,7 +84,7 @@ export default class ScreenShareButton extends React.Component<
           </Button>
         )}
         {this.state.shared && (
-          <Button size="large" shape="round" icon={<StopOutlined />}>
+          <Button size="large" shape="round" icon={<StopOutlined />} type="primary">
             Stop sharing
           </Button>
         )}

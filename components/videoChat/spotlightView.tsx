@@ -63,7 +63,7 @@ export default class SpotlightView extends React.Component<SpotlightViewProps> {
     this.speakingParticipant = speakingParticipant;
 
     return (
-      <section className="videos" ref={this.videosRef}>
+      <div className="videos" ref={this.videosRef}>
         <div className={this.getCssClassNames()}>
           <div className="nonSpeakingParticipants">
             {nonSpeakingParticipants.map((participant) => (
@@ -94,7 +94,7 @@ export default class SpotlightView extends React.Component<SpotlightViewProps> {
             )}
           </div>
         </div>
-      </section>
+      </div>
     );
   }
 }

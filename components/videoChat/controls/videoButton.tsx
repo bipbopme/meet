@@ -43,12 +43,12 @@ export default class VideoButton extends React.Component<VideoButtonProps, Video
     return (
       <div className="button videoButton" onClick={this.handleClick}>
         {this.state.muted && (
-          <Tooltip title="Turn on camera">
+          <Tooltip title="Turn on camera" mouseEnterDelay={0} mouseLeaveDelay={0}>
             <Button shape="circle" size="large" icon={<VideoCameraAddOutlined />} />
           </Tooltip>
         )}
         {!this.state.muted && (
-          <Tooltip title="Turn off camera">
+          <Tooltip title="Turn off camera" mouseEnterDelay={0} mouseLeaveDelay={0}>
             <Button shape="circle" size="large" icon={<VideoCameraOutlined />} />
           </Tooltip>
         )}

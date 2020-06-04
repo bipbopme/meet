@@ -15,8 +15,12 @@ interface VideoProps {
   isDominantSpeaker?: boolean;
 }
 
+interface VideoState {
+  aspectRatioClassName: string | undefined;
+}
+
 @observer
-export default class Video extends React.Component<VideoProps> {
+export default class Video extends React.Component<VideoProps, VideoState> {
   private videoContainerRef: RefObject<HTMLDivElement>;
   private videoRef: RefObject<HTMLVideoElement>;
   private audioRef: RefObject<HTMLAudioElement>;
@@ -27,14 +31,18 @@ export default class Video extends React.Component<VideoProps> {
     this.videoContainerRef = React.createRef();
     this.videoRef = React.createRef();
     this.audioRef = React.createRef();
+
+    this.state = {
+      aspectRatioClassName: undefined
+    };
   }
 
   componentDidMount(): void {
     this.attachTracks();
   }
 
-  componentDidUpdate(): void {
-    this.attachTracks();
+  componentDidUpdate(prevProps: VideoProps): void {
+    this.attachTracks(prevProps);
   }
 
   componentWillUnmount(): void {
@@ -49,12 +57,20 @@ export default class Video extends React.Component<VideoProps> {
     }
   }
 
-  attachTracks(): void {
-    if (this.audioRef.current && this.props.audioTrack) {
+  attachTracks(prevProps?: VideoProps): void {
+    if (
+      this.audioRef.current &&
+      this.props.audioTrack &&
+      prevProps?.audioTrack?.getId() !== this.props.audioTrack.getId()
+    ) {
       this.props.audioTrack.attach(this.audioRef.current);
     }
 
-    if (this.videoRef.current && this.props.videoTrack) {
+    if (
+      this.videoRef.current &&
+      this.props.videoTrack &&
+      prevProps?.videoTrack?.getId() !== this.props.videoTrack.getId()
+    ) {
       this.videoRef.current.addEventListener("loadeddata", this.updateAspectRatio, { once: true });
       this.props.videoTrack.attach(this.videoRef.current);
     }
@@ -69,8 +85,7 @@ export default class Video extends React.Component<VideoProps> {
       const className =
         videoEl.videoWidth / videoEl.videoHeight < 16 / 9 ? "narrowAspect" : "wideAspect";
 
-      containerEl.classList.remove("narrowAspect", "wideAspect");
-      containerEl.classList.add(className);
+      this.setState({ aspectRatioClassName: className });
     }
   }
 
@@ -94,6 +109,10 @@ export default class Video extends React.Component<VideoProps> {
 
     if (videoTrack) {
       classNames.push(`${videoTrack.videoType}VideoType`);
+    }
+
+    if (this.state.aspectRatioClassName) {
+      classNames.push(this.state.aspectRatioClassName);
     }
 
     return classNames.join(" ");

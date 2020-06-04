@@ -1,4 +1,3 @@
-import { Col, Row } from "antd";
 import React from "react";
 import Settings from "../settings/settings";
 

@@ -51,6 +51,8 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
   }
 
   componentWillUnmount(): void {
+    this.closeShareNotification();
+
     this.props.conference.off(
       JitsiConferenceManager.events.PARTICIPANT_JOINED,
       this.autoSwitchView

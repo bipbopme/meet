@@ -1,6 +1,6 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Button } from "antd";
+import { UserAddOutlined } from "@ant-design/icons";
 import { bind } from "lodash-decorators";
-import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { matopush } from "../../../lib/matomo";
 import React from "react";
 import Share from "../../share";
@@ -29,8 +29,10 @@ export default class ShareButton extends React.Component<unknown, ShareButtonSta
   render(): JSX.Element {
     return (
       <>
-        <div className="button shareButton" title="Invite others" onClick={this.handleClick}>
-          <FontAwesomeIcon icon={faUserPlus} /> <span className="label">Invite</span>
+        <div className="button shareButton" onClick={this.handleClick}>
+          <Button type="text" size="large" icon={<UserAddOutlined />}>
+            Invite
+          </Button>
         </div>
         {this.state.showShare && <Share onCancel={this.handleCancel} />}
       </>

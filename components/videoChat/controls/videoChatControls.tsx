@@ -1,3 +1,5 @@
+import { Button, Col, Dropdown, Menu, Row, Space } from "antd";
+import { MoreOutlined } from "@ant-design/icons";
 import DetectRTC from "detectrtc";
 import JitsiParticipant from "../../../lib/jitsiManager/jitsiParticipant";
 import LeaveButton from "./leaveButton";
@@ -27,7 +29,7 @@ export default class VideoChatControls extends React.Component<VideoChatControls
   }
 
   getClassNames(): string {
-    const classNames = ["controls"];
+    const classNames = ["videoChatControls"];
 
     if (this.props.participants.length > 0) {
       classNames.push("hidable");
@@ -37,24 +39,44 @@ export default class VideoChatControls extends React.Component<VideoChatControls
   }
 
   render(): JSX.Element {
-    return (
-      <footer className={this.getClassNames()}>
-        <div className="left">
-          {this.canScreenCapture && (
-            <ScreenShareButton localParticipant={this.props.localParticipant} />
-          )}
+    const menu = (
+      <Menu>
+        <Menu.Item>
           <ShareButton />
-        </div>
-        <div className="center">
-          <MicButton localParticipant={this.props.localParticipant} />
-          <LeaveButton onLeave={this.props.onLeave} />
-          <VideoButton localParticipant={this.props.localParticipant} />
-        </div>
-        <div className="right">
+        </Menu.Item>
+        <Menu.Item>
           <ViewButton view={this.props.view} onToggle={this.props.onViewChange} />
+        </Menu.Item>
+        <Menu.Item>
           <SettingsButton localParticipant={this.props.localParticipant} />
-        </div>
-      </footer>
+        </Menu.Item>
+      </Menu>
+    );
+
+    return (
+      <Row className={this.getClassNames()} align="middle">
+        <Col span="8" className="left">
+          <Space>
+            {this.canScreenCapture && (
+              <ScreenShareButton localParticipant={this.props.localParticipant} />
+            )}
+          </Space>
+        </Col>
+        <Col span="8" className="center">
+          <Space>
+            <MicButton localParticipant={this.props.localParticipant} />
+            <LeaveButton onLeave={this.props.onLeave} />
+            <VideoButton localParticipant={this.props.localParticipant} />
+          </Space>
+        </Col>
+        <Col span="8" className="right">
+          <Space>
+            <Dropdown overlay={menu} placement="topRight">
+              <Button type="text" icon={<MoreOutlined />} />
+            </Dropdown>
+          </Space>
+        </Col>
+      </Row>
     );
   }
 }

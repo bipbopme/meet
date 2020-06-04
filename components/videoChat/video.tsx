@@ -104,8 +104,10 @@ export default class Video extends React.Component<VideoProps> {
       <div className={this.getClassNames()} ref={this.videoContainerRef}>
         <video ref={this.videoRef} autoPlay playsInline />
         <audio ref={this.audioRef} autoPlay muted={this.props.isLocal} />
-        {this.props.isAudioMuted && <FontAwesomeIcon icon={faMicrophoneSlash} />}
-        {this.props.isVideoMuted && <FontAwesomeIcon icon={faVideoSlash} />}
+        <div className="charms">
+          {this.props.isAudioMuted && <FontAwesomeIcon icon={faMicrophoneSlash} />}
+          {this.props.isVideoMuted && <FontAwesomeIcon icon={faVideoSlash} />}
+        </div>
       </div>
     );
   }

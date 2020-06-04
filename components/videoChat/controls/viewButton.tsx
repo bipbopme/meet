@@ -1,6 +1,6 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { AppstoreOutlined } from "@ant-design/icons";
+import { Button } from "antd";
 import { bind } from "lodash-decorators";
-import { faThLarge } from "@fortawesome/free-solid-svg-icons";
 import { matopush } from "../../../lib/matomo";
 import React from "react";
 
@@ -19,8 +19,10 @@ export default class ViewButton extends React.Component<ViewButtonProps> {
 
   render(): JSX.Element {
     return (
-      <div className="button viewButton" title="Toggle grid view" onClick={this.handleClick}>
-        <FontAwesomeIcon icon={faThLarge} /> <span className="label">Toggle view</span>
+      <div className="button viewButton" onClick={this.handleClick}>
+        <Button type="text" size="large" icon={<AppstoreOutlined />}>
+          Change view
+        </Button>
       </div>
     );
   }

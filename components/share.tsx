@@ -1,9 +1,8 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { bind } from "lodash-decorators";
-import { faCopy, faShareSquare } from "@fortawesome/free-solid-svg-icons";
-import { toast } from "react-toastify";
-import Modal from "./modal";
+import { Button, Modal } from "antd";
+import { Typography } from "antd";
 import React from "react";
+
+const { Paragraph } = Typography;
 
 interface ShareProps {
   onCancel(): void;
@@ -18,52 +17,26 @@ export default class Share extends React.Component<ShareProps, ShareState> {
     url: window.location.toString()
   };
 
-  @bind()
-  async copyLink(): Promise<void> {
-    try {
-      await navigator.clipboard.writeText(this.state.url);
-      toast("Copied to clipboard.");
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  @bind()
-  async shareLink(): Promise<void> {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          text: "Video chat with me on bipbop",
-          url: this.state.url
-        });
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  }
-
   render(): JSX.Element {
     return (
-      <Modal className="share" onCancel={this.props.onCancel}>
-        <h2>Invite your people</h2>
-        <div className="message">Share this link with people you want to join this chat</div>
-        <div className="url">
-          <span>{this.state.url}</span>
-        </div>
-        <div className="action">
-          {!navigator.share && (
-            <a onClick={this.copyLink}>
-              <FontAwesomeIcon icon={faCopy} />
-              Copy link
-            </a>
-          )}
-          {navigator.share && (
-            <a onClick={this.shareLink}>
-              <FontAwesomeIcon icon={faShareSquare} />
-              Share Link
-            </a>
-          )}
-        </div>
+      <Modal
+        className="share"
+        centered
+        onCancel={this.props.onCancel}
+        visible={true}
+        title="Invite your people"
+        footer={[
+          <Button key="submit" type="primary" onClick={this.props.onCancel}>
+            Got It
+          </Button>
+        ]}
+      >
+        <Paragraph type="secondary">
+          Share this link with people you want to join this chat
+        </Paragraph>
+        <Paragraph strong copyable>
+          {this.state.url}
+        </Paragraph>
       </Modal>
     );
   }

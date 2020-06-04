@@ -1,4 +1,3 @@
-import { Flip, ToastContainer } from "react-toastify";
 import { bind, debounce, throttle } from "lodash-decorators";
 import { getElementPath, isTouchEnabled } from "../../lib/utils";
 import Head from "next/head";
@@ -163,12 +162,6 @@ export default class RoomActive extends React.Component<RoomActiveProps, RoomAct
           />
         </Head>
         <VideoChat conference={this.props.conference} onLeave={this.props.onLeave} />
-        <ToastContainer
-          position="bottom-right"
-          hideProgressBar
-          transition={Flip}
-          closeButton={false}
-        />
       </div>
     );
   }

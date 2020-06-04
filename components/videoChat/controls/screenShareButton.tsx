@@ -1,7 +1,7 @@
 /* global JitsiMeetJS */
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Button } from "antd";
+import { DesktopOutlined, StopOutlined } from "@ant-design/icons";
 import { bind } from "lodash-decorators";
-import { faDesktop, faStopCircle } from "@fortawesome/free-solid-svg-icons";
 import { matopush } from "../../../lib/matomo";
 import JitsiParticipant from "../../../lib/jitsiManager/jitsiParticipant";
 import React from "react";
@@ -79,14 +79,14 @@ export default class ScreenShareButton extends React.Component<
         onClick={this.handleClick}
       >
         {!this.state.shared && (
-          <>
-            <FontAwesomeIcon icon={faDesktop} /> <span className="label">Share screen</span>
-          </>
+          <Button size="large" shape="round" icon={<DesktopOutlined />}>
+            Share screen
+          </Button>
         )}
         {this.state.shared && (
-          <>
-            <FontAwesomeIcon icon={faStopCircle} /> <span className="label">Stop sharing</span>
-          </>
+          <Button size="large" shape="round" icon={<StopOutlined />}>
+            Stop sharing
+          </Button>
         )}
       </div>
     );

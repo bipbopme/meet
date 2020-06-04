@@ -1,4 +1,4 @@
-import Head from "next/head";
+import { Col, Row } from "antd";
 import React from "react";
 import Settings from "../settings/settings";
 
@@ -13,31 +13,16 @@ interface RoomSetupProps {
 export default class RoomSetup extends React.Component<RoomSetupProps> {
   render(): JSX.Element {
     return (
-      <div className="roomPage roomSetup">
-        <Head>
-          <title>Welcome | bipbop</title>
-          <meta
-            key="viewport"
-            name="viewport"
-            content="width=device-width, initial-scale=1, maximum-scale=1"
+      <Row className="roomSetup" align="middle" justify="center">
+        <Col span="18">
+          <Settings
+            titleText="Ready to join?"
+            buttonText="Join"
+            onButtonClick={this.props.onComplete}
+            collapseAudioVideoSettings={true}
           />
-        </Head>
-        <div className="videoChat">
-          <header>
-            <h1>bipbop</h1>
-          </header>
-          <section className="videosPreview">
-            <div className="preview">
-              <Settings
-                titleText="Ready to join?"
-                buttonText="Join"
-                onButtonClick={this.props.onComplete}
-                collapseAudioVideoSettings={true}
-              />
-            </div>
-          </section>
-        </div>
-      </div>
+        </Col>
+      </Row>
     );
   }
 }

@@ -1,6 +1,6 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { AudioMutedOutlined, AudioOutlined } from "@ant-design/icons";
+import { Button, Tooltip } from "antd";
 import { bind } from "lodash-decorators";
-import { faMicrophone, faMicrophoneSlash } from "@fortawesome/free-solid-svg-icons";
 import { matopush } from "../../../lib/matomo";
 import JitsiParticipant from "../../../lib/jitsiManager/jitsiParticipant";
 import React from "react";
@@ -43,9 +43,15 @@ export default class MicButton extends React.Component<MicButtonProps, MicButton
     return (
       <div className="button micButton" onClick={this.handleClick}>
         {this.state.muted && (
-          <FontAwesomeIcon title="Turn On Microphone" icon={faMicrophoneSlash} />
+          <Tooltip title="Turn on microphone">
+            <Button shape="circle" size="large" icon={<AudioMutedOutlined />} />
+          </Tooltip>
         )}
-        {!this.state.muted && <FontAwesomeIcon title="Turn Off Microphone" icon={faMicrophone} />}
+        {!this.state.muted && (
+          <Tooltip title="Turn off microphone">
+            <Button shape="circle" size="large" icon={<AudioOutlined />} />
+          </Tooltip>
+        )}
       </div>
     );
   }

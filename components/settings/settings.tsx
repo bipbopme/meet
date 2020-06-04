@@ -289,7 +289,7 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
             />
           </Col>
           <Col span={8} className="formContainer">
-            {this.props.titleText && <Title level={2}>{this.props.titleText}</Title>}
+            {this.props.titleText && <Title level={3}>{this.props.titleText}</Title>}
             {!this.state.videoTrack && (
               <Paragraph type="secondary" strong>
                 Please allow access to your <br />

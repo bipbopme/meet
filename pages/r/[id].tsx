@@ -1,5 +1,6 @@
 import { GetServerSideProps } from "next";
 import { vercelTraceToRegion } from "../../lib/utils";
+import Head from "next/head";
 import React from "react";
 import Room from "../../components/room/room";
 
@@ -37,37 +38,50 @@ export default class RoomPage extends React.Component<RoomPageProps, RoomPageSta
     this.setState({ mounted: true });
   }
 
-  render(): JSX.Element | null {
-    if (this.state.mounted) {
-      return <Room id={this.props.id} region={this.props.region} host={JITSI_CONFIG.host} />;
-    } else {
-      return (
-        <div className="roomSetup">
-          <div
-            className="ant-row ant-row-middle settings"
-            style={{ marginLeft: "-8px", marginRight: "-8px" }}
-          >
+  render(): JSX.Element {
+    return (
+      <>
+        <Head>
+          <title>Video Chat | bipbop</title>
+          <meta
+            key="viewport"
+            name="viewport"
+            content="width=device-width, initial-scale=1, maximum-scale=1"
+          />
+        </Head>
+
+        {this.state.mounted && (
+          <Room id={this.props.id} region={this.props.region} host={JITSI_CONFIG.host} />
+        )}
+
+        {!this.state.mounted && (
+          <div className="roomSetup">
             <div
-              className="ant-col ant-col-16 videoContainer"
-              style={{ paddingLeft: "8px", paddingRight: "8px" }}
+              className="ant-row ant-row-middle settings"
+              style={{ marginLeft: "-8px", marginRight: "-8px" }}
             >
-              <div className="video local"></div>
-            </div>
-            <div
-              className="ant-col ant-col-8 formContainer"
-              style={{ paddingLeft: "8px", paddingRight: "8px" }}
-            >
-              <h2 className="ant-typography">Ready to join?</h2>
-              <div className="ant-typography ant-typography-secondary">
-                <strong>
-                  Please allow access to your <br />
-                  microphone and camera.
-                </strong>
+              <div
+                className="ant-col ant-col-16 videoContainer"
+                style={{ paddingLeft: "8px", paddingRight: "8px" }}
+              >
+                <div className="video local"></div>
+              </div>
+              <div
+                className="ant-col ant-col-8 formContainer"
+                style={{ paddingLeft: "8px", paddingRight: "8px" }}
+              >
+                <h2 className="ant-typography">Ready to join?</h2>
+                <div className="ant-typography ant-typography-secondary">
+                  <strong>
+                    Please allow access to your <br />
+                    microphone and camera.
+                  </strong>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      );
-    }
+        )}
+      </>
+    );
   }
 }

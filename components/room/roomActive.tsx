@@ -1,4 +1,3 @@
-import Head from "next/head";
 import JitsiConferenceManager from "../../lib/jitsiManager/jitsiConferenceManager";
 import React from "react";
 import VideoChat from "../videoChat/videoChat";
@@ -28,14 +27,6 @@ export default class RoomActive extends React.Component<RoomActiveProps, RoomAct
           this.state.showControls ? "showControls" : "hideControls"
         }`}
       >
-        <Head>
-          <title>Video Chat | bipbop</title>
-          <meta
-            key="viewport"
-            name="viewport"
-            content="width=device-width, initial-scale=1, maximum-scale=1"
-          />
-        </Head>
         <VideoChat conference={this.props.conference} onLeave={this.props.onLeave} />
       </div>
     );

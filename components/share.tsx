@@ -15,9 +15,7 @@ export default class Share extends React.Component<unknown, ShareState> {
   render(): JSX.Element {
     return (
       <>
-        <Paragraph type="secondary">
-          Share this link with people you want to join this chat
-        </Paragraph>
+        <Paragraph type="secondary">Share this link with people you want to invite.</Paragraph>
         <Paragraph strong copyable>
           {this.state.url}
         </Paragraph>

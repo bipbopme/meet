@@ -45,20 +45,27 @@ body {
     }
 
     .video {
-      background: #eee;
-      border-radius: 8px;
       height: 350px;
-      overflow: hidden;
-      // Fixes issue with Safari border radius
-      -webkit-transform: translate3d(0, 0, 0);
       width: 623px;
+    }
+  }
+}
 
-      video {
-        height: 100%;
-        object-fit: contain;
-        transform: scaleX(-1);
-        width: 100%;
-      }
+.settings {
+  .video {
+    background: #eee;
+    border-radius: 8px;
+    height: 279px;
+    overflow: hidden;
+    // Fixes issue with Safari border radius
+    -webkit-transform: translate3d(0, 0, 0);
+    width: 496px;
+
+    video {
+      height: 100%;
+      object-fit: contain;
+      transform: scaleX(-1);
+      width: 100%;
     }
   }
 }

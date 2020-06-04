@@ -1,4 +1,4 @@
-import { Button } from "antd";
+import { Button, Modal } from "antd";
 import { UserAddOutlined } from "@ant-design/icons";
 import { bind } from "lodash-decorators";
 import { matopush } from "../../../lib/matomo";
@@ -34,7 +34,20 @@ export default class ShareButton extends React.Component<unknown, ShareButtonSta
             Invite
           </Button>
         </div>
-        {this.state.showShare && <Share onCancel={this.handleCancel} />}
+        <Modal
+          className="share"
+          centered
+          onCancel={this.handleCancel}
+          visible={this.state.showShare}
+          title="Invite your people"
+          footer={[
+            <Button key="submit" type="primary" onClick={this.handleCancel}>
+              Got It
+            </Button>
+          ]}
+        >
+          <Share />
+        </Modal>
       </>
     );
   }

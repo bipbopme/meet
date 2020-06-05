@@ -1,3 +1,4 @@
+// Navigator extensions
 type ShareData = {
   title?: string;
   text?: string;

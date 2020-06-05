@@ -36,6 +36,78 @@ body {
 
 // ## Components
 
+.homePage {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+
+  header {
+    h1 {
+      font-size: 28px;
+      letter-spacing: -1px;
+      margin-bottom: 40px;
+    }
+  }
+
+  section {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    justify-self: center;
+    max-width: 992px;
+    width: 100%;
+
+    .illustration {
+      padding-right: 15px;
+
+      img {
+        width: 600px;
+      }
+    }
+
+    .pitch {
+      max-width: 378px;
+      padding-left: 15px;
+
+      h2 {
+        font-size: 30px;
+        line-height: 1.2em;
+        margin-bottom: 20px;
+      }
+
+      .copy {
+        margin-bottom: 20px;
+      }
+    }
+
+    @include responsive($brk-sm-max) {
+      .illustration {
+        img {
+          max-width: 600px;
+          width: 100%;
+        }
+      }
+    }
+
+    @include responsive($brk-xs-max) {
+      flex-direction: column;
+      text-align: center;
+
+      .illustration {
+        margin-bottom: 30px;
+      }
+
+      .pitch {
+        h2 {
+          font-size: 25px;
+          margin-bottom: 15px;
+        }
+      }
+    }
+  }
+}
+
 .room {
   align-items: center;
   display: flex;

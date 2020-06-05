@@ -17,13 +17,13 @@ interface GridViewProps {
 @observer
 export default class GridView extends React.Component<GridViewProps> {
   private gridDimensions?: { columns: number; rows: number };
-  private videosRef: RefObject<HTMLDivElement>;
+  private viewContainerRef: RefObject<HTMLDivElement>;
   private handleGrideResizeDebounced: () => void;
 
   constructor(props: GridViewProps) {
     super(props);
 
-    this.videosRef = React.createRef();
+    this.viewContainerRef = React.createRef();
     this.handleGrideResizeDebounced = debounce(this.handleGridResize, 250);
 
     window.addEventListener("resize", this.handleGrideResizeDebounced);
@@ -43,7 +43,7 @@ export default class GridView extends React.Component<GridViewProps> {
 
   @bind()
   handleGridResize(): void {
-    if (this.videosRef.current && this.gridDimensions) {
+    if (this.viewContainerRef.current && this.gridDimensions) {
       this.updateVideoDimensions(this.gridDimensions, this.props.crop);
       this.calculateVideoConstraint();
     }
@@ -51,8 +51,8 @@ export default class GridView extends React.Component<GridViewProps> {
 
   @bind()
   calculateVideoConstraint(): void {
-    if (this.videosRef.current) {
-      const sampleVideoContainer = this.videosRef.current.getElementsByClassName(
+    if (this.viewContainerRef.current) {
+      const sampleVideoContainer = this.viewContainerRef.current.getElementsByClassName(
         "video"
       )[0] as HTMLVideoElement;
 
@@ -77,7 +77,7 @@ export default class GridView extends React.Component<GridViewProps> {
         this.props.conference.setReceiverVideoConstraint(videoConstraint);
       }
     } else {
-      console.warn("Can't update videoContraint. VideosRef is undefined.");
+      console.warn("Can't update videoContraint. viewContainerRef is undefined.");
     }
   }
 
@@ -96,9 +96,9 @@ export default class GridView extends React.Component<GridViewProps> {
     videoMargin = 5,
     controlsHeight = 55
   ): void {
-    if (this.videosRef.current) {
-      let containerHeight = this.videosRef.current.offsetHeight;
-      let containerWidth = this.videosRef.current.offsetWidth;
+    if (this.viewContainerRef.current) {
+      let containerHeight = this.viewContainerRef.current.offsetHeight;
+      let containerWidth = this.viewContainerRef.current.offsetWidth;
       const combinedMargin = videoMargin * 2;
 
       // Remove margin from the container calculation
@@ -128,11 +128,11 @@ export default class GridView extends React.Component<GridViewProps> {
       height = height - combinedMargin;
       width = width - combinedMargin;
 
-      this.videosRef.current.style.setProperty("--video-height", `${height}px`);
-      this.videosRef.current.style.setProperty("--video-width", `${width}px`);
-      this.videosRef.current.style.setProperty("--video-margin", `${videoMargin}px`);
+      this.viewContainerRef.current.style.setProperty("--video-height", `${height}px`);
+      this.viewContainerRef.current.style.setProperty("--video-width", `${width}px`);
+      this.viewContainerRef.current.style.setProperty("--video-margin", `${videoMargin}px`);
     } else {
-      console.warn("Can't update video dimensions. VideosRef is undefined.");
+      console.warn("Can't update video dimensions. viewContainerRef is undefined.");
     }
   }
 
@@ -158,7 +158,7 @@ export default class GridView extends React.Component<GridViewProps> {
     const participantChunks = _chunk(allParticipants, this.gridDimensions.columns);
 
     return (
-      <div className="videos" ref={this.videosRef}>
+      <div className="videoChatViewContainer" ref={this.viewContainerRef}>
         <div className={this.getCssClassNames()}>
           {participantChunks.map((participants, chunkIndex) => (
             <div key={`row-${chunkIndex}`} className="row">

@@ -23,7 +23,7 @@ export default class RoomActive extends React.Component<RoomActiveProps, RoomAct
   render(): JSX.Element {
     return (
       <div
-        className={`roomPage roomActive ${this.state.showChat ? "showChat" : "hideChat"} ${
+        className={`room roomActive ${this.state.showChat ? "showChat" : "hideChat"} ${
           this.state.showControls ? "showControls" : "hideControls"
         }`}
       >

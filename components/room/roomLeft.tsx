@@ -15,7 +15,7 @@ export default class RoomLeft extends React.Component<RoomLeftProps> {
 
   render(): JSX.Element {
     return (
-      <div className="roomLeft">
+      <div className="room roomLeft">
         <Result
           title="You left the chat."
           subTitle="If you left on accident, just click the button below to join again."
@@ -25,7 +25,7 @@ export default class RoomLeft extends React.Component<RoomLeftProps> {
               Join again
             </Button>,
             <Button shape="round" key="new" onClick={this.handleNewClick}>
-              Start New
+              New Chat
             </Button>
           ]}
         />

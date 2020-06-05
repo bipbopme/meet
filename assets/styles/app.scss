@@ -1,8 +1,18 @@
 @import "~antd/dist/antd.css";
 @import "mixins";
+@import "fonts";
 
-$breakpoint: "max-width: 960px";
-$aspectBreakpoint: "max-aspect-ratio: 3/4";
+// These are each -1px to play nice with antd
+// breakpoints that are mobile first
+$brk-xs-max: "max-width: 767px";
+$brk-sm-max: "max-width: 991px";
+$brk-md-max: "max-width: 1999px";
+
+$brk-sm-min: "min-width: 768px";
+$brk-md-min: "min-width: 992px";
+$brk-lg-min: "min-width: 1200px";
+
+$brk-aspect: "max-aspect-ratio: 3/4";
 
 body {
   height: 100vh;
@@ -10,21 +20,37 @@ body {
   width: 100vw;
 }
 
-.roomLeft {
+// ## Ant overrides
+
+.ant-modal-title {
+  font-size: 20px;
+}
+
+.ant-dropdown-menu-item {
+  .ant-btn-text {
+    &:hover {
+      background-color: transparent;
+    }
+  }
+}
+
+// ## Components
+
+.room {
   align-items: center;
   display: flex;
   height: 100vh;
+  height: calc(var(--mvh, 1vh) * 100);
   justify-content: center;
 }
 
 .roomSetup {
-  align-items: center;
-  display: flex;
-  height: 100vh;
-  justify-content: center;
-
   .settings {
-    width: 960px;
+    width: 992px;
+
+    @include responsive($brk-sm-max) {
+      width: 768px;
+    }
 
     .formContainer {
       min-height: 152px;
@@ -37,6 +63,10 @@ body {
 
     h3 {
       margin-bottom: 5px;
+
+      @include responsive($brk-sm-max) {
+        margin-top: 8px;
+      }
     }
 
     .changeSettingsItem {
@@ -45,7 +75,18 @@ body {
 
     .video {
       height: 350px;
+      margin: 0 auto;
       width: 623px;
+
+      @include responsive($brk-sm-max) {
+        height: 279px;
+        width: 496px;
+      }
+
+      @include responsive($brk-xs-max) {
+        height: 400px;
+        width: 225px;
+      }
     }
   }
 }
@@ -70,9 +111,10 @@ body {
 }
 
 .videoChat {
-  height: 100vh;
+  height: 100%;
   overflow: hidden;
   position: relative;
+  width: 100%;
 }
 
 .videoChatControls {
@@ -108,15 +150,7 @@ body {
   }
 }
 
-.ant-dropdown-menu-item {
-  .ant-btn-text {
-    &:hover {
-      background-color: transparent;
-    }
-  }
-}
-
-.videos {
+.videoChatViewContainer {
   align-items: center;
   background-color: #000;
   background-image: url("/images/cartographer.png");
@@ -198,7 +232,7 @@ body {
   .cropped {
     .video {
       // Cover all the things on narrow screens
-      @include responsive($aspectBreakpoint) {
+      @include responsive($brk-aspect) {
         &.cameraVideoType {
           video {
             object-fit: cover !important;
@@ -255,7 +289,7 @@ body {
         }
       }
 
-      @include responsive($aspectBreakpoint) {
+      @include responsive($brk-aspect) {
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 10px;
         flex-direction: row;
@@ -280,7 +314,7 @@ body {
 
     &.cropped {
       .nonSpeakingParticipants {
-        @include responsive($aspectBreakpoint) {
+        @include responsive($brk-aspect) {
           .video {
             height: 20vh !important;
             width: calc(20vh / (16 / 9)) !important;

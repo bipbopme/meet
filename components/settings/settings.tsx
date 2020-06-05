@@ -285,7 +285,7 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
     return (
       <Row className="settings" gutter={16} align="middle">
         <>
-          <Col span={16} className="videoContainer">
+          <Col xs={24} sm={24} md={16} lg={16} xl={16} className="videoContainer">
             <Video
               key="localVideo"
               isLocal
@@ -293,7 +293,7 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
               videoTrack={this.state.videoTrack}
             />
           </Col>
-          <Col span={8} className="formContainer">
+          <Col xs={24} sm={24} md={8} lg={8} xl={8} className="formContainer">
             {this.props.titleText && <Title level={3}>{this.props.titleText}</Title>}
             {!this.state.videoTrack && (
               <Paragraph type="secondary" strong>

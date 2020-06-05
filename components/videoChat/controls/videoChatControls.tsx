@@ -56,7 +56,7 @@ export default class VideoChatControls extends React.Component<VideoChatControls
         </Col>
         <Col span="8" className="right">
           <Space>
-            <Dropdown overlay={menu} placement="topRight">
+            <Dropdown overlay={menu} placement="topRight" trigger={["click"]}>
               <Button type="text" icon={<MoreOutlined />} />
             </Dropdown>
           </Space>

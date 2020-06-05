@@ -55,19 +55,19 @@ export default class RoomPage extends React.Component<RoomPageProps, RoomPageSta
         )}
 
         {!this.state.mounted && (
-          <div className="roomSetup">
+          <div className="room roomSetup">
             <div
               className="ant-row ant-row-middle settings"
               style={{ marginLeft: "-8px", marginRight: "-8px" }}
             >
               <div
-                className="ant-col ant-col-16 videoContainer"
+                className="ant-col videoContainer ant-col-xs-24 ant-col-sm-24 ant-col-md-16 ant-col-lg-16 ant-col-xl-16"
                 style={{ paddingLeft: "8px", paddingRight: "8px" }}
               >
                 <div className="video local"></div>
               </div>
               <div
-                className="ant-col ant-col-8 formContainer"
+                className="ant-col formContainer ant-col-xs-24 ant-col-sm-24 ant-col-md-8 ant-col-lg-8 ant-col-xl-8"
                 style={{ paddingLeft: "8px", paddingRight: "8px" }}
               >
                 <h3 className="ant-typography">Ready to join?</h3>

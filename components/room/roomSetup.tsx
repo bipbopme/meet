@@ -12,7 +12,7 @@ interface RoomSetupProps {
 export default class RoomSetup extends React.Component<RoomSetupProps> {
   render(): JSX.Element {
     return (
-      <div className="roomSetup">
+      <div className="room roomSetup">
         <Settings
           titleText="Ready to join?"
           buttonText="Join"

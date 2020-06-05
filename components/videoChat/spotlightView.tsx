@@ -13,13 +13,13 @@ interface SpotlightViewProps {
 
 @observer
 export default class SpotlightView extends React.Component<SpotlightViewProps> {
-  private videosRef: RefObject<HTMLDivElement>;
+  private viewContainerRef: RefObject<HTMLDivElement>;
   private speakingParticipant: JitsiParticipant | undefined = undefined;
 
   constructor(props: SpotlightViewProps) {
     super(props);
 
-    this.videosRef = React.createRef();
+    this.viewContainerRef = React.createRef();
   }
 
   componentDidMount(): void {
@@ -63,7 +63,7 @@ export default class SpotlightView extends React.Component<SpotlightViewProps> {
     this.speakingParticipant = speakingParticipant;
 
     return (
-      <div className="videos" ref={this.videosRef}>
+      <div className="videoChatViewContainer" ref={this.viewContainerRef}>
         <div className={this.getCssClassNames()}>
           <div className="nonSpeakingParticipants">
             {nonSpeakingParticipants.map((participant) => (

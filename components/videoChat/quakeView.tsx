@@ -13,12 +13,12 @@ interface QuakeViewProps {
 
 @observer
 export default class QuakeView extends React.Component<QuakeViewProps> {
-  private videosRef: RefObject<HTMLDivElement>;
+  private viewContainerRef: RefObject<HTMLDivElement>;
 
   constructor(props: QuakeViewProps) {
     super(props);
 
-    this.videosRef = React.createRef();
+    this.viewContainerRef = React.createRef();
   }
 
   getCssClassNames(): string {
@@ -34,7 +34,7 @@ export default class QuakeView extends React.Component<QuakeViewProps> {
     const allParticipants = [localParticipant, ...participants];
 
     return (
-      <div className="videos" ref={this.videosRef}>
+      <div className="videoChatViewContainer" ref={this.viewContainerRef}>
         <div className={this.getCssClassNames()}>
           <div className="nonSpeakingParticipants">
             {allParticipants.map((participant) => (

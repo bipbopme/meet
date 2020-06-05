@@ -1,7 +1,9 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Button, Tooltip } from "antd";
 import { bind } from "lodash-decorators";
-import { faVideo, faVideoSlash } from "@fortawesome/free-solid-svg-icons";
 import { matopush } from "../../../lib/matomo";
+import CameraIcon from "../../../assets/icons/camera.svg";
+import CameraOffIcon from "../../../assets/icons/camera-off.svg";
+import Icon from "@ant-design/icons";
 import JitsiParticipant from "../../../lib/jitsiManager/jitsiParticipant";
 import React from "react";
 
@@ -42,8 +44,16 @@ export default class VideoButton extends React.Component<VideoButtonProps, Video
   render(): JSX.Element {
     return (
       <div className="button videoButton" onClick={this.handleClick}>
-        {this.state.muted && <FontAwesomeIcon title="Turn On Camera" icon={faVideoSlash} />}
-        {!this.state.muted && <FontAwesomeIcon title="Turn Off Camera" icon={faVideo} />}
+        {this.state.muted && (
+          <Tooltip title="Turn on camera" mouseEnterDelay={0} mouseLeaveDelay={0}>
+            <Button shape="circle" size="large" icon={<Icon component={CameraOffIcon} />} />
+          </Tooltip>
+        )}
+        {!this.state.muted && (
+          <Tooltip title="Turn off camera" mouseEnterDelay={0} mouseLeaveDelay={0}>
+            <Button shape="circle" size="large" icon={<Icon component={CameraIcon} />} />
+          </Tooltip>
+        )}
       </div>
     );
   }

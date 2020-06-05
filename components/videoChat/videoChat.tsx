@@ -1,4 +1,5 @@
 import { bind } from "lodash-decorators";
+import { notification } from "antd";
 import { observer } from "mobx-react";
 import GridView from "./gridView";
 import JitsiConferenceManager from "../../lib/jitsiManager/jitsiConferenceManager";
@@ -18,12 +19,12 @@ interface VideoChatState {
   view: string;
   crop: boolean;
   autoSwitchView: boolean;
-  showShare: boolean;
 }
 
 @observer
 export default class VideoChat extends React.Component<VideoChatProps, VideoChatState> {
   private autoSwitchViewDebounced: () => void;
+  private shareNotificationTimer: number | undefined = undefined;
   private isQuake = false;
 
   constructor(props: VideoChatProps) {
@@ -41,18 +42,45 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
     this.state = {
       view: this.isQuake ? "quake" : "spotlight",
       crop: true,
-      autoSwitchView: !this.isQuake,
-      showShare: true
+      autoSwitchView: !this.isQuake
     };
   }
 
+  componentDidMount(): void {
+    this.setupShareNotification();
+  }
+
   componentWillUnmount(): void {
+    this.closeShareNotification();
+
     this.props.conference.off(
       JitsiConferenceManager.events.PARTICIPANT_JOINED,
       this.autoSwitchView
     );
     this.props.conference.off(JitsiConferenceManager.events.PARTICIPANT_LEFT, this.autoSwitchView);
     window.removeEventListener("resize", this.autoSwitchViewDebounced);
+  }
+
+  setupShareNotification(): void {
+    if (this.props.conference.participants.length == 0) {
+      this.props.conference.once("PARTICIPANT_JOINED", this.closeShareNotification);
+      this.shareNotificationTimer = window.setTimeout(this.showShareNotification, 750);
+    }
+  }
+
+  showShareNotification(): void {
+    notification.open({
+      key: "share",
+      message: "Invite your people",
+      description: <Share />,
+      duration: 30
+    });
+  }
+
+  @bind()
+  closeShareNotification(): void {
+    clearTimeout(this.shareNotificationTimer);
+    notification.close("share");
   }
 
   @bind()
@@ -83,20 +111,12 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
     this.setState({ view: view, crop, autoSwitchView });
   }
 
-  @bind()
-  handleShareCancel(): void {
-    this.setState({ showShare: false });
-  }
-
   render(): JSX.Element | null {
     const conference = this.props.conference;
     const { localParticipant, participants, status } = conference;
 
     return status === "joined" && localParticipant ? (
       <div className="videoChat">
-        {participants.length === 0 && this.state.showShare && (
-          <Share onCancel={this.handleShareCancel} />
-        )}
         {this.state.view === "spotlight" && (
           <SpotlightView
             conference={conference}
@@ -123,7 +143,6 @@ export default class VideoChat extends React.Component<VideoChatProps, VideoChat
         )}
         <VideoChatControls
           localParticipant={localParticipant}
-          participants={participants}
           view={this.state.view}
           onLeave={this.props.onLeave}
           onViewChange={this.handleViewChange}

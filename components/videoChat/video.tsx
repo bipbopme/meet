@@ -1,7 +1,10 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Space, Tooltip } from "antd";
+import { UserOutlined } from "@ant-design/icons";
 import { bind } from "lodash-decorators";
-import { faMicrophoneSlash, faVideoSlash } from "@fortawesome/free-solid-svg-icons";
 import { observer } from "mobx-react";
+import AudioOffIcon from "../../assets/icons/audio-off.svg";
+import CameraOffIcon from "../../assets/icons/camera-off.svg";
+import Icon from "@ant-design/icons";
 import JitsiParticipant from "../../lib/jitsiManager/jitsiParticipant";
 import React, { RefObject } from "react";
 
@@ -15,8 +18,12 @@ interface VideoProps {
   isDominantSpeaker?: boolean;
 }
 
+interface VideoState {
+  aspectRatioClassName: string | undefined;
+}
+
 @observer
-export default class Video extends React.Component<VideoProps> {
+export default class Video extends React.Component<VideoProps, VideoState> {
   private videoContainerRef: RefObject<HTMLDivElement>;
   private videoRef: RefObject<HTMLVideoElement>;
   private audioRef: RefObject<HTMLAudioElement>;
@@ -27,14 +34,18 @@ export default class Video extends React.Component<VideoProps> {
     this.videoContainerRef = React.createRef();
     this.videoRef = React.createRef();
     this.audioRef = React.createRef();
+
+    this.state = {
+      aspectRatioClassName: undefined
+    };
   }
 
   componentDidMount(): void {
     this.attachTracks();
   }
 
-  componentDidUpdate(): void {
-    this.attachTracks();
+  componentDidUpdate(prevProps: VideoProps): void {
+    this.attachTracks(prevProps);
   }
 
   componentWillUnmount(): void {
@@ -49,12 +60,20 @@ export default class Video extends React.Component<VideoProps> {
     }
   }
 
-  attachTracks(): void {
-    if (this.audioRef.current && this.props.audioTrack) {
+  attachTracks(prevProps?: VideoProps): void {
+    if (
+      this.audioRef.current &&
+      this.props.audioTrack &&
+      prevProps?.audioTrack?.getId() !== this.props.audioTrack.getId()
+    ) {
       this.props.audioTrack.attach(this.audioRef.current);
     }
 
-    if (this.videoRef.current && this.props.videoTrack) {
+    if (
+      this.videoRef.current &&
+      this.props.videoTrack &&
+      prevProps?.videoTrack?.getId() !== this.props.videoTrack.getId()
+    ) {
       this.videoRef.current.addEventListener("loadeddata", this.updateAspectRatio, { once: true });
       this.props.videoTrack.attach(this.videoRef.current);
     }
@@ -69,8 +88,7 @@ export default class Video extends React.Component<VideoProps> {
       const className =
         videoEl.videoWidth / videoEl.videoHeight < 16 / 9 ? "narrowAspect" : "wideAspect";
 
-      containerEl.classList.remove("narrowAspect", "wideAspect");
-      containerEl.classList.add(className);
+      this.setState({ aspectRatioClassName: className });
     }
   }
 
@@ -96,16 +114,31 @@ export default class Video extends React.Component<VideoProps> {
       classNames.push(`${videoTrack.videoType}VideoType`);
     }
 
+    if (this.state.aspectRatioClassName) {
+      classNames.push(this.state.aspectRatioClassName);
+    }
+
     return classNames.join(" ");
   }
 
   render(): JSX.Element {
     return (
       <div className={this.getClassNames()} ref={this.videoContainerRef}>
+        {this.props.isVideoMuted && <UserOutlined />}
         <video ref={this.videoRef} autoPlay playsInline />
         <audio ref={this.audioRef} autoPlay muted={this.props.isLocal} />
-        {this.props.isAudioMuted && <FontAwesomeIcon icon={faMicrophoneSlash} />}
-        {this.props.isVideoMuted && <FontAwesomeIcon icon={faVideoSlash} />}
+        <Space className="charms">
+          {this.props.isAudioMuted && (
+            <Tooltip title="Microphone off" placement="topLeft" arrowPointAtCenter={true}>
+              <Icon component={AudioOffIcon} />
+            </Tooltip>
+          )}
+          {this.props.isVideoMuted && (
+            <Tooltip title="Camera off" placement="topLeft" arrowPointAtCenter={true}>
+              <Icon component={CameraOffIcon} />
+            </Tooltip>
+          )}
+        </Space>
       </div>
     );
   }

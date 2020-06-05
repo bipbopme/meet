@@ -1,17 +1,19 @@
 /* global JitsiMeetJS */
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Button, Col, Form, Row, Select, Typography } from "antd";
+import { SettingOutlined } from "@ant-design/icons";
 import { bind } from "lodash-decorators";
-import { faCog } from "@fortawesome/free-solid-svg-icons";
 import { matopush } from "../../lib/matomo";
 import React from "react";
 import Video from "../videoChat/video";
 import _uniqBy from "lodash/uniqBy";
 import localforage from "localforage";
 
+const { Title, Paragraph } = Typography;
+
 interface SettingsProps {
   collapseAudioVideoSettings?: boolean;
   titleText?: string;
-  buttonText: string;
+  buttonText?: string;
   onButtonClick(
     name: string | undefined,
     audioTrack: JitsiMeetJS.JitsiTrack,
@@ -150,9 +152,10 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
         "deviceId"
       );
 
-      this.syncAudioVideoDefaults(audioOutputs);
+      const audioVideoDefaults = this.syncAudioVideoDefaults(audioOutputs);
 
       this.setState({
+        ...audioVideoDefaults,
         audioInputs,
         audioOutputs,
         videoInputs
@@ -177,9 +180,7 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
   }
 
   @bind()
-  handleAudioInputChange(event: React.ChangeEvent<HTMLSelectElement>): void {
-    const selectedAudioInputID = event.target.value;
-
+  handleAudioInputChange(selectedAudioInputID: string): void {
     localforage.setItem("selectedAudioInputID", selectedAudioInputID);
     this.setState({ selectedAudioInputID });
 
@@ -189,9 +190,7 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
   }
 
   @bind()
-  handleAudioOutputChange(event: React.ChangeEvent<HTMLSelectElement>): void {
-    const selectedAudioOutputID = event.target.value;
-
+  handleAudioOutputChange(selectedAudioOutputID: string): void {
     localforage.setItem("selectedAudioOutputID", selectedAudioOutputID);
     this.setState({ selectedAudioOutputID });
 
@@ -201,9 +200,7 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
   }
 
   @bind()
-  handleVideoInputChange(event: React.ChangeEvent<HTMLSelectElement>): void {
-    const selectedVideoInputID = event.target.value;
-
+  handleVideoInputChange(selectedVideoInputID: string): void {
     localforage.setItem("selectedVideoInputID", selectedVideoInputID);
     this.setState({ selectedVideoInputID });
 
@@ -213,7 +210,7 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
   }
 
   // Handle device setting inconsistencies
-  syncAudioVideoDefaults(audioOutputs: MediaDeviceInfo[]): void {
+  syncAudioVideoDefaults(audioOutputs: MediaDeviceInfo[]): SettingsState {
     const newState: SettingsState = {};
 
     const {
@@ -254,18 +251,20 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
       } else {
         // Couldn't find previous device so clear it and rely on defaults
         localforage.removeItem("selectedAudioOutputID");
-        newState.selectedAudioOutputID = undefined;
-        console.log("Synced video output");
+        // Set default for the UI
+        newState.selectedAudioOutputID = audioOutputs[0]?.deviceId;
+        console.log("Synced audio output");
       }
+    } else {
+      // Set default for the UI
+      newState.selectedAudioOutputID = audioOutputs[0]?.deviceId;
     }
 
-    this.setState(newState);
+    return newState;
   }
 
   @bind()
-  handleSubmit(event: React.FormEvent<HTMLFormElement>): void {
-    event.preventDefault();
-
+  handleFormFinish(): void {
     if (this.props.onButtonClick) {
       const { name, audioTrack, videoTrack } = this.state;
 
@@ -284,108 +283,91 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
 
   render(): JSX.Element {
     return (
-      <div className="settings">
-        {this.state.videoTrack && (
-          <>
-            <div className="videoContainer">
-              <Video
-                key="localVideo"
-                isLocal
-                audioTrack={this.state.audioTrack}
-                videoTrack={this.state.videoTrack}
-              />
-            </div>
-            <div className="formContainer">
-              {this.props.titleText && <h2>{this.props.titleText}</h2>}
-              <form onSubmit={this.handleSubmit}>
-                <div className="row nameRow">
-                  <label>Name</label>
-                  <input value={this.state.name || ""} onChange={this.handleNameChange} />
-                </div>
-
+      <Row className="settings" gutter={16} align="middle">
+        <>
+          <Col xs={24} sm={24} md={16} lg={16} xl={16} className="videoContainer">
+            <Video
+              key="localVideo"
+              isLocal
+              audioTrack={this.state.audioTrack}
+              videoTrack={this.state.videoTrack}
+            />
+          </Col>
+          <Col xs={24} sm={24} md={8} lg={8} xl={8} className="formContainer">
+            {this.props.titleText && <Title level={3}>{this.props.titleText}</Title>}
+            {!this.state.videoTrack && (
+              <Paragraph type="secondary" strong>
+                Please allow access to your <br />
+                microphone and camera.
+              </Paragraph>
+            )}
+            {(this.state.audioInputs || this.state.videoInputs || this.state.audioOutputs) && (
+              <Form
+                id="settingsForm"
+                layout="vertical"
+                onFinish={this.handleFormFinish}
+                initialValues={{
+                  selectedVideoInputID: this.state.selectedVideoInputID,
+                  selectedAudioInputID: this.state.selectedAudioInputID,
+                  selectedAudioOutputID: this.state.selectedAudioOutputID
+                }}
+              >
                 {this.state.collapseAudioVideoSettings && (
-                  <div className="showAudioVideoSettings">
-                    <a onClick={this.handleShowAudioVideoSettings}>
-                      <FontAwesomeIcon icon={faCog} /> Change camera or microphone
-                    </a>
-                  </div>
+                  <Form.Item className="changeSettingsItem">
+                    <Button
+                      type="text"
+                      onClick={this.handleShowAudioVideoSettings}
+                      icon={<SettingOutlined />}
+                    >
+                      Change camera or microphone
+                    </Button>
+                  </Form.Item>
                 )}
-
                 {!this.state.collapseAudioVideoSettings && (
-                  <div className="audioVideoSettings">
-                    <div className="row">
-                      <label>Camera</label>
-                      <select
-                        onChange={this.handleVideoInputChange}
-                        value={this.state.selectedVideoInputID || ""}
-                      >
-                        {this.state.videoInputs &&
-                          this.state.videoInputs.map((videoInput) => (
-                            <option key={videoInput.deviceId} value={videoInput.deviceId}>
-                              {videoInput.label}
-                            </option>
-                          ))}
-                      </select>
-                    </div>
-                    <div className="row">
-                      <label>Microphone</label>
-                      <select
-                        onChange={this.handleAudioInputChange}
-                        value={this.state.selectedAudioInputID || ""}
-                      >
-                        {this.state.audioInputs &&
-                          this.state.audioInputs.map((audioInput) => (
-                            <option key={audioInput.deviceId} value={audioInput.deviceId}>
-                              {audioInput.label}
-                            </option>
-                          ))}
-                      </select>
-                    </div>
-
+                  <>
+                    <Form.Item label="Camera" name="selectedVideoInputID">
+                      <Select onChange={this.handleVideoInputChange}>
+                        {this.state.videoInputs?.map((videoInput) => (
+                          <Select.Option key={videoInput.deviceId} value={videoInput.deviceId}>
+                            {videoInput.label}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                    <Form.Item label="Microphone" name="selectedAudioInputID">
+                      <Select onChange={this.handleAudioInputChange}>
+                        {this.state.audioInputs?.map((audioInput) => (
+                          <Select.Option key={audioInput.deviceId} value={audioInput.deviceId}>
+                            {audioInput.label}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
                     {this.state.audioOutputs && this.state.audioOutputs.length > 0 && (
-                      <div className="row">
-                        <label>Speaker</label>
-                        <select
-                          onChange={this.handleAudioOutputChange}
-                          value={this.state.selectedAudioOutputID || ""}
-                        >
-                          {this.state.audioOutputs &&
-                            this.state.audioOutputs.map((audioOutput) => (
-                              <option key={audioOutput.deviceId} value={audioOutput.deviceId}>
-                                {audioOutput.label}
-                              </option>
-                            ))}
-                        </select>
-                      </div>
+                      <Form.Item label="Speaker" name="selectedAudioOutputID">
+                        <Select onChange={this.handleAudioOutputChange}>
+                          {this.state.audioOutputs.map((audioOutput) => (
+                            <Select.Option key={audioOutput.deviceId} value={audioOutput.deviceId}>
+                              {audioOutput.label}
+                            </Select.Option>
+                          ))}
+                        </Select>
+                      </Form.Item>
                     )}
-                  </div>
+                  </>
                 )}
                 {this.props.buttonText && (
-                  <div className="row buttonRow">
-                    <button type="submit">{this.props.buttonText}</button>
-                  </div>
+                  <Form.Item>
+                    <Button type="primary" shape="round" size="large" htmlType="submit">
+                      {this.props.buttonText}
+                    </Button>
+                  </Form.Item>
                 )}
-              </form>
-            </div>
-          </>
-        )}
-
-        {!this.state.videoTrack && (
-          <>
-            <div className="videoContainer">
-              <div className="video local cameraVideoType inactive wideAspect"></div>
-            </div>
-            <div className="formContainer">
-              <h2>Ready to join?</h2>
-              <h3>
-                Please allow access to your
-                <br />
-                microphone and camera.
-              </h3>
-            </div>
-          </>
-        )}
-      </div>
+              </Form>
+            )}
+          </Col>
+        </>
+      </Row>
     );
   }
 }

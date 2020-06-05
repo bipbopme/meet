@@ -1,3 +1,4 @@
+import { Button } from "antd";
 import { uuid } from "../lib/utils";
 import Head from "next/head";
 import React from "react";
@@ -12,12 +13,28 @@ export default class HomePage extends React.Component {
     return (
       <div className="homePage">
         <Head>
-          <title>bipbop.</title>
+          <title>bipbop | free video chat in your browser</title>
         </Head>
-        <h1>bipbop</h1>
-        <h2>easy video chats in your browser</h2>
-        <button onClick={this.handleClick}>Start</button>
-        <div className="temporary">(yes, there will be a proper home page soon)</div>
+        <header>
+          <h1>bipbop</h1>
+        </header>
+        <section>
+          <div className="illustration">
+            <img src="/images/people@2x.png" />
+          </div>
+          <div className="pitch">
+            <h2>Video chat with your favorite people for free.</h2>
+            <div className="copy">
+              There&apos;s nothing to install. Just send your friends a link and start chatting.
+              From any device. Anywhere.
+            </div>
+            <div className="buttons">
+              <Button type="primary" size="large" shape="round" onClick={this.handleClick}>
+                Start a chat
+              </Button>
+            </div>
+          </div>
+        </section>
       </div>
     );
   }

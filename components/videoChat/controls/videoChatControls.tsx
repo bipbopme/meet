@@ -1,3 +1,6 @@
+import { Button, Col, Dropdown, Menu, Row, Space } from "antd";
+import { MoreOutlined } from "@ant-design/icons";
+import { observer } from "mobx-react";
 import DetectRTC from "detectrtc";
 import JitsiParticipant from "../../../lib/jitsiManager/jitsiParticipant";
 import LeaveButton from "./leaveButton";
@@ -11,50 +14,54 @@ import ViewButton from "./viewButton";
 
 interface VideoChatControlsProps {
   localParticipant: JitsiParticipant;
-  participants: JitsiParticipant[];
   onLeave(): void;
   onViewChange(view: string): void;
   view: string;
 }
 
+@observer
 export default class VideoChatControls extends React.Component<VideoChatControlsProps> {
-  private canScreenCapture: boolean;
-
-  constructor(props: VideoChatControlsProps) {
-    super(props);
-
-    this.canScreenCapture = JitsiMeetJS.isDesktopSharingEnabled() && !DetectRTC.isMobileDevice;
-  }
-
-  getClassNames(): string {
-    const classNames = ["controls"];
-
-    if (this.props.participants.length > 0) {
-      classNames.push("hidable");
-    }
-
-    return classNames.join(" ");
-  }
+  private canScreenCapture = JitsiMeetJS.isDesktopSharingEnabled() && !DetectRTC.isMobileDevice;
 
   render(): JSX.Element {
-    return (
-      <footer className={this.getClassNames()}>
-        <div className="left">
-          {this.canScreenCapture && (
-            <ScreenShareButton localParticipant={this.props.localParticipant} />
-          )}
+    const menu = (
+      <Menu>
+        <Menu.Item>
           <ShareButton />
-        </div>
-        <div className="center">
-          <MicButton localParticipant={this.props.localParticipant} />
-          <LeaveButton onLeave={this.props.onLeave} />
-          <VideoButton localParticipant={this.props.localParticipant} />
-        </div>
-        <div className="right">
+        </Menu.Item>
+        <Menu.Item>
           <ViewButton view={this.props.view} onToggle={this.props.onViewChange} />
+        </Menu.Item>
+        <Menu.Item>
           <SettingsButton localParticipant={this.props.localParticipant} />
-        </div>
-      </footer>
+        </Menu.Item>
+      </Menu>
+    );
+
+    return (
+      <Row className="videoChatControls" align="middle">
+        <Col span="8" className="left">
+          <Space>
+            {this.canScreenCapture && (
+              <ScreenShareButton localParticipant={this.props.localParticipant} />
+            )}
+          </Space>
+        </Col>
+        <Col span="8" className="center">
+          <Space>
+            <MicButton localParticipant={this.props.localParticipant} />
+            <LeaveButton onLeave={this.props.onLeave} />
+            <VideoButton localParticipant={this.props.localParticipant} />
+          </Space>
+        </Col>
+        <Col span="8" className="right">
+          <Space>
+            <Dropdown overlay={menu} placement="topRight" trigger={["click"]}>
+              <Button type="text" icon={<MoreOutlined />} />
+            </Dropdown>
+          </Space>
+        </Col>
+      </Row>
     );
   }
 }

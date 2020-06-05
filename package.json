@@ -6,24 +6,23 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint . && stylelint styles/*.scss && tsc --noEmit",
-    "prettier": "eslint . --fix && stylelint styles/*.scss --fix"
+    "lint": "eslint . && stylelint assets/styles/*.scss && tsc --noEmit",
+    "prettier": "eslint . --fix && stylelint assets/styles/*.scss --fix"
   },
   "dependencies": {
+    "@ant-design/icons": "^4.2.1",
     "@babel/core": "^7.0.0-0",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/plugin-proposal-decorators": "^7.8.3",
-    "@fortawesome/fontawesome-svg-core": "^1.2.27",
-    "@fortawesome/free-regular-svg-icons": "^5.13.0",
-    "@fortawesome/free-solid-svg-icons": "^5.12.1",
-    "@fortawesome/react-fontawesome": "^0.1.9",
+    "@svgr/webpack": "^5.4.0",
     "@types/lodash": "^4.14.150",
     "@types/node": "^14.0.1",
     "@types/react": "^16.9.35",
     "@types/react-dom": "^16.9.8",
-    "@types/react-portal": "^4.0.2",
     "@typescript-eslint/eslint-plugin": "^3.1.0",
     "@typescript-eslint/parser": "^3.1.0",
+    "antd": "^4.3.1",
+    "dayjs": "^1.8.18",
     "detectrtc": "^1.4.0",
     "dotenv": "^8.2.0",
     "eslint": "^7.0.0",
@@ -33,6 +32,7 @@
     "eslint-plugin-sort-imports-es6-autofix": "^0.5.0",
     "jquery": "^3.5.0",
     "js-sha256": "^0.9.0",
+    "less": "^3.11.2",
     "localforage": "^1.7.3",
     "lodash": "^4.17.15",
     "lodash-decorators": "^6.0.1",
@@ -42,14 +42,81 @@
     "prettier": "2.0.5",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-portal": "^4.2.1",
-    "react-toastify": "^6.0.5",
-    "sass": "^1.26.3",
+    "sass": "^1.26.7",
     "short-uuid": "^3.1.1",
     "stylelint": "^13.5.0",
     "stylelint-config-prettier": "^8.0.1",
     "stylelint-order": "^4.0.0",
     "stylelint-prettier": "^1.1.2",
     "typescript": "^3.9.3"
+  },
+  "eslintConfig": {
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "@typescript-eslint",
+      "prettier",
+      "sort-imports-es6-autofix"
+    ],
+    "env": {
+      "browser": true,
+      "node": true
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:react/recommended",
+      "plugin:@typescript-eslint/eslint-recommended",
+      "plugin:@typescript-eslint/recommended",
+      "prettier",
+      "prettier/@typescript-eslint"
+    ],
+    "ignorePatterns": [
+      "dist/*"
+    ],
+    "rules": {
+      "prettier/prettier": "error",
+      "no-trailing-spaces": "error",
+      "eol-last": [
+        "error",
+        "always"
+      ],
+      "sort-imports-es6-autofix/sort-imports-es6": "error"
+    },
+    "overrides": [
+      {
+        "files": [
+          "*.js"
+        ],
+        "rules": {
+          "@typescript-eslint/explicit-function-return-type": "off",
+          "@typescript-eslint/explicit-module-boundary-types": "off",
+          "@typescript-eslint/no-var-requires": "off"
+        }
+      }
+    ],
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
+    }
+  },
+  "stylelint": {
+    "plugins": [
+      "stylelint-order"
+    ],
+    "extends": [
+      "stylelint-prettier/recommended"
+    ],
+    "rules": {
+      "order/order": [
+        "custom-properties",
+        "declarations"
+      ],
+      "order/properties-alphabetical-order": true
+    }
+  },
+  "prettier": {
+    "printWidth": 100,
+    "trailingComma": "none"
   }
 }

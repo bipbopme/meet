@@ -1,9 +1,8 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Button, Modal } from "antd";
+import { SettingOutlined } from "@ant-design/icons";
 import { bind } from "lodash-decorators";
-import { faCog } from "@fortawesome/free-solid-svg-icons";
 import { matopush } from "../../../lib/matomo";
 import JitsiParticipant from "../../../lib/jitsiManager/jitsiParticipant";
-import Modal from "../../modal";
 import React from "react";
 import Settings from "../../settings/settings";
 
@@ -50,19 +49,28 @@ export default class SettingsButton extends React.Component<
   render(): JSX.Element {
     return (
       <>
-        <div
-          className="button settingsButton"
-          title="Settings for camera and microphone"
-          onClick={this.handleClick}
-        >
-          <FontAwesomeIcon icon={faCog} /> <span className="label">Settings</span>
+        <div className="button settingsButton" onClick={this.handleClick}>
+          <Button type="text" size="large" icon={<SettingOutlined />}>
+            Settings
+          </Button>
         </div>
-        {this.state.showSettings && (
-          <Modal onCancel={this.handleModalCancel}>
-            <h2>Settings</h2>
-            <Settings buttonText="Done" onButtonClick={this.handleDone} />
-          </Modal>
-        )}
+        <Modal
+          onCancel={this.handleModalCancel}
+          visible={this.state.showSettings}
+          title="Settings"
+          centered
+          footer={[
+            <Button key="back" onClick={this.handleModalCancel}>
+              Cancel
+            </Button>,
+            <Button form="settingsForm" key="submit" type="primary" htmlType="submit">
+              Update
+            </Button>
+          ]}
+          width={800}
+        >
+          <Settings onButtonClick={this.handleDone} />
+        </Modal>
       </>
     );
   }

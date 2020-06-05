@@ -1,7 +1,8 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Button, Tooltip } from "antd";
 import { bind } from "lodash-decorators";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { matopush } from "../../../lib/matomo";
+import CloseIcon from "../../../assets/icons/close.svg";
+import Icon from "@ant-design/icons";
 import React from "react";
 
 interface LeaveButtonProps {
@@ -19,9 +20,9 @@ export default class LeaveButton extends React.Component<LeaveButtonProps> {
   render(): JSX.Element {
     return (
       <div className="button leaveButton" onClick={this.handleClick}>
-        <span title="Leave Video Chat">
-          <FontAwesomeIcon icon={faTimes} />
-        </span>
+        <Tooltip title="Leave video chat" mouseEnterDelay={0} mouseLeaveDelay={0}>
+          <Button shape="circle" size="large" icon={<Icon component={CloseIcon} />} />
+        </Tooltip>
       </div>
     );
   }

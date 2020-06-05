@@ -1,0 +1,447 @@
+@import "~antd/dist/antd.css";
+@import "mixins";
+@import "fonts";
+
+// These are each -1px to play nice with antd
+// breakpoints that are mobile first
+$brk-xs-max: "max-width: 767px";
+$brk-sm-max: "max-width: 991px";
+$brk-md-max: "max-width: 1999px";
+
+$brk-sm-min: "min-width: 768px";
+$brk-md-min: "min-width: 992px";
+$brk-lg-min: "min-width: 1200px";
+
+$brk-aspect: "max-aspect-ratio: 3/4";
+
+body {
+  height: 100vh;
+  overflow: hidden;
+  width: 100vw;
+}
+
+// ## Ant overrides
+
+.ant-modal-title {
+  font-size: 20px;
+}
+
+.ant-dropdown-menu-item {
+  .ant-btn-text {
+    &:hover {
+      background-color: transparent;
+    }
+  }
+}
+
+// ## Components
+
+.homePage {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+
+  header {
+    h1 {
+      font-size: 28px;
+      letter-spacing: -1px;
+      margin-bottom: 40px;
+    }
+  }
+
+  section {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    justify-self: center;
+    max-width: 992px;
+    width: 100%;
+
+    .illustration {
+      padding-right: 15px;
+
+      img {
+        width: 600px;
+      }
+    }
+
+    .pitch {
+      max-width: 378px;
+      padding-left: 15px;
+
+      h2 {
+        font-size: 30px;
+        line-height: 1.2em;
+        margin-bottom: 20px;
+      }
+
+      .copy {
+        margin-bottom: 20px;
+      }
+    }
+
+    @include responsive($brk-sm-max) {
+      .illustration {
+        img {
+          max-width: 600px;
+          width: 100%;
+        }
+      }
+    }
+
+    @include responsive($brk-xs-max) {
+      flex-direction: column;
+      text-align: center;
+
+      .illustration {
+        margin-bottom: 30px;
+      }
+
+      .pitch {
+        h2 {
+          font-size: 25px;
+          margin-bottom: 15px;
+        }
+      }
+    }
+  }
+}
+
+.room {
+  align-items: center;
+  display: flex;
+  height: 100vh;
+  height: calc(var(--mvh, 1vh) * 100);
+  justify-content: center;
+}
+
+.roomSetup {
+  .settings {
+    width: 992px;
+
+    @include responsive($brk-sm-max) {
+      width: 768px;
+    }
+
+    .formContainer {
+      min-height: 152px;
+      text-align: center;
+
+      .ant-select {
+        text-align: left;
+      }
+    }
+
+    h3 {
+      margin-bottom: 5px;
+
+      @include responsive($brk-sm-max) {
+        margin-top: 8px;
+      }
+    }
+
+    .changeSettingsItem {
+      margin-bottom: 11px;
+    }
+
+    .video {
+      height: 350px;
+      margin: 0 auto;
+      width: 623px;
+
+      @include responsive($brk-sm-max) {
+        height: 279px;
+        width: 496px;
+      }
+
+      @include responsive($brk-xs-max) {
+        height: 400px;
+        width: 225px;
+      }
+    }
+  }
+}
+
+.settings {
+  .video {
+    background: #eee;
+    border-radius: 8px;
+    height: 279px;
+    overflow: hidden;
+    // Fixes issue with Safari border radius
+    -webkit-transform: translate3d(0, 0, 0);
+    width: 496px;
+
+    video {
+      height: 100%;
+      object-fit: contain;
+      transform: scaleX(-1);
+      width: 100%;
+    }
+  }
+}
+
+.videoChat {
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.videoChatControls {
+  background: #fff;
+  bottom: 0;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  left: 0;
+  padding: 8px;
+  position: absolute;
+  width: 100%;
+
+  .ant-space {
+    // Defaults to flex-inline
+    display: flex;
+  }
+
+  .left {
+    .ant-space {
+      justify-content: flex-start;
+    }
+  }
+
+  .center {
+    .ant-space {
+      justify-content: center;
+    }
+  }
+
+  .right {
+    .ant-space {
+      justify-content: flex-end;
+    }
+  }
+}
+
+.videoChatViewContainer {
+  align-items: center;
+  background-color: #000;
+  background-image: url("/images/cartographer.png");
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  position: relative;
+
+  .video {
+    overflow: hidden;
+    position: relative;
+    transition: 250ms;
+
+    video {
+      height: 100%;
+      object-fit: contain;
+      width: 100%;
+    }
+
+    .charms {
+      bottom: 6px;
+      left: 8px;
+      position: absolute;
+
+      .anticon {
+        svg {
+          color: #fff;
+          filter: drop-shadow(0 0 1px #000);
+          height: 20px;
+          width: 20px;
+        }
+      }
+    }
+
+    &.cameraVideoType {
+      &.local video {
+        transform: scaleX(-1);
+      }
+
+      &.wideAspect {
+        background: transparent;
+
+        video {
+          // The container is the matching aspect ratio
+          object-fit: cover;
+        }
+      }
+    }
+
+    &.desktopVideoType {
+      video {
+        object-fit: scale-down !important;
+      }
+    }
+
+    &.videoMuted {
+      background: radial-gradient(#111, #000) !important;
+
+      .anticon-user {
+        left: 50%;
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%);
+
+        svg {
+          color: #777;
+          filter: drop-shadow(1px 1px 0 rgba(0, 0, 0, 0.5));
+          height: 75px;
+          width: 75px;
+        }
+      }
+
+      video {
+        visibility: hidden;
+      }
+    }
+  }
+
+  .cropped {
+    .video {
+      // Cover all the things on narrow screens
+      @include responsive($brk-aspect) {
+        &.cameraVideoType {
+          video {
+            object-fit: cover !important;
+          }
+        }
+      }
+    }
+  }
+
+  .quakeView {
+    .gameZone {
+      height: 100%;
+      width: 100%;
+
+      iframe {
+        height: 100%;
+        width: 100%;
+      }
+    }
+  }
+
+  .spotlightView {
+    height: 100%;
+    padding-bottom: 55px;
+    width: 100%;
+
+    .nonSpeakingParticipants {
+      background: #000;
+      border-bottom-left-radius: 10px;
+
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      max-height: 100%;
+      max-width: 100%;
+      overflow: hidden;
+      position: absolute;
+      right: 0;
+      top: 0;
+      z-index: 10;
+
+      .video {
+        height: calc(15vw / (16 / 9));
+        width: 15vw;
+
+        &.videoMuted .anticon-user svg {
+          height: 40px;
+          width: 40px;
+        }
+
+        .charms svg {
+          height: 16px;
+          width: 16px;
+        }
+      }
+
+      @include responsive($brk-aspect) {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 10px;
+        flex-direction: row;
+        left: 0;
+        right: unset;
+      }
+    }
+
+    .speakingParticipant {
+      height: 100%;
+      width: 100%;
+
+      .video {
+        height: 100%;
+        width: 100%;
+
+        video {
+          object-fit: contain;
+        }
+      }
+    }
+
+    &.cropped {
+      .nonSpeakingParticipants {
+        @include responsive($brk-aspect) {
+          .video {
+            height: 20vh !important;
+            width: calc(20vh / (16 / 9)) !important;
+          }
+        }
+      }
+
+      .speakingParticipant {
+        .video {
+          &.cameraVideoType.wideAspect {
+            video {
+              object-fit: cover;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .gridView {
+    display: flex;
+    flex-direction: column;
+    margin: var(--video-margin);
+    padding-bottom: 55px;
+
+    .row {
+      display: flex;
+      flex-grow: 1;
+      justify-content: center;
+
+      .video {
+        background: #000;
+        border-radius: 8px;
+        height: var(--video-height);
+        margin: var(--video-margin);
+        // Fixes issue with Safari border radius
+        -webkit-transform: translate3d(0, 0, 0);
+        width: var(--video-width);
+
+        &.dominantSpeaker {
+          box-shadow: 0 0 0 4px #1890ff;
+
+          .anticon-user {
+            svg {
+              color: #1890ff;
+            }
+          }
+        }
+      }
+    }
+
+    &.oneToOne {
+      .dominantSpeaker {
+        box-shadow: none !important;
+      }
+    }
+  }
+}

@@ -152,9 +152,10 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
         "deviceId"
       );
 
-      this.syncAudioVideoDefaults(audioOutputs);
+      const audioVideoDefaults = this.syncAudioVideoDefaults(audioOutputs);
 
       this.setState({
+        ...audioVideoDefaults,
         audioInputs,
         audioOutputs,
         videoInputs
@@ -209,7 +210,7 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
   }
 
   // Handle device setting inconsistencies
-  syncAudioVideoDefaults(audioOutputs: MediaDeviceInfo[]): void {
+  syncAudioVideoDefaults(audioOutputs: MediaDeviceInfo[]): SettingsState {
     const newState: SettingsState = {};
 
     const {
@@ -250,12 +251,16 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
       } else {
         // Couldn't find previous device so clear it and rely on defaults
         localforage.removeItem("selectedAudioOutputID");
-        newState.selectedAudioOutputID = undefined;
-        console.log("Synced video output");
+        // Set default for the UI
+        newState.selectedAudioOutputID = audioOutputs[0]?.deviceId;
+        console.log("Synced audio output");
       }
+    } else {
+      // Set default for the UI
+      newState.selectedAudioOutputID = audioOutputs[0]?.deviceId;
     }
 
-    this.setState(newState);
+    return newState;
   }
 
   @bind()
@@ -296,15 +301,15 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
                 microphone and camera.
               </Paragraph>
             )}
-            {this.state.videoTrack && (
+            {(this.state.audioInputs || this.state.videoInputs || this.state.audioOutputs) && (
               <Form
                 id="settingsForm"
                 layout="vertical"
                 onFinish={this.handleFormFinish}
                 initialValues={{
-                  selectedVideoInputID: this.state.selectedVideoInputID || "",
-                  selectedAudioInputID: this.state.selectedAudioInputID || "",
-                  selectedAudioOutputID: this.state.selectedAudioOutputID || ""
+                  selectedVideoInputID: this.state.selectedVideoInputID,
+                  selectedAudioInputID: this.state.selectedAudioInputID,
+                  selectedAudioOutputID: this.state.selectedAudioOutputID
                 }}
               >
                 {this.state.collapseAudioVideoSettings && (
@@ -341,7 +346,7 @@ export default class Settings extends React.Component<SettingsProps, SettingsSta
                     {this.state.audioOutputs && this.state.audioOutputs.length > 0 && (
                       <Form.Item label="Speaker" name="selectedAudioOutputID">
                         <Select onChange={this.handleAudioOutputChange}>
-                          {this.state.audioOutputs?.map((audioOutput) => (
+                          {this.state.audioOutputs.map((audioOutput) => (
                             <Select.Option key={audioOutput.deviceId} value={audioOutput.deviceId}>
                               {audioOutput.label}
                             </Select.Option>

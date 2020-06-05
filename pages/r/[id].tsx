@@ -70,7 +70,7 @@ export default class RoomPage extends React.Component<RoomPageProps, RoomPageSta
                 className="ant-col ant-col-8 formContainer"
                 style={{ paddingLeft: "8px", paddingRight: "8px" }}
               >
-                <h2 className="ant-typography">Ready to join?</h2>
+                <h3 className="ant-typography">Ready to join?</h3>
                 <div className="ant-typography ant-typography-secondary">
                   <strong>
                     Please allow access to your <br />

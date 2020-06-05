@@ -1,7 +1,9 @@
-import { AudioMutedOutlined, AudioOutlined } from "@ant-design/icons";
 import { Button, Tooltip } from "antd";
 import { bind } from "lodash-decorators";
 import { matopush } from "../../../lib/matomo";
+import AudioIcon from "../../../assets/icons/audio.svg";
+import AudioOffIcon from "../../../assets/icons/audio-off.svg";
+import Icon from "@ant-design/icons";
 import JitsiParticipant from "../../../lib/jitsiManager/jitsiParticipant";
 import React from "react";
 
@@ -44,12 +46,12 @@ export default class MicButton extends React.Component<MicButtonProps, MicButton
       <div className="button micButton" onClick={this.handleClick}>
         {this.state.muted && (
           <Tooltip title="Turn on microphone" mouseEnterDelay={0} mouseLeaveDelay={0}>
-            <Button shape="circle" size="large" icon={<AudioMutedOutlined />} />
+            <Button shape="circle" size="large" icon={<Icon component={AudioOffIcon} />} />
           </Tooltip>
         )}
         {!this.state.muted && (
           <Tooltip title="Turn off microphone" mouseEnterDelay={0} mouseLeaveDelay={0}>
-            <Button shape="circle" size="large" icon={<AudioOutlined />} />
+            <Button shape="circle" size="large" icon={<Icon component={AudioIcon} />} />
           </Tooltip>
         )}
       </div>

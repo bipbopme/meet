@@ -6,8 +6,8 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint . && stylelint styles/*.scss && tsc --noEmit",
-    "prettier": "eslint . --fix && stylelint styles/*.scss --fix"
+    "lint": "eslint . && stylelint assets/styles/*.scss && tsc --noEmit",
+    "prettier": "eslint . --fix && stylelint assets/styles/*.scss --fix"
   },
   "dependencies": {
     "@ant-design/icons": "^4.2.1",
@@ -18,6 +18,7 @@
     "@fortawesome/free-regular-svg-icons": "^5.13.0",
     "@fortawesome/free-solid-svg-icons": "^5.12.1",
     "@fortawesome/react-fontawesome": "^0.1.9",
+    "@svgr/webpack": "^5.4.0",
     "@types/lodash": "^4.14.150",
     "@types/node": "^14.0.1",
     "@types/react": "^16.9.35",

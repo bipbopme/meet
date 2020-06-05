@@ -1,7 +1,10 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Space, Tooltip } from "antd";
+import { UserOutlined } from "@ant-design/icons";
 import { bind } from "lodash-decorators";
-import { faMicrophoneSlash, faVideoSlash } from "@fortawesome/free-solid-svg-icons";
 import { observer } from "mobx-react";
+import AudioOffIcon from "../../assets/icons/audio-off.svg";
+import CameraOffIcon from "../../assets/icons/camera-off.svg";
+import Icon from "@ant-design/icons";
 import JitsiParticipant from "../../lib/jitsiManager/jitsiParticipant";
 import React, { RefObject } from "react";
 
@@ -121,12 +124,21 @@ export default class Video extends React.Component<VideoProps, VideoState> {
   render(): JSX.Element {
     return (
       <div className={this.getClassNames()} ref={this.videoContainerRef}>
+        {this.props.isVideoMuted && <UserOutlined />}
         <video ref={this.videoRef} autoPlay playsInline />
         <audio ref={this.audioRef} autoPlay muted={this.props.isLocal} />
-        <div className="charms">
-          {this.props.isAudioMuted && <FontAwesomeIcon icon={faMicrophoneSlash} />}
-          {this.props.isVideoMuted && <FontAwesomeIcon icon={faVideoSlash} />}
-        </div>
+        <Space className="charms">
+          {this.props.isAudioMuted && (
+            <Tooltip title="Microphone off" placement="topLeft" arrowPointAtCenter={true}>
+              <Icon component={AudioOffIcon} />
+            </Tooltip>
+          )}
+          {this.props.isVideoMuted && (
+            <Tooltip title="Camera off" placement="topLeft" arrowPointAtCenter={true}>
+              <Icon component={CameraOffIcon} />
+            </Tooltip>
+          )}
+        </Space>
       </div>
     );
   }

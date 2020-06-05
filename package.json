@@ -14,10 +14,6 @@
     "@babel/core": "^7.0.0-0",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/plugin-proposal-decorators": "^7.8.3",
-    "@fortawesome/fontawesome-svg-core": "^1.2.27",
-    "@fortawesome/free-regular-svg-icons": "^5.13.0",
-    "@fortawesome/free-solid-svg-icons": "^5.12.1",
-    "@fortawesome/react-fontawesome": "^0.1.9",
     "@svgr/webpack": "^5.4.0",
     "@types/lodash": "^4.14.150",
     "@types/node": "^14.0.1",
@@ -26,6 +22,7 @@
     "@typescript-eslint/eslint-plugin": "^3.1.0",
     "@typescript-eslint/parser": "^3.1.0",
     "antd": "^4.3.1",
+    "dayjs": "^1.8.18",
     "detectrtc": "^1.4.0",
     "dotenv": "^8.2.0",
     "eslint": "^7.0.0",
@@ -54,11 +51,18 @@
     "typescript": "^3.9.3"
   },
   "eslintConfig": {
-    "root":true,
-    "parser":"@typescript-eslint/parser",
-    "plugins":["@typescript-eslint","prettier","sort-imports-es6-autofix"],
-    "env":{"browser":true,"node":true},
-    "extends":[
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "@typescript-eslint",
+      "prettier",
+      "sort-imports-es6-autofix"
+    ],
+    "env": {
+      "browser": true,
+      "node": true
+    },
+    "extends": [
       "eslint:recommended",
       "plugin:react/recommended",
       "plugin:@typescript-eslint/eslint-recommended",
@@ -66,24 +70,35 @@
       "prettier",
       "prettier/@typescript-eslint"
     ],
-    "ignorePatterns":["dist/*"],
-    "rules":{
-      "prettier/prettier":"error",
-      "no-trailing-spaces":"error",
-      "eol-last":["error","always"],
-      "sort-imports-es6-autofix/sort-imports-es6":"error"
+    "ignorePatterns": [
+      "dist/*"
+    ],
+    "rules": {
+      "prettier/prettier": "error",
+      "no-trailing-spaces": "error",
+      "eol-last": [
+        "error",
+        "always"
+      ],
+      "sort-imports-es6-autofix/sort-imports-es6": "error"
     },
-    "overrides":[
+    "overrides": [
       {
-        "files":["*.js"],
-        "rules":{
-          "@typescript-eslint/explicit-function-return-type":"off",
-          "@typescript-eslint/explicit-module-boundary-types":"off",
-          "@typescript-eslint/no-var-requires":"off"
+        "files": [
+          "*.js"
+        ],
+        "rules": {
+          "@typescript-eslint/explicit-function-return-type": "off",
+          "@typescript-eslint/explicit-module-boundary-types": "off",
+          "@typescript-eslint/no-var-requires": "off"
         }
       }
     ],
-    "settings":{"react":{"version":"detect"}}
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
+    }
   },
   "stylelint": {
     "plugins": [
